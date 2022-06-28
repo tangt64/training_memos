@@ -1,4 +1,4 @@
-'''bash                                                            
+```bash                                                            
                                                             .---> /etc/shells <--- # chsh -l 
                                                            /
                                                      ------
@@ -7,52 +7,54 @@
                  \                                   /bin/bash 
                   '---> /etc/shadow 
 
-'''
+```
 
-'''bash
+```bash
 왜 "\"이걸 탈출문자라고 하는가?
            -----
            \
             '---> meta에서 제외                  
 
 + echo 
-'''
+```
 
-<p>
-"": 문자열, 메타 문자를 인식
-'': 문자열, 메타 문자를 인식하지 않음 == \
-``: 출력(문자열) <--- 실행파일         
-</p>
 
-'''
-;, &&
+__""__: 문자열, 메타 문자를 인식
+__''__: 문자열, 메타 문자를 인식하지 않음 == `\`
+__``` ```__: 출력(문자열) <--- 실행파일         
+
+
+```bash
+`;`  :
+`&&` :
 
 make config && make && make bzimage && make install(v)
 make config ; make ; make bzimage ; make install 
-
-'''
+```
 
 ## bash built-in command
 
 
-글로벌 설정 내용(함수포함)
+__ 글로벌 설정 내용(함수포함) __
 ----------------
-<p>
+
 /etc/profile.d/
 /etc/profile
 /etc/bashrc
-</p>
 
 __/etc/bash_completion.d/__: bash 쉘 기능 확장
 
 - type -a <command>
 - echo, source...몇명 명령어는 bash빌트인 명령어로 사용
 
-alias: 별명선언, 보통 짧은 명령어 만들시 사용한다.
-set:KR: 쉘 혹은 환경 변수에 선언하지 않는다
+alias: 
+        별명선언, 보통 짧은 명령어 만들시 사용한다.
+set:
+    KR: 쉘 혹은 환경 변수에 선언하지 않는다
     EN: doesn't set shell nor environment variables
 
-env:KR: 환경변수를 명령어로 선언이 가능하다
+env:
+    KR: 환경변수를 명령어로 선언이 가능하다
     EN: can set environment variables for a single command
 
 declare:
@@ -82,6 +84,7 @@ __wel_jay__: "Hell low Jay!! :X"
 * grep, awk '{ print $1, $2 }'
 
 ### 쉘 명령어
+```bash
 if      /etc/passwd
 then
 fi 
@@ -89,6 +92,15 @@ fi
 if      /etc/services
 then
 fi
+```
+
+### 힌트
+
+```bash
+
+echo $(grep ^http /etc/services | head -1 | awk '{ print $1,$2 }')
+
+```
 
 ### 사용자 이름
 
