@@ -74,15 +74,14 @@ export:
 
 ### 변수
 __wel_jeff__: "Welcome to Jeff!!"
+
 __wel_jay__: "Hell low Jay!! :X"
-
-
 
 ### 명령어
 * adduser
-* grep 
+* grep, awk '{ print $1, $2 }'
 
-### 쉘 명령어:
+### 쉘 명령어
 if      /etc/passwd
 then
 fi 
@@ -91,8 +90,8 @@ if      /etc/services
 then
 fi
 
+### 사용자 이름
 
-사용자 이름
 - helix
 - jay
 - syndy
