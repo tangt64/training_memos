@@ -1,3 +1,4 @@
+'''bash                                                            
                                                             .---> /etc/shells <--- # chsh -l 
                                                            /
                                                      ------
@@ -6,27 +7,30 @@
                  \                                   /bin/bash 
                   '---> /etc/shadow 
 
+'''
 
-
+'''bash
 왜 "\"이걸 탈출문자라고 하는가?
            -----
            \
             '---> meta에서 제외                  
 
 + echo 
+'''
 
+<p>
 "": 문자열, 메타 문자를 인식
 '': 문자열, 메타 문자를 인식하지 않음 == \
 ``: 출력(문자열) <--- 실행파일         
+</p>
 
-
-
+'''
 ;, &&
 
 make config && make && make bzimage && make install(v)
 make config ; make ; make bzimage ; make install 
 
-
+'''
 
 ## bash built-in command
 
