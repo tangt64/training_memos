@@ -1,4 +1,4 @@
-'''bash                                                            
+```bash                                                            
                                                             .---> /etc/shells <--- # chsh -l 
                                                            /
                                                      ------
@@ -7,59 +7,59 @@
                  \                                   /bin/bash 
                   '---> /etc/shadow 
 
-'''
+```
 
-'''bash
+```bash
 왜 "\"이걸 탈출문자라고 하는가?
            -----
            \
             '---> meta에서 제외                  
 
 + echo 
-'''
+```
 
-<p>
-"": 문자열, 메타 문자를 인식
-'': 문자열, 메타 문자를 인식하지 않음 == \
-``: 출력(문자열) <--- 실행파일         
-</p>
+__"":__ 문자열, 메타 문자를 인식
+__'':__ 문자열, 메타 문자를 인식하지 않음 
+__``` ```:__ 출력(문자열) <--- 실행파일         
 
-'''
+
+```bash
 ;, &&
 
 make config && make && make bzimage && make install(v)
 make config ; make ; make bzimage ; make install 
-
-'''
+```
 
 ## bash built-in command
 
 
 글로벌 설정 내용(함수포함)
 ----------------
-<p>
+
 /etc/profile.d/
 /etc/profile
 /etc/bashrc
-</p>
 
 __/etc/bash_completion.d/__: bash 쉘 기능 확장
 
 - type -a <command>
 - echo, source...몇명 명령어는 bash빌트인 명령어로 사용
 
-alias: 별명선언, 보통 짧은 명령어 만들시 사용한다.
-set:KR: 쉘 혹은 환경 변수에 선언하지 않는다
+alias: 
+    별명선언, 보통 짧은 명령어 만들시 사용한다.
+__set:__
+    KR: 쉘 혹은 환경 변수에 선언하지 않는다
     EN: doesn't set shell nor environment variables
 
-env:KR: 환경변수를 명령어로 선언이 가능하다
+__env:__
+    KR: 환경변수를 명령어로 선언이 가능하다
     EN: can set environment variables for a single command
 
-declare:
+__declare:__
     KR: 쉘 변수 선언 
     EN: sets shell variables
 
-export:
+__export:__
     KR: 쉘 변수를 환경변수로 
     EN: makes shell variables environment variables
 
@@ -73,15 +73,18 @@ export:
 ## 오늘 연습문제
 
 ### 변수
+
 __wel_jeff__: "Welcome to Jeff!!"
 
 __wel_jay__: "Hell low Jay!! :X"
 
 ### 명령어
+
 * adduser
 * grep, awk '{ print $1, $2 }'
 
 ### 쉘 명령어
+```bash
 if      /etc/passwd
 then
 fi 
@@ -89,7 +92,7 @@ fi
 if      /etc/services
 then
 fi
-
+```
 ### 사용자 이름
 
 - helix
@@ -105,7 +108,9 @@ fi
 5. 사용자 서비스 ssh가 /etc/services에 있는지 확인한다.
 6. 4, 5에 결과는 shell 콘솔로 메세지 출력한다.
 
+### 힌트
 
+echo $(grep ^http /etc/services | head -1 | awk '{ print $1,$2 }')
 
 
 
