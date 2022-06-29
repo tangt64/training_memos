@@ -204,3 +204,63 @@ __쉘 괄호 참조__
 >
 >command is executed and the if statement acts according to its exit code.
 >
+
+
+```bash
+#!/bin/bash
+
+my_variable=" "
+
+echo $(test $my_variable)
+
+if test $my_variable
+then
+    echo "The $my_variable expression returns a True"
+else
+    echo "The $my_variable expression returns a False"
+    echo $?
+fi
+```    
+
+```bash
+#!/bin/bash
+
+httpd_directory=/var/www/html
+
+if [ -d $httpd_directory ]
+then
+  echo "removed the httpd package"
+  yum remove httpd -y
+else
+  echo "install the httpd package"
+  yum install httpd -y
+fi
+```
+
+```bash
+#!/bin/bash
+
+location=/var/www/html
+file_name="index.html"
+
+if [ -e $location ]
+then 
+    echo "Ok on the $location directory."
+    echo "Now checking on the file, $file_name"
+    if [ -e $location/$file_name ]
+    then 
+        echo "Ok on the filename"
+        echo "Hello world" > $location/$file_name
+        systemctl start httpd
+        echo $(curl http://localhost)
+    else
+        echo "File does not exist"
+        echo "I need a index.html file" > $location/README.md
+        systemctl stop httpd 
+    fi
+else
+    echo "The $location directory does not exist"
+    yum install httpd -y 
+fi   
+
+```
