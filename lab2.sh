@@ -1,24 +1,13 @@
-memu
+#!/bin/bash
 
-function menu(){
-    clear
-    echo 
-    echo -e "\t\t\tHTTP MENU\n"
-    echo -e "\t1. Control Httpd Service"
-    echo -e "\t2. Create to the \"index.html\"" 
-    echo -e "\t3. Check the httpd.service"
-    echo -e "\t0. Exit Program\n\n"
-    echo -e "\t\Enter Number: "
-    read -n 1 option
-}
-
-
+location=/var/www/html
 
 function DeleteHtmlDir(){
+clear
 while true; do
-    read -p "Do you want to delete? (y/n)" yn
+    read -p "Do you want to delete? (yes/no)" yn
 
-    case $yn in 
+    case $yn in
         [yY]) rm -rf $location && echo "the $location deleted";
             break;;
         [nN]) echo exiting...;
@@ -28,9 +17,8 @@ while true; do
 done
 }
 
-
 function StartHttpService(){
-
+clear
 while true; do
     read -p "What do you want to do to the Apache?" srss
 
@@ -49,22 +37,38 @@ done
 
 }
 
-
-function CreateIndexHtml(){
-
-    echo "Hello World" >> $location/index.html
+function menu(){
+    clear
+    echo
+    echo -e "\t\t\tHTTP MENU\n"
+    echo -e "\t1. Control Httpd Service"
+    echo -e "\t2. Create to the \"index.html\""
+    echo -e "\t3. Check the httpd.service"
+    echo -e "\t0. Exit Program\n\n"
+    echo -e "\t\t Enter Number: "
+    read -n 1 option
 }
 
 
-function IsActiveHttpService(){
-
-if [ -d $location ]
-then
-    if (!systemctl is-active httpd && !rpm -qa | grep httpd 1> /dev/null)
-    then
-        echo "the httpd service is started"
-    else
-        echo "the httpd service is stopped"
-fi
-
-}
+while [ 1 ]
+do
+  menu
+  case $option in
+  0)
+      break ;;
+  1)
+      DeleteHtmlDir ;;
+  2)
+      StartHttpService ;;
+  3)
+      CreateIndexHtml ;;
+  4)
+      IsActiveHttpService ;;
+  *)
+  clear
+  echo "Sorry, wrong selection";;
+  esac
+  echo -en "\n\n\t\t\tHit any key to continue"
+  read -n 1 line
+done
+clear
