@@ -350,6 +350,8 @@ fi
 https://github.com/tangt64/training_memos/blob/main/skt-shell-ansble.md
 ```
 
+변수 자르기
+[https://tldp.org/LDP/abs/html/parameter-substitution.html]
 
-[https://tldp.org/LDP/abs/html/parameter-substitution.html](변수자르기)
-[https://miro.com/app/board/uXjVOpO10k4=/?share_link_id=569670568843](화이트보드 링크)
+미로 링크
+[https://miro.com/app/board/uXjVOpO10k4=/?share_link_id=569670568843]
