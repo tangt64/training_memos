@@ -349,3 +349,6 @@ fi
 
 https://github.com/tangt64/training_memos/blob/main/skt-shell-ansble.md
 ```
+
+
+[https://tldp.org/LDP/abs/html/parameter-substitution.html](변수짜르기)
