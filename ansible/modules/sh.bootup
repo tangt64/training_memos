@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function HttpdBootUp
+{
+    if systemctl is-active httpd 
+    then
+	echo "the httpd service already enabled"
+    else
+        echo "the service enabling to bootup as service"
+        systemctl enable httpd
+        echo "the service starting"
+	systemctl start httpd
+    fi
+}
+
+source $1
+
+changed="false"
+msg=""
+contents=""
+
+case $enabled in
+    true)
+        HttpdBootUp
+        ;;
+    *)
+        printf '{"failed": true, "msg": "invalid option: %s"}' "$enabled"
+        exit 1
+        ;;
+esac
+
+
+printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
+
+exit 0

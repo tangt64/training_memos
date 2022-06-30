@@ -1,0 +1,18 @@
+- hosts: localhost
+
+  tasks:
+  - name: install httpd package
+    sh.insthttpd:
+      install: true 
+  
+  - name: enable and start httpd service
+    sh.bootup:
+      enabled: true
+
+  - name: check status httpd service
+    sh.status:
+      status: true
+
+  - name: create web page
+    sh.indexhtml:
+      create: true 
