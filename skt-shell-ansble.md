@@ -351,4 +351,5 @@ https://github.com/tangt64/training_memos/blob/main/skt-shell-ansble.md
 ```
 
 
-[https://tldp.org/LDP/abs/html/parameter-substitution.html](변수짜르기)
+[https://tldp.org/LDP/abs/html/parameter-substitution.html](변수자르기)
+[https://miro.com/app/board/uXjVOpO10k4=/?share_link_id=569670568843](화이트보드 링크)
