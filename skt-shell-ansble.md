@@ -243,10 +243,94 @@ fi
 location=/var/www/html
 file_name="index.html"
 
+## 힌트
+## 한번 스크립트 실행 후, yum remove httpd -y 
+## 디렉터리만 검사! "/var/www/html"
+## !이것은 부정 조건
+## 1: 표준출력, 2: 표준오류
+## systemctl is-active 0: true, 3: false
+## rpm -qa 실행시 내용 안보이게
+## 추가된 if문장은 
+## -f: 일반파일, -e 파일, -d 디렉터리 
+
+memu
+
+function menu(){
+    clear
+    echo 
+    echo -e "\t\t\tHTTP MENU\n"
+    echo -e "\t1. Control Httpd Service"
+    echo -e "\t2. Create to the \"index.html\"" 
+    echo -e "\t3. Check the httpd.service"
+    echo -e "\t0. Exit Program\n\n"
+    echo -e "\t\Enter Number: "
+    read -n 1 option
+}
+
+
+
+function DeleteHtmlDir(){
+while true; do
+    read -p "Do you want to delete? (y/n)" yn
+
+    case $yn in 
+        [yY]) rm -rf $location && echo "the $location deleted";
+            break;;
+        [nN]) echo exiting...;
+            exit;;
+        * ) echo invalid response;
+    esac
+done
+}
+
+
+function StartHttpService(){
+
+while true; do
+    read -p "What do you want to do to the Apache?" srss
+
+    case $srss in
+        start) systemctl start httpd && echo "the Apache is started."
+        break;;
+        stop) systemctl stop httpd && echo "the Apache is stopped."
+        break;;
+        restart) systemctl restart httpd && echo "the Apache is restarted."
+        break;;
+        status) systemctl status httpd && echo "shows the status"
+        exit;;
+        * ) echo invalid response;
+    esac
+done
+
+}
+
+
+function CreateIndexHtml(){
+
+    echo "Hello World" >> $location/index.html
+}
+
+
+function IsActiveHttpService(){
+
+if [ -d $location ]
+then
+    if (!systemctl is-active httpd && !rpm -qa | grep httpd 1> /dev/null)
+    then
+        echo "the httpd service is started"
+    else
+        echo "the httpd service is stopped"
+fi
+
+}
+
+
+
 if [ -e $location ]
 then 
     echo "Ok on the $location directory."
     echo "Now checking on the file, $file_name"
+
     if [ -e $location/$file_name ]
     then 
         echo "Ok on the filename"
@@ -263,4 +347,5 @@ else
     yum install httpd -y 
 fi   
 
+https://github.com/tangt64/training_memos/blob/main/skt-shell-ansble.md
 ```
