@@ -1,0 +1,67 @@
+#!/bin/bash
+
+function package_name
+{
+httpd패키지 설치
+}
+
+function html_file
+{
+index.html 파일 생성및 "Hello World"메세지 출력
+}
+
+function service_enable
+{
+httpd 서비스 시작
+}
+
+function status_httpd
+{
+httpd 상태출력
+}
+
+source $1
+
+if [ -z "$package" ]; then
+    printf '{"failed": true, "msg": "missing required arguments: package"}'
+    exit 1
+fi
+if [ -z "$html" ]; then
+    printf '{"failed": true, "msg": "missing required arguments: index"}'
+    exit 1
+fi
+if [ -z "$service" ]; then
+    printf '{"failed": true, "msg": "missing required arguments: service"}'
+    exit 1
+fi
+if [ -z "$status" ]; then
+    printf '{"failed": true, "msg": "missing required arguments: status"}'
+    exit 1
+fi
+
+changed="false"
+msg=""
+contents=""
+
+case $state in
+    package)
+        package_name
+        ;;
+    html)
+        html_file
+        ;;
+    service)
+        service_enable
+        ;;
+    status)
+        status_httpd
+        ;;
+    *)
+        printf '{"failed": true, "msg": "invalid state: %s"}' "$state"
+        exit 1
+        ;;
+esac
+
+printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
+
+exit 0
