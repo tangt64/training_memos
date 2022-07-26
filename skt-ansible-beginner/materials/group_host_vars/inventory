@@ -1,0 +1,8 @@
+[servers]
+srv1.example.com ansible_connection=local
+srv2.example.com ansible_connection=local
+
+
+[database]
+db1.example.com ansible_connection=local
+db2.example.com ansible_connection=local

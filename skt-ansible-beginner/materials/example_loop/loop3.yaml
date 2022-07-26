@@ -1,0 +1,15 @@
+- hosts: localhost
+  vars:
+    userlist:
+      - sktuser1
+      - sktuser2
+  tasks:
+  - name: add user
+    user:
+      name: "{{ item.name }}"
+      state: present
+      groups: "{{ item.groups }}'
+    loop:
+    - { name: 'sktadm', groups: 'wheel' }
+    - { name: 'sktuser', groups: 'adm' }
+

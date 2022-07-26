@@ -1,0 +1,13 @@
+- hosts: localhost
+  tasks:
+  - name: shows 'changed' when the return code is not equal to 2
+    shell: /bin/ls -la
+    register: result
+    changed_when: result.rc != 2
+
+  - name: play sounds beep when the command status is "changed"
+    shell: echo -ne '\007'
+    register: result
+    changed_when:
+      - result.rc == 2
+      - '"ERROR" in result.stderr'

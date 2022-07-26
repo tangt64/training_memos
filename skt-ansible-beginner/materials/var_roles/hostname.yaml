@@ -1,0 +1,4 @@
+- hosts: localhost
+
+  roles:
+  - { role: hostname, node1: node1-1.lab.example.com }

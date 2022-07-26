@@ -1,0 +1,9 @@
+- hosts: localhost
+  vars_prompt:
+    - name: nic_name
+      prompt: put the NIC card name
+      default: "ens4"
+  tasks:
+  - debug:
+      msg: "{{ nic_name }}"
+

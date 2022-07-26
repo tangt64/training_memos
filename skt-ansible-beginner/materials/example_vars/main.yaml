@@ -1,0 +1,11 @@
+- name: this is first playbook
+  hosts: localhost
+  vars:
+    division: was
+    
+  tasks:
+  - name: Hello SKT
+    command: echo "Hello SKT"
+
+  - debug:
+      msg: "{{ division }}"

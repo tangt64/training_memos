@@ -1,0 +1,12 @@
+- hosts: localhost
+  vars_prompt:
+    - name: new_password
+      prompt: enter new password
+      private: yes
+      encrypt: sha512_crypt
+      confirm: yes
+      salt_size: 10
+      unsafe: yes
+  tasks:
+  - debug:
+      msg: "{{ new_password }}"

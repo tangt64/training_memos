@@ -1,0 +1,10 @@
+- hosts: localhost
+  vars:
+    config_dir: "/etc/httpd/conf.d/"
+    package_name: httpd
+  tasks:
+  - debug:
+      msg: "{{ config_dir }}"
+
+  - debug:
+      msg: "{{ package_name }}"

@@ -1,0 +1,25 @@
+- hosts: localhost
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: start the block session  
+    block:
+    - yum:
+        name: httpd
+        state: present
+      register: result_package
+    - debug:
+        msg: "{{ result_package }}"
+    rescue:
+    - yum:
+        name: httpd
+        state: absent
+    always:
+    - debug:
+        msg: "the httpd package installed"
+      when: result_package.rc
+
+    - debug:
+        msg: "the httpd package removed"
+      failed_when: result_package.rc != 1

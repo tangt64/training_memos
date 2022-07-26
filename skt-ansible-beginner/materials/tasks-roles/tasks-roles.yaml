@@ -1,0 +1,16 @@
+- hosts: web
+  
+  pre_tasks:
+  - name: this is the hello message from ansible
+    debug:
+      msg: "This message shows from pre tasks"
+
+  roles:
+  - { role: vsftpd }
+
+  post_tasks:
+  - name: this is the by message from ansible
+    debug:
+      msg: "This message shows from post tasks"
+
+

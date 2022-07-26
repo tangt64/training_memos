@@ -1,0 +1,11 @@
+- hosts: servers
+  tasks:
+  - name: shows the group_vars variable
+    debug:
+      msg: "{{ node1 }}"
+
+- hosts: db1.example.com
+  tasks:
+  - name: shows the host_vars variable
+    debug:
+      msg: "{{ db1 }}"

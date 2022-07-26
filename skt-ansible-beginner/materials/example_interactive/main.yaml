@@ -1,0 +1,14 @@
+- hosts: localhost
+  vars_prompt:
+    - name: username
+      prompt: put down your name
+      private: no
+
+    - name: password
+      prompt: put your password
+
+  tasks:
+  - debug:
+      msg: "{{ username }}"
+  - debug:
+      msg: "{{ password }}"

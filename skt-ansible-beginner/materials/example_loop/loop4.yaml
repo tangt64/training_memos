@@ -1,0 +1,12 @@
+- hosts: localhost
+  vars:
+    user_data:
+      username: toor
+      group: wheel
+  tasks:
+  - name: add user
+    user:
+      name: "{{ item.name }}"
+      state: present
+      groups: "{{ item.groups }}"
+    loop: "{{ user_data | dict2items }}"

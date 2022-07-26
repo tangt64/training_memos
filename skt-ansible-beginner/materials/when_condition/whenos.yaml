@@ -1,0 +1,6 @@
+- hosts: localhost
+
+  tasks:
+  - debug:
+      msg: "{{ ansible_facts['os_family'] }}"
+    when: ansible_facts['os_family'] == "Debian" or "CentOS"

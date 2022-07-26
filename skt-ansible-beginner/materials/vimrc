@@ -1,0 +1,35 @@
+" Load local vimrc from project directory (set this in your main vimrc)
+" set exrc
+
+autocmd FileType yml,yaml setlocal ts=2 sts=2 sw=2 expandtab et ai cuc
+colorscheme torte
+
+" Color column 80
+highlight ColorColumn ctermbg=6 guibg=lightblue
+set colorcolumn=80
+
+" General
+set cuc         " Set cursorcolumn
+set exrc        " Load vimrc from project directory
+set number      " Show line numbers
+set numberwidth=4
+set showmatch   " Highlight matching brace
+set visualbell  " Use visual bell (no beeping)
+
+set hlsearch    " Highlight all search results
+set smartcase   " Enable smart-case search
+set ignorecase  " Always case-insensitive
+set incsearch   " Searches for strings incrementally
+
+set autoindent  " Auto-indent new lines
+set expandtab   " Use spaces instead of tabs
+set shiftwidth=2        " Number of auto-indent spaces
+set smartindent " Enable smart-indent
+set smarttab    " Enable smart-tabs
+set softtabstop=2       " Number of spaces per Tab
+
+"" Advanced
+set ruler       " Show row and column ruler information
+set undolevels=1000     " Number of undo levels
+set backspace=indent,eol,start  " Backspace behaviour
+set nowrap

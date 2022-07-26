@@ -1,0 +1,5 @@
+- debug:
+    msg: {{ ansible_facts["eth0"]["ipv4"]["address"] }}
+
+- debug:
+    msg: {{ ansible_facts.eth0.ipv4.address }}

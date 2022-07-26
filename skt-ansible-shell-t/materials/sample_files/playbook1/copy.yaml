@@ -1,0 +1,22 @@
+- hosts: node1
+
+  tasks:
+
+    - name: install a httpd package on {{ inventory_hostname }}
+      yum:
+        name: httpd
+        state: latest
+
+    - name: enable and start the service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: copy the welcome.html to {{ inventory_hostname }}
+      copy:
+        src: welcome.html
+        dest: /var/www/html/welcome.html
+
+    - name: setup hostname
+      import_tasks: nodename.yaml

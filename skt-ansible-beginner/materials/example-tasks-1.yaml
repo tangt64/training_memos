@@ -1,0 +1,16 @@
+pre_tasks:
+  - name: updates all of packages
+    yum:
+      name: *
+      state: latested
+tasks:
+  - name: install a vsftpd package
+    yum:
+      name: vsftpd
+      state: latested
+post_tasks:
+  - name: start and enable the vsftpd service
+    service:
+       name: vsftpd
+       state: started
+       enabled: yes  
