@@ -61,6 +61,10 @@ controller]# ssh-copy-id root@192.168.90.37
 
 # ansible-playbook -i hosts copy_host_file.yaml
 - hosts: all
+  become: true
+  remote_user: guest        
+  become_method: sudo      ## wheel에 가입 usermod -aG wheel guest 
+
   tasks:
   - name: copy the hosts.txt to each host
     copy:
@@ -69,3 +73,4 @@ controller]# ssh-copy-id root@192.168.90.37
   - name: set hostname to each host
     hostname:
       name: "{{ nodename }}"
+
