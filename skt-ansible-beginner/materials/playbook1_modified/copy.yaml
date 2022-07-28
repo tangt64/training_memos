@@ -1,0 +1,11 @@
+- hosts: node1
+
+  tasks:
+  - name: ==== NOTICE ====
+    debug:
+      msg: You are access with the {{ ansible_ssh_user }} account
+
+  - name: install a {{ web_srv_package }} package on {{ inventory_hostname }}
+    yum:
+      name: "{{ web_srv_package }}"
+      state: latest
