@@ -1,0 +1,7 @@
+- hosts: all
+
+  tasks:
+#  - name: create page
+#    import_tasks: wh-create_page.yaml
+  - name: copy
+    include_tasks: wh-copy.yaml

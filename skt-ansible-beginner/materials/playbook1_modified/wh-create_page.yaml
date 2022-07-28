@@ -1,0 +1,15 @@
+  pre_tasks:
+  - name: stop to {{ web_srv_package }} 
+    service:
+      name: "{{ web_srv_package }}"
+      state: stopped
+  tasks:
+  - name: create a default.html file
+    copy:
+      content: "{{ nodename }}"
+      dest: "{{ web_dir }}/default.html"
+  post_tasks:
+  - name: start to {{ web_srv_package }}
+    service:
+      name: "{{ web_srv_package }}"
+      state: started
