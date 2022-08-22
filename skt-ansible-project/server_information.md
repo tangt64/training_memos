@@ -4,7 +4,7 @@ __ssh console 접근정보__
 ssh://console.dustbox.kr
 port: 7722/tcp
 ```
-__ovirt console 접근정보 __
+__ovirt console 접근정보__
 ***
 ```
 https://con.dustbox.kr
