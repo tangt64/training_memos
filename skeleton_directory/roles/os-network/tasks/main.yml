@@ -1,5 +1,0 @@
----
-# tasks file for os-network
-- include_tasks: tc.yaml
-- include_tasks: nftables.yaml
-- include_tasks: firewalld.yaml

@@ -1,0 +1,10 @@
+- name: copy kubelet configuration for crio
+  copy:
+    src: kubelet
+    dest: /etc/sysconfig/kubelet
+
+- name: start and enabled to crio.service
+  service:
+    name: crio
+    state: started
+    enabled: yes

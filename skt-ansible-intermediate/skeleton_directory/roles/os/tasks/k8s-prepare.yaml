@@ -1,0 +1,10 @@
+- name: prepare to the k8s repository file on {{ inventory_hostname }}
+  copy:
+    src: k8s-repository
+    dest: /etc/yum.repos.d/k8s-repository.repo
+
+- name: install the kubeadm package on {{ inventory_hostname }}
+  package:
+    name: kubeadm
+    state: latest
+

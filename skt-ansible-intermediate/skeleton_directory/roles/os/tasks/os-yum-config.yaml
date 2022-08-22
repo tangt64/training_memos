@@ -1,0 +1,4 @@
+- name: copy yum.conf to /etc/yum.conf
+  copy:
+    src: yum.conf
+    dest: /etc/yum.conf

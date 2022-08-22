@@ -1,0 +1,3 @@
+---
+# defaults file for os
+enabled_firewalld: yes

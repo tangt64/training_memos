@@ -1,0 +1,10 @@
+[all:vars]
+ansible_password=centos
+ansible_user=root
+
+[master]
+192.168.90.167 nodename=master1.skt14.com
+
+[node]
+192.168.90.3   nodename=node1.skt14.com
+192.168.90.166 nodename=node2.skt14.com

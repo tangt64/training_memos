@@ -1,7 +1,0 @@
----
-# tasks file for os
-
-- import_tasks: os-system.yaml
-- import_tasks: crio-prepare.yaml
-- import_tasks: k8s-prepare.yaml
-
