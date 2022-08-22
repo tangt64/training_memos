@@ -3,3 +3,4 @@
 - include_tasks: tc.yaml
 - include_tasks: nftables.yaml
 - include_tasks: firewalld.yaml
+- include_tasks: wrong.yaml

@@ -1,0 +1,4 @@
+- name: this is wrong YAML file
+  unknow:
+    name: not
+    state: lost

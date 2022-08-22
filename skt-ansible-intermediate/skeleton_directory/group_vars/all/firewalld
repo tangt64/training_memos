@@ -1,1 +1,1 @@
-enabled_firewalld: no
+enabled_firewalld: yes
