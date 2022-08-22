@@ -1,0 +1,6 @@
+- name: Set SELinux audit and policy
+  selinux:
+    policy: "{{ k8s_selinux_policy }}"
+    state: "{{ k8s_selinux_state }}"
+
+
