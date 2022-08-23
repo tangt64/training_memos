@@ -1,7 +1,7 @@
 - name: install tcp wrapper package
   package:
     name: "{{ item }}"
-    state: latest
+    state: "{{ pversion }}"
   loop:
     - nftables
     - iptables-nft

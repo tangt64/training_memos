@@ -2,7 +2,7 @@
   - name: install the firewalld package
     package:
       name: firewalld
-      state: latest
+      state: "{{ pversion }}"
 
   - name: enable and start firewalld
     service:
@@ -17,7 +17,7 @@
       state: enabled
     loop:
       - 6443/tcp
-      - 23279-2380/tcp
+      - 2379-2380/tcp
       - 10250/tcp
       - 10251/tcp
       - 10252/tcp
