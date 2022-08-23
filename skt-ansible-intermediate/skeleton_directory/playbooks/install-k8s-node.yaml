@@ -1,0 +1,14 @@
+#- import_playbook: install-master.yaml
+#- import_playbook: install-worker.yaml
+
+- name:
+  hosts: master
+  tags: k8s-master
+  roles:
+   - { role: k8s-master }
+
+- name:
+  hosts: worker
+  tags: k8s-worker
+  roles:
+   - { role: k8s-worker }

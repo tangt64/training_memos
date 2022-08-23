@@ -1,0 +1,5 @@
+- name:
+  hosts: worker
+  tags: k8s-worker
+  roles:
+    - { role: k8s-worker }
