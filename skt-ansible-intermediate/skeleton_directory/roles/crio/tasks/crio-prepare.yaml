@@ -9,8 +9,8 @@
     src: "{{ item }}"
     dest: "/etc/yum.repos.d/{{ item }}.repo"
   loop:
-    - k8s-crio-stable-repository
-    - k8s-libcontainer-stable-repository
+    - crio-stable-repository
+    - crio-libcontainer-stable-repository
 
 - name: install the crio runtime package
   package:
