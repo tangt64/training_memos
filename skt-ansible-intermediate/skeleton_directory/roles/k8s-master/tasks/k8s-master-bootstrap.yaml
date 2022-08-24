@@ -1,9 +1,11 @@
+- name: start to crio.service
+  service:
+    name: crio
+    state: started
+    enabled: yes
+
 - name: run kubeadm bootstrapping
   command: 'kubeadm init --ignore-preflight-errors="{{ k8s_exception_flight }}" --apiserver-advertise-address="{{ k8s_advertise_address }}"'
-
-- name: create token for node join
-  command: kubeadm token create --print-join-command 
-  register: k8s_node_token
 
 - name: create a .kube/ directory in the root home directory
   file:
