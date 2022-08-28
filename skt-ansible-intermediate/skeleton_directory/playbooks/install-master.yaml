@@ -1,5 +1,0 @@
-- name:
-  hosts: master
-  tags: k8s-master
-  roles:
-    - { role: k8s-master } 

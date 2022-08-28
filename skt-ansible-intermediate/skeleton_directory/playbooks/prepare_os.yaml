@@ -1,8 +1,0 @@
-- name: 
-  hosts: master:node
-  tags: os-prepare
-  roles:  
-    - { role: os, tags: os-test }
-    - { role: os-network, tags: os-network }
-    - { role: crio, tags: os-crio }
-    - { role: os-selinux, tags: os-selinux }

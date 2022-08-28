@@ -9,18 +9,14 @@
   - name: apply calico YAML
     command: kubectl create -f /tmp/tigera-operator.yaml
 
-  - name:
-    pause: 10
+  - name: wait a 1 miniute
+    pause:
+      minutes: 1
 
-  - name:
+  - name: check to calico POD status
     command: kubectl get pods -n calico 
     register: is_running_calico
 
-  - fail:
-      msg:
-    when: "failed" in is_running_calico 
   resuce:
-    - name: 
+    - name: rollback to the calico operator
       command: kubectl delete -f /tmp/tigera-operator.yaml
-    - name: 
-      command: kubectl create -f /tmp/tigera-operator.yam

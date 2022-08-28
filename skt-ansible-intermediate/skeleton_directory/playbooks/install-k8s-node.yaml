@@ -1,13 +1,22 @@
 #- import_playbook: install-master.yaml
 #- import_playbook: install-worker.yaml
 
-- name:
+- name: prepare os
+  hosts: all
+  tags: os-prepare
+  roles:  
+    - { role: os, tags: os-test }
+    - { role: os-network, tags: os-network }
+    - { role: crio, tags: os-crio }
+    - { role: os-selinux, tags: os-selinux }  
+
+- name: install master
   hosts: master
   tags: k8s-master
   roles:
    - { role: k8s-master }
 
-- name:
+- name: install worker
   hosts: worker
   tags: k8s-worker
   roles:
