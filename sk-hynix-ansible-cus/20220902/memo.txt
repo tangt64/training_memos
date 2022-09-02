@@ -1,0 +1,228 @@
+## ssh키 배포
+
+- ansible.cfg, authorized_key(module)
+- keyword variables(ansible)
+    * ansible_user: 
+    * ansible_password: 
+      > ansible.cfg, [defaults]
+      > group_vars/, host_vars/, all(파일이나 디렉터리)
+
+- YAML를 작성을 위해서는 에디터 필요 
+    * vim/nano + tmux 혹은 sublime editor 
+    * visual studio code 
+    * 띄어쓰기 조건!!! 
+      > 일반적으로 최소 2칸 들여쓰기(인덴트) 
+      > YAML경우에는 어떤 에디터도 완벽하게 문법 확인이 잘 안됨
+
+## 기본문법
+'''
+ansible_*: ansible internal keyword variable
+  group_vars/all
+  host_vars/all
+    > ansible_user
+    > ansible_password
+ 
+            /etc/ansible/ansible.cfg
+ansible.cfg(ansible config keyword)
+===========
+[defaults]
+remote_user: devops
+become: true        ## 일반유저에서 슈퍼유저
+become_method: sudo, su
+
+- name: 
+  hosts: all|!grp4
+  hosts: 10.11.12.13, 10,11,12,14, 10.10.10.1[1-9]
+  hosts: all,<name_of_group>   ---> inventory(인벤토리)   ex, inventory/hosts
+                                                            [switch]
+                                                            sw1.internal.storage.int 
+                                                            10.5.2.10
+  tasks:
+    - name: <작업 이름 설명, 권장 영어로 작성>
+      <module>    ---> # ansible-doc -l, 앤서블 모듈 리스트 확인
+        arg1:
+        arg2:
+
+    - name: copy to the httpd.conf file on /etc/httpd
+      copy: 
+        src: /tmp/httpd.conf
+        dest: /etc/httpd/conf/httpd.conf 
+
+"{{ variable }}": 변수 호출시 사용   ---> 'Hello {{ variable }}' ##앤서블 공식 문서에 종종 이렇게 표현함 
+----------------                       "Hello {{ variable }}"
+    Jinja2  
+
+ens0  --- provision network(dhcp,pxe) 
+ens1  --- external 
+ens2  --- mgnt(internal, include API for master)
+ens3  --- storage
+ens4  --.
+         \
+          > teamd/bond
+         /
+esn5  --'
+
+
+yum:
+  name: "{{ item }}"                    name: 
+  state: present                          - httpd
+                               --->       - vsftpd
+loop:                                     - bind 
+  - httpd
+  - vsftpd
+  - bind 
+
+
+host_vars --->  servera.lab.example.com <--- variables, "{{ mac_address }}", 00:00:00:45:01
+                serverb.lab.example.com <--- variables, "{{ mac_address }}", 00:00:00:45:02
+                function()                   VAR()                            VALUE
+
+group_vars ---> [servers]
+                servera.lab.example.com ---.     
+                                            > variables, "{{ mac_address }}", 00:00:00:45:03                  serverb.lab.example.com ---'     
+ 
+include_*: ex, ansible-playbook meet to "include_task" ---> <MEMORY LOADUP>
+                                          -> tasks_b.yaml 
+
+import_*: ex, ansible-playbook preload to "import_task"  ---> <PRE_MEMORY_LOADED> 
+                                          -> tasks_b.yaml
+
+ansible-playbook --syntax-check
+
+multi_playbooks/
+         main.yaml   1. include_playbook/task
+                     2. import_playbook/task
+
+         disk.yaml
+         package.yaml
+         network.yaml  
+'''
+
+
+## ROLE/TASKS
+
+
+* roles
+* register, when
+* debug, tag
+
+- roles(역할) 프레임워크 디렉터리 구조
+  * tasks/main.yaml
+
+- # ansible-galaxy init 
+- # mkdir -p            (v)
+- "tasks:"너무 많은 작업을 등록하면 나중에 재활용이나 분리가 어려움 
+
+'''
+ ansible-playbook --syntax-check --> -C -vv --> playbook
+
+'''
+
+'''  
+  pre_tasks:
+  - name: update to all packages
+    yum:
+      name: '*'
+      state: latest
+
+  tasks:
+  - name: install to a httpd package
+    yum:
+      name: httpd
+      state: present 
+
+  post_tasks: 
+  - name: create to a index.html
+    file:
+      content: "Hello World"
+      path: /var/www/html/index.html
+'''
+
+__role를 특정 기능을 구성하는 부분.__
+- tasks 및 vars같은 부분이 디렉터리 형태로 분리가 되어 있음
+- ansible-galaxy init
+
+'''
+/roles/test
+           /defaults
+           /tasks
+           /vars
+           /handlers
+
+pre_tasks:
+
+tasks:
+
+post_tasks:
+'''
+
+  
+'''
+yum:
+  name: 
+    - vsftpd
+    - httpd
+  state: present
+'''
+
+## register
+
+'''
+- command: hostname
+  register: result_command
+
+- copy: 
+    src: /etc/issue
+    dest: /tmp/issue.bak
+  register: result_copy
+
+- file:
+    content: "{{ result_shell.stdout }}"
+    dest: /tmp/log.txt
+'''
+
+'''
+# sudo yum install gnome-tweaks -y 
+'''
+
+바인드 서비스 이름은 __named.service__
+
+- devices(router, switch, lb, firewall)
+- unix(collection)
+- linux(ansible-core)
+- windows(collection)
+
+'''
++------------+     ssh       +--------------+
+| controller |     --->      | managed_node | 
++------------+   <setup>     +--------------+
+[ansible-core]     <---
+                   [JSON]
+'''
+
+
+'''
+# ansible all, -m ping         ;; 호스트에 접근이 가능한지 확인
+# ansible localhost, -m setup  ;; 모든 호스트의 정보 확인(사양부분..)
+                       -------
+                       \
+                        '---> gathering 
+'''
+
+## vars_files
+'''
+vars:
+  nodename:
+    - web1.example.com
+    - web2.example.com
+    - web3.example.com 
+
+template, inventory, group_vars+host_vars
+          ---------
+          \
+           '---> + vars
+'''
+
+## rolling update and serialization 
+
+## ansible-tower
