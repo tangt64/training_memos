@@ -1,3 +1,7 @@
+
+tang@linux.com, 최국현, 010-4126-8902
+https://github.com/tangt64/training_memos
+
 ## ssh키 배포
 
 - ansible.cfg, authorized_key(module)
@@ -222,6 +226,48 @@ template, inventory, group_vars+host_vars
           \
            '---> + vars
 '''
+
+## group_vars/, host_vars/
+
+group_vars, host_vars, 이 둘다 인벤토리 내용과 관련이 있음
+
+'''
+/home/$USER/labs/hosts
+
+                            .---> directory
+                           / 
+                         ---
+[test]   <--- group_vars/all/[FILE]
+servera                  test/[FILE]
+serverb                  all ---> file
+serverc                  test
+
+[product]
+serverd
+servere  <--- host_vars/all/[FILE]
+                        all ---> file
+serverf                 serverf.lab.example.com[FQDN,IPADDR]
+                        10.10.10.6
+
+
+# vi inventory/hosts
+10.10.10.1  ansible_host=localhost         ## 다른 서버로 대체접속
+                          other.example.com
+                          192.168.10.2
+            ansible_connection=ssh          ## 접속형식, local이 localhost와 동일한 기능
+                               paramiko
+                               local
+'''
+
+1. host_vars는 1:1 형태를 가지고 있고, 특정 서버에게 특정 변수의 값을 할당
+  * group_vars에 같은 이름으로 선언이 되어 있는 변수명이 있으면, 해당 변수명의 값은 host_vars값으로 덮어씌우기가 됨. 
+2. group_vars는 1:N형태를 가지고 있고, 특정 그룹에게 특정 변숭의 값을 일괄적으로 할당
+  * 일반적으로 특정 그룹에 "기본값"설정 용도로 많이 사용합니다. 
+  * all이라는 특별 지시자를 사용하는 경우, 그룹에 상관 없이 모든 서버에 일괄적으로 해당 변수들을 적용.
+
+     세번째                 두번째             제일 높은 우선순위        모든 값 무시하고 적용
+group_vars[ALL] ---> group_vars[GROUP] ---> host_vars[HOST]  ---> ansible-playbook -e 
+
 
 ## rolling update and serialization 
 
