@@ -1,0 +1,16 @@
+[iot_dev]
+10.10.10.1 ansible_host=localhost
+10.10.10.2 ansible_host=localhost
+10.10.10.4 ansible_host=localhost
+
+[storage]
+storage.obj.example.com ansible_host=localhost
+storage.ebs.example.com ansible_host=localhost
+
+[photonic]
+pho.example.com ansible_host=localhost
+10.5.4.2 ansible_host=localhost
+
+[carmera]
+cam.int.example.com ansible_host=localhost
+10.5.4.1 ansible_host=localhost

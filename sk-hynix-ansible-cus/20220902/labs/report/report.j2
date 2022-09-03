@@ -1,0 +1,6 @@
+{% for host in groups['all'] %}
+Server: {{ inventory_hostname }}
+Address: {{ hostvars[host]['ansible_facts']['default_ipv4']['address']
+Time and Date: {{ now() }}
+
+{% endfor %}

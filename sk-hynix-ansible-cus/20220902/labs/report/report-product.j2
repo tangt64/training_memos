@@ -1,0 +1,6 @@
+{% for host in groups['product'] %}
+Server: {{ hostvars[host]['ansible_facts']['fqdn'] }}
+Address: {{ hostvars[host]['ansible_facts']['default_ipv4']['address']
+Time and Date: {{ now() }}
+
+{% endfor %}

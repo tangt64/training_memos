@@ -1,0 +1,38 @@
+- hosts: test
+  tasks:
+  - name: make a sample report for test
+    template:
+      src: report-test.j2
+      dest: /home/student/report-test.log
+    delegate_to: localhost
+
+- hosts: product
+  tasks:
+  - name: make a sample report for product nodes
+    template:
+      src: report-product.j2
+      dest: /home/student/report-product.log
+    delegate_to: localhost
+
+- hosts: localhost
+  tasks:
+  - name: merge two of report files into a single report file
+    command: cat /home/student/report-test.log /home/student/report-product.log
+    register: result_report
+
+  - debug:
+      msg: "{{ result_report.stdout_lines }}"
+
+  - name: create to a report-total.log file
+    copy:
+      content: "{{ result_report.stdout_lines }}"
+      dest: /home/student/report-total.log
+    delegate_to: localhost
+
+  - name: send the report file to the administrator
+    mail:
+      subject: "This is the report of all servers."
+      attach: /home/student/report-total.log
+      body: monthly all server report file
+      to: master@lab.example.com
+    delegate_to: localhost
