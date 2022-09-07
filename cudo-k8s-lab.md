@@ -75,7 +75,7 @@ EOF
 ```
 ### master
 ```
-# systemctl enable --now kublet 
+# systemctl enable --now kubelet 
 # systemctl is-active kubelet
 activating
 # systemctl -t service 
