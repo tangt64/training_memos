@@ -106,3 +106,11 @@ overlay
 # kubectl get svc -A
 # kubectl get deployment -A
 ```
+
+### 쿠버네티스 초기화
+
+```
+# kubeadm reset --force
+
+```
+
