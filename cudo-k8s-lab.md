@@ -15,15 +15,14 @@ cudo1~6, cudouser
 
 https://github.com/tangt64/training_memos
 
-## VM ID 
-
+## VM ID AND PASSWORD
 root/centos
 
-
-'''
+'''bash
 -> skt-ansible-intermediate ->  k8s-crio-stable-repository, 
                                         k8s-libcontainer-stable-repository  -> RAW -> URL COPY
 '''
+
 ## 시작
 
 아래서 수행하는 작업은 [master/node1/node2]에서 수행이 되어야 됨.
