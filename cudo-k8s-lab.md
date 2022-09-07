@@ -97,3 +97,12 @@ overlay
 # kubeadm init
 
 ```
+
+```
+# mkdir -p $HOME/.kube
+# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+# kubectl get nodes
+# kubectl get pods -A
+# kubectl get svc -A
+# kubectl get deployment -A
+```
