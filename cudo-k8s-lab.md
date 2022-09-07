@@ -1,26 +1,23 @@
 ## VM Gateway Server
 
-'''bash
-cudo1~6, cudo
-  ID          PW
-
-ssh://console.dustbox.kr, port: 7722
-
-'''
+USERNAME: cudo1~6, 
+PASSWORD cudo
+URL: ssh://console.dustbox.kr, 
+PORT: 7722
 
 ## VM DashBoard
 
-'''bash
-https://con.dustbox.kr
 
-cudo1~6, cudouser
-  ID        PW
-'''
+URL: https://con.dustbox.kr
+USERNAME: cudo1~6
+PASSWORD: cudouser
 
-https://github.com/tangt64/training_memos
+__MEMO URL:__ https://github.com/tangt64/training_memos
 
 ## VM ID AND PASSWORD
-root/centos
+
+USERNAME: root
+PASSWORD: centos
 
 '''bash
 -> skt-ansible-intermediate ->  k8s-crio-stable-repository, 
