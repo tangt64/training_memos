@@ -107,6 +107,11 @@ EOF
 # kubectl get deployment -A
 ```
 
+### 테스트 하기
+
+https://kubernetes.io/docs/tutorials/hello-minikube/
+
+
 ### 쿠버네티스 초기화
 
 ```
