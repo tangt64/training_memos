@@ -49,10 +49,11 @@ skt-ansible-intermediate 밑에서 아래 두개 파일 다운로드
 # yum install wget -y
 # cd /etc/yum.repos.d/
 # wget https://raw.githubusercontent.com/tangt64/training_memos/main/skt-ansible-intermediate/k8s-crio-stable-repository -O  k8s-crio-stable-repository.repo
-# wget https://raw.githubusercontent.com/tangt64/training_memos/main/skt-ansible-intermediate/k8s-libcontainer-stable-repository -O k8s-crio-stable-repository.repo
+# wget https://raw.githubusercontent.com/tangt64/training_memos/main/skt-ansible-intermediate/k8s-libcontainer-stable-repository -O k8s-libcontainer-stable-repository.repo
 # yum search cri
 cri-o.x86_64 : Kubernetes Container Runtime Interface for OCI-based containers
 # yum install cri-o -y
+# yum repolist
 
 # swapoff -a            --> nano /etc/fstab
 # setenforce 0          --> nano /etc/selinux/config
@@ -76,6 +77,8 @@ EOF
 ```
 # systemctl is-active kubelet
 activating
+# systemctl -t service 
+# systemctl enable crio --now
 # kubeadm init 
 
 ```
