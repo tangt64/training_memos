@@ -1,14 +1,16 @@
 ## VM Gateway Server
 
-USERNAME: cudo1~6, 
+USERNAME: cudo1~6
+
 PASSWORD cudo
-URL: ssh://console.dustbox.kr, 
+
+URL: ssh://console.dustbox.kr 
+
 PORT: 7722
 
 ## VM DashBoard
 
-
-URL: https://con.dustbox.kr
+URL: https://con.dustbox.kr<br/>
 USERNAME: cudo1~6
 PASSWORD: cudouser
 
