@@ -96,8 +96,6 @@ overlay
 EOF
 # systemctl restart systemd-modules-load
 
-# kubeadm init
-
 ```
 
 ```
