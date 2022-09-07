@@ -93,6 +93,7 @@ EOF
 # cat <<EOF> /etc/modules-load.d/kubernetes-mod.conf
 br_netfilter
 overlay
+EOF
 # systemctl restart systemd-modules-load
 
 # kubeadm init
