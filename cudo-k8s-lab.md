@@ -2,17 +2,15 @@
 
 USERNAME: cudo1~6
 
-PASSWORD cudo
-
-URL: ssh://console.dustbox.kr 
-
-PORT: 7722
+PASSWORD cudo<br/>
+URL: ssh://console.dustbox.kr <br/>
+PORT: 7722<br/>
 
 ## VM DashBoard
 
 URL: https://con.dustbox.kr<br/>
-USERNAME: cudo1~6
-PASSWORD: cudouser
+USERNAME: cudo1~6<br/>
+PASSWORD: cudouser<br/>
 
 __MEMO URL:__ https://github.com/tangt64/training_memos
 
@@ -54,6 +52,9 @@ skt-ansible-intermediate 밑에서 아래 두개 파일 다운로드
 cri-o.x86_64 : Kubernetes Container Runtime Interface for OCI-based containers
 # yum install cri-o -y
 # yum repolist
+devel_kubic_libcontainers_stable                                      Stable Releases of Upstream github.com/containers packages (CentOS_7)
+devel_kubic_libcontainers_stable_cri-o_1.18_1.18.3                    Release 1.18.3 (CentOS_7)
+kubernetes                                                            kubernetes repository
 
 # swapoff -a            --> nano /etc/fstab
 # setenforce 0          --> nano /etc/selinux/config
