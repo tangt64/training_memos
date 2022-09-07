@@ -58,7 +58,7 @@ kubernetes                                                            kubernetes
 
 # swapoff -a            --> nano /etc/fstab
 # setenforce 0          --> nano /etc/selinux/config
-# systemctl stop firewalld
+# systemctl stop firewalld --> systemctl disable firewalld
 # nmcli connection show --> nmcli co sh 
 # nmtui                 --> Network Configure Modification command 
 # cat <<EOF> /etc/yum.repos.d/kubernetes.repo
