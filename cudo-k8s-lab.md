@@ -71,11 +71,11 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cl
 exclude=kubelet kubeadm kubectl
 EOF
 # yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
-# systemctl enable --now kublet 
 
 ```
 ### master
 ```
+# systemctl enable --now kublet 
 # systemctl is-active kubelet
 activating
 # systemctl -t service 
