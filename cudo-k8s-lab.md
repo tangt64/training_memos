@@ -19,10 +19,15 @@ __MEMO URL:__ https://github.com/tangt64/training_memos
 USERNAME: root
 PASSWORD: centos
 
-'''bash
--> skt-ansible-intermediate ->  k8s-crio-stable-repository, 
-                                        k8s-libcontainer-stable-repository  -> RAW -> URL COPY
-'''
+
+### 저장소 파일
+
+skt-ansible-intermediate 밑에서 아래 두개 파일 다운로드
+
+* k8s-crio-stable-repository, 
+* k8s-libcontainer-stable-repository
+
+확장자 반드시 .repo붙여야 됨.
 
 ## 시작
 
