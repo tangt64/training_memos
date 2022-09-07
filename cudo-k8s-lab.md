@@ -98,25 +98,42 @@ EOF
 
 ```
 
+
+### 노드 조인하기
+
 ```
-# mkdir -p $HOME/.kube
-# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-# kubectl get nodes
-# kubectl get pods -A
-# kubectl get svc -A
-# kubectl get deployment -A
+master# kubeadm token list
+master# kubeadm token create --print-join-command
+kubeadm join 192.168.90.171:6443 --token fkv0uf.2bzmt3rsu3ppa3lx --discovery-token-ca-cert-hash sha256:2fde3b6a891973ed7073a998385e1363eb9f38c67bd92ca24ec9ee5540004730
+
+
+nodeX# kubeadm join 192.168.90.171:6443 --token fkv0uf.2bzmt3rsu3ppa3lx --discovery-token-ca-cert-hash sha256:2fde3b6a891973ed7073a998385e1363eb9f38c67bd92ca24ec9ee5540004730
+
+master# kubectl get nodes
+NAME                 STATUS   ROLES           AGE   VERSION
+master.example.com   Ready    control-plane   52m   v1.24.3
+node1.example.com    Ready    <none>          49m   v1.24.3
 ```
+
 
 ### 테스트 하기
 
 https://kubernetes.io/docs/tutorials/hello-minikube/
 
 ```
+master# mkdir -p $HOME/.kube
+master# sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+master# kubectl get nodes
+master# kubectl get pods -A
+master# kubectl get svc -A
+master# kubectl get deployment -A
+```
 
+```
 master# kubectl apply -f https://k8s.io/examples/service/load-balancer-example.yaml
 master# kubectl get pods
 master# kubectl get svc  --> pending때문에 외부에서 접근이 안됨
-master# kueectl edit svc/hello-world
+master# kubectl edit svc/hello-world
 master# kubectl expose deployment hello-world --type=LoadBalancer --name=my-service
 master# curl localhost:8080
 
