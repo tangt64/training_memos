@@ -1,6 +1,6 @@
 ## VM Gateway Server
 ----------------------
-'''
+'''bash
 cudo1~6, cudo
   ID          PW
 
@@ -9,7 +9,7 @@ ssh://console.dustbox.kr, port: 7722
 
 ## VM DashBoard
 -----------------
-'''
+'''bash
 https://con.dustbox.kr
 
 cudo1~6, cudouser
