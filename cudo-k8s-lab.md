@@ -1,3 +1,7 @@
+
+__EMAIL:__ bluehelix@gmail.com
+__NAME:__ CHOI GOOK HYUN
+
 ## VM Gateway Server
 
 USERNAME: cudo1~6
