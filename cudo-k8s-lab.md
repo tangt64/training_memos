@@ -1,5 +1,4 @@
 ## VM Gateway Server
-----------------------
 
 '''bash
 cudo1~6, cudo
@@ -9,7 +8,6 @@ ssh://console.dustbox.kr, port: 7722
 '''
 
 ## VM DashBoard
------------------
 
 '''bash
 https://con.dustbox.kr
