@@ -82,4 +82,15 @@ activating
 # systemctl enable crio --now
 # kubeadm init 
 
+# cat <<EOF> /etc/sysctl.d/kubernetes-sys.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+
+# cat <<EOF> /etc/modules-load.d/kubernetes-mod.conf
+br_netfilter
+overlay
+
+# kubeadm init
+
 ```
