@@ -87,9 +87,12 @@ net.bridge.bridge-nf-call-iptables  = 1
 net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 
+# sysctl -p --system
+
 # cat <<EOF> /etc/modules-load.d/kubernetes-mod.conf
 br_netfilter
 overlay
+# systemctl restart systemd-modules-load
 
 # kubeadm init
 
