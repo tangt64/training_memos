@@ -34,6 +34,7 @@ skt-ansible-intermediate 밑에서 아래 두개 파일 다운로드
 아래서 수행하는 작업은 [master/node1/node2]에서 수행이 되어야 됨.
 
 '''bash
+
 # yum install nano tmux 
 # vi /etc/hosts             ---> master/node1/node2
 <IP> master.example.com master
