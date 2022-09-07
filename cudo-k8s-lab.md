@@ -111,7 +111,16 @@ EOF
 
 https://kubernetes.io/docs/tutorials/hello-minikube/
 
+```
 
+master# kubectl apply -f https://k8s.io/examples/service/load-balancer-example.yaml
+master# kubectl get pods
+master# kubectl get svc  --> pending때문에 외부에서 접근이 안됨
+master# kueectl edit svc/hello-world
+master# kubectl expose deployment hello-world --type=LoadBalancer --name=my-service
+master# curl localhost:8080
+
+```
 ### 쿠버네티스 초기화
 
 ```
