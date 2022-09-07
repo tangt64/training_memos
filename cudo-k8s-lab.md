@@ -20,8 +20,8 @@ __MEMO URL:__ https://github.com/tangt64/training_memos
 
 ## VM ID AND PASSWORD
 
-USERNAME: root
-PASSWORD: centos
+__USERNAME:__ root<br/>
+__PASSWORD:__ centos
 
 
 ### 저장소 파일
