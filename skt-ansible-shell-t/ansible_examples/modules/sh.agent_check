@@ -1,0 +1,64 @@
+#!/bin/bash
+
+function cisco
+{
+proc_cisco=$(ps -ef | grep cisco | awk '{ print $NF }' | uniq )
+if [[ $proc_cisco == "redhat" ]]; then
+    changed="true"
+    msg="the redhat agent is alive"
+else
+    changed="false"
+    echo "the redhat agent is not working well"    
+    msg="the agent is not working"
+fi
+contents=$("$proc_cisco"| python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+}
+
+function redhat
+{
+
+}
+
+function windows
+{
+
+}
+
+function dell
+{
+}
+
+source $1
+
+if [ -z "$NAME" ]; then
+    printf '{"failed": true, "msg": "missing required arguments: name"}'
+    exit 1
+fi
+
+
+changed="false"
+msg=""
+contents=""
+
+case $name in
+    cisco)
+        cisco
+        ;;
+    redhat)
+        redhat
+        ;;
+    windows)
+        windows
+        ;;
+    dell)
+        dell
+        ;;
+    *)
+        printf '{"failed": true, "msg": "invalid name: %s"}' "$dell"
+        exit 1
+        ;;
+esac
+
+printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
+
+exit 0

@@ -1,0 +1,12 @@
+- hosts: localhost
+  
+  tasks:
+  - name: run custom bash module
+    sh.bashmod:
+      state: present
+      dest: /root/helloansible.txt
+
+  - name: all strings are going to be upper
+    sh.bashmod:
+      state: upper
+      dest: /root/helloansible.txt
