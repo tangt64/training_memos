@@ -25,7 +25,6 @@ case $status in
         ;;
 esac
 
-
 printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
 
 exit 0
