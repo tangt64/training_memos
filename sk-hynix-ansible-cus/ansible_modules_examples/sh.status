@@ -1,0 +1,30 @@
+#!/bin/bash
+
+function HttpdStatus
+{
+   echo "checking httpd service status"
+   changed="true"
+   msg="${msg}the httpd service is okay"
+   contents=$(systemctl status httpd | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+}
+
+
+changed="false"
+msg=""
+contents=""
+
+source $1
+
+case $status in
+    true)
+        HttpdStatus
+        ;;
+    *)
+        printf '{"failed": true, "msg": "invalid option: %s"}' "$status"
+        exit 1
+        ;;
+esac
+
+printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
+
+exit 0

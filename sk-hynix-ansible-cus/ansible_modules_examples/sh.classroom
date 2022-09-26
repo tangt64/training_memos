@@ -1,0 +1,33 @@
+#!/bin/bash
+
+changed="false"
+msg=""
+contents=""
+
+source $1
+
+
+function bashskt
+{
+   echo "welcome to $classroom"
+}
+
+
+if [ -z "$classroom" ]; then
+    printf '{"failed": true, "msg": "missing required arguments: classroom"}'
+    exit 1
+fi
+
+case $classroom in
+    bash)
+        bashskt
+        ;;
+    *)
+        printf '{"failed": true, "msg": "invalid classroom: %s"}' "$classroom"
+        exit 1
+        ;;
+esac
+
+printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
+
+exit 0

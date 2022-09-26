@@ -1,0 +1,7 @@
+- hosts: localhost
+  
+  tasks:
+  - name: check to a service agent
+    sh.bashmod:
+      name: network
+      type: cisco
