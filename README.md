@@ -11,9 +11,9 @@
 
 ## 분류
 
-__redhat__: 레드햇 강의 사용한 메모 기록 입니다.
-__etevers__: 영우 디지털에서 진행한 강의 메모 및 기록 입니다.
-__skt-ansible-shell-t__: SKT에서 진행한 강의 메모 및 자료 입니다.
-__skt-ansible-beginner__: SKT에서 진행한 앤서블 강의 메모 및 자료 입니다.
-__sk-hynix-ansible-cus__: SK 하이닉스에서 진행한 Red Hat Ansible 과정 입니다.
+__redhat__: 레드햇 강의 사용한 메모 기록 입니다. <br/>
+__etevers__: 영우 디지털에서 진행한 강의 메모 및 기록 입니다.<br/>
+__skt-ansible-shell-t__: SKT에서 진행한 강의 메모 및 자료 입니다.<br/>
+__skt-ansible-beginner__: SKT에서 진행한 앤서블 강의 메모 및 자료 입니다.<br/>
+__sk-hynix-ansible-cus__: SK 하이닉스에서 진행한 Red Hat Ansible 과정 입니다.<br/>
 
