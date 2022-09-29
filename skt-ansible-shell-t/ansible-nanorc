@@ -1,0 +1,63 @@
+## ~/.config/nano/nanorc
+## See also /etc/nanorc, /usr/share/nano and
+## https://wiki.archlinux.org/title/Nano
+
+## Autoindent
+set autoindent
+
+## Display line numbers to the left
+set linenumbers
+
+## Enable mouse support
+set mouse
+
+## Spread overlong lines over multiple screen lines.
+set softwrap
+
+## YAML specific settings
+
+## Set tabsize and convert them to spaces
+set tabsize 2
+set tabstospaces
+## Remove blanks at end of lines:
+set trimblanks
+
+
+## From  https://github.com/serialhex/nano-highlight/blob/master/yaml.nanorc
+
+# Supports `YAML` files
+syntax "YAML" "\.ya?ml$"
+header "^(---|===)" "%YAML"
+
+## Keys
+color magenta "^\s*[\$A-Za-z0-9_-]+\:"
+color brightmagenta "^\s*@[\$A-Za-z0-9_-]+\:"
+
+## Values
+color white ":\s.+$"
+## Booleans
+icolor brightcyan " (y|yes|n|no|true|false|on|off)$"
+## Numbers
+color brightred " [[:digit:]]+(\.[[:digit:]]+)?"
+## Arrays
+color red "\[" "\]" ":\s+[|>]" "^\s*- "
+## Reserved
+color green "(^| )!!(binary|bool|float|int|map|null|omap|seq|set|str) "
+
+## Comments
+color brightwhite "#.*$"
+
+## Errors
+color ,red ":\w.+$"
+color ,red ":'.+$"
+color ,red ":".+$"
+color ,red "\s+$"
+
+## Non closed quote
+color ,red "['\"][^['\"]]*$"
+
+## Closed quotes
+color yellow "['\"].*['\"]"
+
+## Equal sign
+color brightgreen ":( |$)"
