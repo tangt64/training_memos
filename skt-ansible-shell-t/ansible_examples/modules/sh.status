@@ -1,22 +1,33 @@
 #!/bin/bash
 
-function HttpdStatus
+
+
+function CreatePsm
 {
-   echo "checking httpd service status"
-   changed="true"
-   msg="${msg}the httpd service is okay"
-   contents=$(systemctl status httpd | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+    echo "create the test PSM"
+    change="true"
+    msg="the PSM process is running"
+    contents=$(sleep 10000 & | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
 }
 
-
-changed="false"
-msg=""
-contents=""
+function HttpdStatus
+{
+   echo "Check to the PSM process"
+   tmp=$(ps -ef | grep sleep | wc -l)
+   if [ $tmp -gt 1 ]; then 
+    echo "The PSM process is working"
+    changed="false"
+    msg="The PSM process is working"
+    contents=$($msg-$tmp| python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+}
 
 source $1
 
 case $status in
-    true)
+    create)
+        CreatePsm
+        ;;
+    check)
         HttpdStatus
         ;;
     *)

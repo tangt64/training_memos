@@ -11,19 +11,18 @@ function CreateIndexPage
   fi
 }
 
-source $1
+source $1  
 
 changed="false"
 msg=""
 contents=""
-
 
 case $create in
     true)
         CreateIndexPage
         ;;
     *)
-        printf '{"failed": true, "msg": "invalid option: %s"}' "$install"
+        printf '{"failed": true, "msg": "invalid option: %s"}' "$create"
         exit 1
         ;;
 esac
