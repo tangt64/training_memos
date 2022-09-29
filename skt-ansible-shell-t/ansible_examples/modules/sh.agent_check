@@ -1,60 +1,45 @@
 #!/bin/bash
 
-function cisco
+function network
 {
-proc_cisco=$(ps -ef | grep cisco | awk '{ print $NF }' | uniq )
-if [[ $proc_cisco == "redhat" ]]; then
-    changed="true"
-    msg="the redhat agent is alive"
-else
+if [ $type == "network" ] && [ $name == "cisco" ]; then
+  result_cisco=$(ps -ef | grep cisco | awk '{ print $NF }' | uniq | wc -l)
+  if [ result_cisco -gt 1 ]; then
+    contents=$(printf "$result_cisco" | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+    output=$(printf "$result_cisco" 2>&1 | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
     changed="false"
-    echo "the redhat agent is not working well"    
-    msg="the agent is not working"
+    msg="the cisco agent is alive"
+  fi
+else
+  msg="the cisco agent is dead"
+  output=$(printf "$result_cisco" 2>&1 | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+  error="Hello"
+  echo "{ \"failed\": true, \"msg\": \"$msg\", \"output\": \"$output\" }"
+  exit 1
+
 fi
-contents=$("$proc_cisco"| python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
 }
 
-function redhat
-{
+source $1 $2
 
-}
-
-function windows
-{
-
-}
-
-function dell
-{
-}
-
-source $1
-
-if [ -z "$NAME" ]; then
+if [ -z "$type" ]; then
     printf '{"failed": true, "msg": "missing required arguments: name"}'
     exit 1
 fi
-
 
 changed="false"
 msg=""
 contents=""
 
-case $name in
-    cisco)
-        cisco
+case $type in
+    network)
+        network
         ;;
-    redhat)
-        redhat
-        ;;
-    windows)
-        windows
-        ;;
-    dell)
-        dell
+    os)
+        os
         ;;
     *)
-        printf '{"failed": true, "msg": "invalid name: %s"}' "$dell"
+        printf '{"failed": true, "msg": "invalid type: %s"}' "$type"
         exit 1
         ;;
 esac
