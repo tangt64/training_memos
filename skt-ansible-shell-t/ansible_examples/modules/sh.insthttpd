@@ -1,0 +1,37 @@
+#!/bin/bash
+
+function InstallHttpdPackage
+{
+    if yum list installed httpd ;
+    then
+	echo "already installed the package"
+    else
+        echo "install the httpd package"
+        yum install httpd -y 
+    fi
+}
+
+source $1
+
+#if [ -z "$package" ]; then
+#    printf '{"failed": true, "msg": "missing required arguments: package"}'
+#    exit 1
+#fi
+
+changed="false"
+msg=""
+contents=""
+
+case $install in
+    true)
+        InstallHttpdPackage
+        ;;
+    *)
+        printf '{"failed": true, "msg": "invalid option: %s"}' "$install"
+        exit 1
+        ;;
+esac
+
+printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
+
+exit 0

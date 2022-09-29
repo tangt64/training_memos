@@ -1,0 +1,33 @@
+#!/bin/bash
+
+function CreateIndexPage
+{
+  if false 
+  then
+     echo "No create the index.html"
+  else
+     echo "create the index.html"
+     echo "Hello World" > /var/www/html/index.html
+  fi
+}
+
+source $1
+
+changed="false"
+msg=""
+contents=""
+
+
+case $create in
+    true)
+        CreateIndexPage
+        ;;
+    *)
+        printf '{"failed": true, "msg": "invalid option: %s"}' "$install"
+        exit 1
+        ;;
+esac
+
+printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
+
+exit 0
