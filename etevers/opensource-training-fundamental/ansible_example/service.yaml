@@ -1,0 +1,11 @@
+- hosts: all
+  tasks :
+  - name: start and enable to a httpd, mariadb-server and postfix service
+    systemd:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    loop:
+      - httpd
+      - mariadb
+      - postfix

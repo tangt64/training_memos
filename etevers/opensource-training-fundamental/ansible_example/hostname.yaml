@@ -1,0 +1,5 @@
+- hosts: all
+  tasks :
+  - name: change to a hostname
+    hostname:
+      name: www.example.com

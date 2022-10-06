@@ -1,0 +1,9 @@
+- hosts: all
+  tasks :
+  - name: install the postfix package
+    yum:
+      name:
+        - postfix
+        - httpd
+        - mariadb-server
+      state: present
