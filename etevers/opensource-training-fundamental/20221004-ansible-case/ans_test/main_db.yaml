@@ -1,0 +1,8 @@
+- hosts: vault
+ 
+  tasks:
+  - include_tasks: db/db_install.yaml
+  - include_tasks: db/db_enable_service.yaml
+  - include_tasks: db/db_enable_firewall.yaml
+  - include_tasks: db/db_check_service.yaml
+  - include_tasks: db/db_restore_sql.yaml

@@ -1,0 +1,21 @@
+## ansible-doc nmcli
+
+- hosts: 192.168.90.10
+
+  vars:
+    ipaddresses:
+      - 10.10.2.4
+      - 10.10.2.6
+      - 10.10.2.5
+  tasks:
+  - name: configure to a network ip address
+    community.general.nmcli:
+      type: ethernet
+      conn_name: test-ip
+      ip4: "{{ inventory_hostname }}/24"
+      ip4: "{{ item }}/24"
+      gw4: 10.10.10.1
+      state: present
+      dns4: 8.8.8.8
+    loop:
+      - "{{ ipaddresses }}"

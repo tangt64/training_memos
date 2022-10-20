@@ -1,0 +1,8 @@
+- hosts: vault
+  tasks:
+
+  - include_tasks: www/www_install_httpd.yaml
+  - include_tasks: www/www_index_page.yaml
+  - include_tasks: www/www_enable_service.yaml
+  - include_tasks: www/www_enable_firewall.yaml
+  - include_tasks: www/www_check_service.yaml

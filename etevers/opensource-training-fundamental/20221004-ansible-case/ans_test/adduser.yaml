@@ -1,0 +1,26 @@
+- hosts: all
+  vars:
+    username: devops
+    mypassword: devops
+
+  tasks:
+  - name: add and create a user
+    user:
+      name: "{{ username }}"
+      comment: this user created by ansible
+      groups: wheel
+      append: yes
+      password: "{{ mypassword | password_hash('sha512') }}"
+
+  - name: create and copy the .ssh/ directory and ssh key file
+    authorized_key:
+      user: "{{ username }}"
+      key: "{{ lookup('file', '/root/' + '.ssh/id_rsa.pub') }}"
+
+  - name: configure to sudoers for devops user
+    community.general.system.sudoers:
+      name: none-password
+      group: wheel
+      state: present
+      nopassword: yes
+      commands: ALL

@@ -1,0 +1,20 @@
+- hosts: localhost
+
+  tasks:
+    - name: part to a disk
+      community.general.system.parted:
+        device: /dev/sdb
+        number: 1
+        state: present 
+        fs_type: xfs
+
+    - name: part to a disk /dev/sdc
+      community.general.system.parted:
+        device: /dev/sdc
+        number: "{{ item }}"
+        state: present
+        part_end: 1GiB  ## 2048
+        fs_type: xfs
+      loop:
+        - 1
+        - 2

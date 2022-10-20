@@ -1,0 +1,28 @@
+  - name: copy database dump file
+    copy:
+      src: employees.sql
+      dest: /tmp/sample.sql
+
+  - name: install the pymysql package
+    package:
+      name: python3-PyMySQL
+      state: present
+    become: true
+
+  - name: create database
+    community.mysql.mysql_db:
+      check_implicit_admin: yes
+      login_user: root
+      login_password: centos
+      name: employees
+      state: present
+
+  - name: restore database
+    community.mysql.mysql_db:
+      login_user: root
+      login_password: centos
+      name: employees
+      state: import
+      target: /tmp/sample.sql
+    ignore_errors: yes
+

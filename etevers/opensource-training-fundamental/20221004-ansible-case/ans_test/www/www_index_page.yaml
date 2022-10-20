@@ -1,0 +1,5 @@
+  - name: copy the default index.html file
+    copy:
+      src: index.html.file
+      dest: /var/www/html/index.html
+    become: true
