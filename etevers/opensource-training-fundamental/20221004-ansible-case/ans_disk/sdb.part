@@ -1,0 +1,9 @@
+label: gpt
+label-id: 2F88339A-2002-4B8C-9AC7-C6E81B433CD7
+device: /dev/sdb
+unit: sectors
+first-lba: 34
+last-lba: 20971486
+sector-size: 512
+
+/dev/sdb1 : start=        2048, size=     2097152, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, uuid=4334EBE2-2899-4697-903A-7348D6D29206, name="Linux filesystem"
