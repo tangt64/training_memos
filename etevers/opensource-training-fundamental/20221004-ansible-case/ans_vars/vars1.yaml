@@ -1,0 +1,15 @@
+- hosts: all
+ 
+  vars:
+    - username: test
+    - password: pw
+
+  vars_files: 
+    - vars/fruits
+
+  tasks:
+
+  - debug:
+      msg: "{{ myname }}"
+  - debug:
+      msg: "{{ username }}"

@@ -1,0 +1,14 @@
+  - name: check the database service status
+    command: systemctl is-active mariadb
+    register: result_db
+
+  - debug:
+      msg: "{{ result_db.stdout }}"
+
+  - debug:
+      msg: "mariadb service is okay"
+    when: result_db.stdout in active
+
+  - fail:
+      msg: "This is Failed"
+    when: result_db.stdout in inactive

@@ -1,0 +1,7 @@
+  - name: enable to the database service on firewalld
+    firewalld:
+      service: mysql
+      zone: public
+      state: enabled
+      permanent: yes
+    become: true

@@ -1,0 +1,10 @@
+  - name: check the http service from the {{ inventory_hostname }}
+    uri:
+      url: http://{{ inventory_hostname }}/index.html
+      method: GET
+    register: www_result
+    until: www_result.status == 200
+
+  - name: show to the service a message
+    debug:
+      msg: "{{ www_result }}"

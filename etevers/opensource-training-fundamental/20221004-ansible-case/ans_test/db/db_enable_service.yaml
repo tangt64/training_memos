@@ -1,0 +1,6 @@
+  - name: enable and start the database service
+    systemd:
+      name: mariadb
+      state: started
+      enabled: yes
+    become: true
