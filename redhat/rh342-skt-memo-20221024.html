@@ -1,0 +1,1496 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>body {
+  max-width: 980px;
+  outline: 1300px solid #fff;
+  margin: 16px auto;
+}
+
+body .markdown-body
+{
+  padding: 45px;
+}
+
+@font-face {
+  font-family: fontawesome-mini;
+  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+
+.markdown-body {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  color: #333333;
+  overflow: hidden;
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.markdown-body a {
+  background: transparent;
+}
+
+.markdown-body a:active,
+.markdown-body a:hover {
+  outline: 0;
+}
+
+.markdown-body b,
+.markdown-body strong {
+  font-weight: bold;
+}
+
+.markdown-body mark {
+  background: #ff0;
+  color: #000;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.markdown-body sub,
+.markdown-body sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+.markdown-body sup {
+  top: -0.5em;
+}
+.markdown-body sub {
+  bottom: -0.25em;
+}
+
+.markdown-body h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+.markdown-body img {
+  border: 0;
+}
+
+.markdown-body hr {
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 0;
+}
+
+.markdown-body pre {
+  overflow: auto;
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+.markdown-body input {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+}
+
+.markdown-body html input[disabled] {
+  cursor: default;
+}
+
+.markdown-body input {
+  line-height: normal;
+}
+
+.markdown-body input[type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.markdown-body td,
+.markdown-body th {
+  padding: 0;
+}
+
+.markdown-body .codehilitetable,
+.markdown-body .highlighttable {
+  border: 0;
+  border-spacing: 0;
+}
+
+.markdown-body .codehilitetable tr,
+.markdown-body .highlighttable {
+  border: 0;
+}
+
+.markdown-body .codehilitetable pre,
+.markdown-body .codehilitetable div.codehilite,
+.markdown-body .highlighttable pre,
+.markdown-body .highlighttable div.highlight {
+  margin: 0;
+}
+
+.markdown-body .linenos,
+.markdown-body .code,
+.markdown-body .codehilitetable td,
+.markdown-body .highlighttable td {
+  border: 0;
+  padding: 0;
+}
+
+.markdown-body td:not(.linenos) .linenodiv {
+  padding: 0 !important;
+}
+
+.markdown-body .code {
+  width: 100%;
+}
+
+.markdown-body .linenos div pre,
+.markdown-body .linenodiv pre,
+.markdown-body .linenodiv {
+  border: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-border-top-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.markdown-body .code div pre,
+.markdown-body .code div {
+  border: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.markdown-body * {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.markdown-body input {
+  font: 13px Helvetica, arial, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  line-height: 1.4;
+}
+
+.markdown-body a {
+  color: #4183c4;
+  text-decoration: none;
+}
+
+.markdown-body a:hover,
+.markdown-body a:focus,
+.markdown-body a:active {
+  text-decoration: underline;
+}
+
+.markdown-body hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.markdown-body hr:before,
+.markdown-body hr:after {
+  display: table;
+  content: " ";
+}
+
+.markdown-body hr:after {
+  clear: both;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  line-height: 1.1;
+}
+
+.markdown-body h1 {
+  font-size: 30px;
+}
+
+.markdown-body h2 {
+  font-size: 21px;
+}
+
+.markdown-body h3 {
+  font-size: 16px;
+}
+
+.markdown-body h4 {
+  font-size: 14px;
+}
+
+.markdown-body h5 {
+  font-size: 12px;
+}
+
+.markdown-body h6 {
+  font-size: 11px;
+}
+
+.markdown-body blockquote {
+  margin: 0;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+  margin-left: 0;
+}
+
+.markdown-body code,
+.markdown-body pre,
+.markdown-body samp {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 12px;
+}
+
+.markdown-body pre {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body kbd {
+  background-color: #e7e7e7;
+  background-image: -moz-linear-gradient(#fefefe, #e7e7e7);
+  background-image: -webkit-linear-gradient(#fefefe, #e7e7e7);
+  background-image: linear-gradient(#fefefe, #e7e7e7);
+  background-repeat: repeat-x;
+  border-radius: 2px;
+  border: 1px solid #cfcfcf;
+  color: #000;
+  padding: 3px 5px;
+  line-height: 10px;
+  font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  display: inline-block;
+}
+
+.markdown-body>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.markdown-body .headerlink {
+  font: normal 400 16px fontawesome-mini;
+  vertical-align: middle;
+  margin-left: -16px;
+  float: left;
+  display: inline-block;
+  text-decoration: none;
+  opacity: 0;
+  color: #333;
+}
+
+.markdown-body .headerlink:focus {
+  outline: none;
+}
+
+.markdown-body h1 .headerlink {
+  margin-top: 0.8rem;
+}
+
+.markdown-body h2 .headerlink,
+.markdown-body h3 .headerlink {
+  margin-top: 0.6rem;
+}
+
+.markdown-body h4 .headerlink {
+  margin-top: 0.2rem;
+}
+
+.markdown-body h5 .headerlink,
+.markdown-body h6 .headerlink {
+  margin-top: 0;
+}
+
+.markdown-body .headerlink:hover,
+.markdown-body h1:hover .headerlink,
+.markdown-body h2:hover .headerlink,
+.markdown-body h3:hover .headerlink,
+.markdown-body h4:hover .headerlink,
+.markdown-body h5:hover .headerlink,
+.markdown-body h6:hover .headerlink {
+  opacity: 1;
+  text-decoration: none;
+}
+
+.markdown-body h1 {
+  padding-bottom: 0.3em;
+  font-size: 2.25em;
+  line-height: 1.2;
+  border-bottom: 1px solid #eee;
+}
+
+.markdown-body h2 {
+  padding-bottom: 0.3em;
+  font-size: 1.75em;
+  line-height: 1.225;
+  border-bottom: 1px solid #eee;
+}
+
+.markdown-body h3 {
+  font-size: 1.5em;
+  line-height: 1.43;
+}
+
+.markdown-body h4 {
+  font-size: 1.25em;
+}
+
+.markdown-body h5 {
+  font-size: 1em;
+}
+
+.markdown-body h6 {
+  font-size: 1em;
+  color: #777;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body .admonition {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body hr {
+  height: 4px;
+  padding: 0;
+  margin: 16px 0;
+  background-color: #e7e7e7;
+  border: 0 none;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 2em;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.markdown-body li>p {
+  margin-top: 16px;
+}
+
+.markdown-body dl {
+  padding: 0;
+}
+
+.markdown-body dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.markdown-body dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.markdown-body blockquote {
+  padding: 0 15px;
+  color: #777;
+  border-left: 4px solid #ddd;
+}
+
+.markdown-body blockquote>:first-child {
+  margin-top: 0;
+}
+
+.markdown-body blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: normal;
+  word-break: keep-all;
+}
+
+.markdown-body table th {
+  font-weight: bold;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid #ddd;
+}
+
+.markdown-body table tr {
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.markdown-body code,
+.markdown-body samp {
+  padding: 0;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(0,0,0,0.04);
+  border-radius: 3px;
+}
+
+.markdown-body code:before,
+.markdown-body code:after {
+  letter-spacing: -0.2em;
+  content: "\00a0";
+}
+
+.markdown-body pre>code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.markdown-body .codehilite,
+.markdown-body .highlight {
+  margin-bottom: 16px;
+}
+
+.markdown-body .codehilite pre,
+.markdown-body .highlight pre,
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f7f7f7;
+  border-radius: 3px;
+}
+
+.markdown-body .codehilite pre,
+.markdown-body .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.markdown-body pre {
+  word-wrap: normal;
+}
+
+.markdown-body pre code {
+  display: inline;
+  max-width: initial;
+  padding: 0;
+  margin: 0;
+  overflow: initial;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.markdown-body pre code:before,
+.markdown-body pre code:after {
+  content: normal;
+}
+
+/* Admonition */
+.markdown-body .admonition {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  position: relative;
+  border-radius: 3px;
+  border: 1px solid #e0e0e0;
+  border-left: 6px solid #333;
+  padding: 10px 10px 10px 30px;
+}
+
+.markdown-body .admonition table {
+  color: #333;
+}
+
+.markdown-body .admonition p {
+  padding: 0;
+}
+
+.markdown-body .admonition-title {
+  font-weight: bold;
+  margin: 0;
+}
+
+.markdown-body .admonition>.admonition-title {
+  color: #333;
+}
+
+.markdown-body .attention>.admonition-title {
+  color: #a6d796;
+}
+
+.markdown-body .caution>.admonition-title {
+  color: #d7a796;
+}
+
+.markdown-body .hint>.admonition-title {
+  color: #96c6d7;
+}
+
+.markdown-body .danger>.admonition-title {
+  color: #c25f77;
+}
+
+.markdown-body .question>.admonition-title {
+  color: #96a6d7;
+}
+
+.markdown-body .note>.admonition-title {
+  color: #d7c896;
+}
+
+.markdown-body .admonition:before,
+.markdown-body .attention:before,
+.markdown-body .caution:before,
+.markdown-body .hint:before,
+.markdown-body .danger:before,
+.markdown-body .question:before,
+.markdown-body .note:before {
+  font: normal normal 16px fontawesome-mini;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  line-height: 1.5;
+  color: #333;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.markdown-body .admonition:before {
+  content: "\f056\00a0";
+  color: 333;
+}
+
+.markdown-body .attention:before {
+  content: "\f058\00a0";
+  color: #a6d796;
+}
+
+.markdown-body .caution:before {
+  content: "\f06a\00a0";
+  color: #d7a796;
+}
+
+.markdown-body .hint:before {
+  content: "\f05a\00a0";
+  color: #96c6d7;
+}
+
+.markdown-body .danger:before {
+  content: "\f057\00a0";
+  color: #c25f77;
+}
+
+.markdown-body .question:before {
+  content: "\f059\00a0";
+  color: #96a6d7;
+}
+
+.markdown-body .note:before {
+  content: "\f040\00a0";
+  color: #d7c896;
+}
+
+.markdown-body .admonition::after {
+  content: normal;
+}
+
+.markdown-body .attention {
+  border-left: 6px solid #a6d796;
+}
+
+.markdown-body .caution {
+  border-left: 6px solid #d7a796;
+}
+
+.markdown-body .hint {
+  border-left: 6px solid #96c6d7;
+}
+
+.markdown-body .danger {
+  border-left: 6px solid #c25f77;
+}
+
+.markdown-body .question {
+  border-left: 6px solid #96a6d7;
+}
+
+.markdown-body .note {
+  border-left: 6px solid #d7c896;
+}
+
+.markdown-body .admonition>*:first-child {
+  margin-top: 0 !important;
+}
+
+.markdown-body .admonition>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* progress bar*/
+.markdown-body .progress {
+  display: block;
+  width: 300px;
+  margin: 10px 0;
+  height: 24px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #ededed;
+  position: relative;
+  box-shadow: inset -1px 1px 3px rgba(0, 0, 0, .1);
+}
+
+.markdown-body .progress-label {
+  position: absolute;
+  text-align: center;
+  font-weight: bold;
+  width: 100%; margin: 0;
+  line-height: 24px;
+  color: #333;
+  text-shadow: 1px 1px 0 #fefefe, -1px -1px 0 #fefefe, -1px 1px 0 #fefefe, 1px -1px 0 #fefefe, 0 1px 0 #fefefe, 0 -1px 0 #fefefe, 1px 0 0 #fefefe, -1px 0 0 #fefefe, 1px 1px 2px #000;
+  -webkit-font-smoothing: antialiased !important;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.markdown-body .progress-bar {
+  height: 24px;
+  float: left;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #96c6d7;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 -1px 0 rgba(0, 0, 0, .1);
+  background-size: 30px 30px;
+  background-image: -webkit-linear-gradient(
+    135deg, rgba(255, 255, 255, .4) 27%,
+    transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%,
+    transparent 77%, transparent
+  );
+  background-image: -moz-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+  background-image: -ms-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+  background-image: -o-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, .4) 27%, transparent 27%,
+    transparent 52%, rgba(255, 255, 255, .4) 52%,
+    rgba(255, 255, 255, .4) 77%, transparent 77%,
+    transparent
+  );
+}
+
+.markdown-body .progress-100plus .progress-bar {
+  background-color: #a6d796;
+}
+
+.markdown-body .progress-80plus .progress-bar {
+  background-color: #c6d796;
+}
+
+.markdown-body .progress-60plus .progress-bar {
+  background-color: #d7c896;
+}
+
+.markdown-body .progress-40plus .progress-bar {
+  background-color: #d7a796;
+}
+
+.markdown-body .progress-20plus .progress-bar {
+  background-color: #d796a6;
+}
+
+.markdown-body .progress-0plus .progress-bar {
+  background-color: #c25f77;
+}
+
+.markdown-body .candystripe-animate .progress-bar{
+  -webkit-animation: animate-stripes 3s linear infinite;
+  -moz-animation: animate-stripes 3s linear infinite;
+  animation: animate-stripes 3s linear infinite;
+}
+
+@-webkit-keyframes animate-stripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 60px 0;
+  }
+}
+
+@-moz-keyframes animate-stripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 60px 0;
+  }
+}
+
+@keyframes animate-stripes {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 60px 0;
+  }
+}
+
+.markdown-body .gloss .progress-bar {
+  box-shadow:
+    inset 0 4px 12px rgba(255, 255, 255, .7),
+    inset 0 -12px 0 rgba(0, 0, 0, .05);
+}
+
+/* MultiMarkdown Critic Blocks */
+.markdown-body .critic_mark {
+  background: #ff0;
+}
+
+.markdown-body .critic_delete {
+  color: #c82829;
+  text-decoration: line-through;
+}
+
+.markdown-body .critic_insert {
+  color: #718c00 ;
+  text-decoration: underline;
+}
+
+.markdown-body .critic_comment {
+  color: #8e908c;
+  font-style: italic;
+}
+
+.markdown-body .headeranchor {
+  font: normal normal 16px fontawesome-mini;
+  line-height: 1;
+  display: inline-block;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.headeranchor:before {
+  content: '\e157';
+}
+
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item+.task-list-item {
+  margin-top: 3px;
+}
+
+.markdown-body .task-list-item input {
+  margin: 0 4px 0.25em -20px;
+  vertical-align: middle;
+}
+
+.markdown-body diagram-div, .markdown-body div.uml-sequence-diagram, .markdown-body, div.uml-flowchart {
+  overflow: auto;
+}
+
+/* Media */
+@media only screen and (min-width: 480px) {
+  .markdown-body {
+    font-size:14px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .markdown-body {
+    font-size:16px;
+  }
+}
+
+@media print {
+  .markdown-body * {
+    background: transparent !important;
+    color: black !important;
+    filter:none !important;
+    -ms-filter: none !important;
+  }
+
+  .markdown-body {
+    font-size:12pt;
+    max-width:100%;
+    outline:none;
+    border: 0;
+  }
+
+  .markdown-body a,
+  .markdown-body a:visited {
+    text-decoration: underline;
+  }
+
+  .markdown-body .headeranchor-link {
+    display: none;
+  }
+
+  .markdown-body a[href]:after {
+    content: " (" attr(href) ")";
+  }
+
+  .markdown-body abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+
+  .markdown-body .ir a:after,
+  .markdown-body a[href^="javascript:"]:after,
+  .markdown-body a[href^="#"]:after {
+    content: "";
+  }
+
+  .markdown-body pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .markdown-body pre,
+  .markdown-body blockquote {
+    border: 1px solid #999;
+    padding-right: 1em;
+    page-break-inside: avoid;
+  }
+
+  .markdown-body .progress,
+  .markdown-body .progress-bar {
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
+  .markdown-body .progress {
+    border: 1px solid #ddd;
+  }
+
+  .markdown-body .progress-bar {
+    height: 22px;
+    border-right: 1px solid #ddd;
+  }
+
+  .markdown-body tr,
+  .markdown-body img {
+    page-break-inside: avoid;
+  }
+
+  .markdown-body img {
+    max-width: 100% !important;
+  }
+
+  .markdown-body p,
+  .markdown-body h2,
+  .markdown-body h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .markdown-body h2,
+  .markdown-body h3 {
+    page-break-after: avoid;
+  }
+}
+</style><style>/*GitHub*/
+.highlight {background-color:#fff;color:#333333;}
+.highlight .hll {background-color:#ffffcc;}
+.highlight .c{color:#999988;font-style:italic}
+.highlight .err{color:#a61717;background-color:#e3d2d2}
+.highlight .k{font-weight:bold}
+.highlight .o{font-weight:bold}
+.highlight .cm{color:#999988;font-style:italic}
+.highlight .cp{color:#999999;font-weight:bold}
+.highlight .c1{color:#999988;font-style:italic}
+.highlight .cs{color:#999999;font-weight:bold;font-style:italic}
+.highlight .gd{color:#000000;background-color:#ffdddd}
+.highlight .ge{font-style:italic}
+.highlight .gr{color:#aa0000}
+.highlight .gh{color:#999999}
+.highlight .gi{color:#000000;background-color:#ddffdd}
+.highlight .go{color:#888888}
+.highlight .gp{color:#555555}
+.highlight .gs{font-weight:bold}
+.highlight .gu{color:#800080;font-weight:bold}
+.highlight .gt{color:#aa0000}
+.highlight .kc{font-weight:bold}
+.highlight .kd{font-weight:bold}
+.highlight .kn{font-weight:bold}
+.highlight .kp{font-weight:bold}
+.highlight .kr{font-weight:bold}
+.highlight .kt{color:#445588;font-weight:bold}
+.highlight .m{color:#009999}
+.highlight .s{color:#dd1144}
+.highlight .n{color:#333333}
+.highlight .na{color:teal}
+.highlight .nb{color:#0086b3}
+.highlight .nc{color:#445588;font-weight:bold}
+.highlight .no{color:teal}
+.highlight .ni{color:purple}
+.highlight .ne{color:#990000;font-weight:bold}
+.highlight .nf{color:#990000;font-weight:bold}
+.highlight .nn{color:#555555}
+.highlight .nt{color:navy}
+.highlight .nv{color:teal}
+.highlight .ow{font-weight:bold}
+.highlight .w{color:#bbbbbb}
+.highlight .mf{color:#009999}
+.highlight .mh{color:#009999}
+.highlight .mi{color:#009999}
+.highlight .mo{color:#009999}
+.highlight .sb{color:#dd1144}
+.highlight .sc{color:#dd1144}
+.highlight .sd{color:#dd1144}
+.highlight .s2{color:#dd1144}
+.highlight .se{color:#dd1144}
+.highlight .sh{color:#dd1144}
+.highlight .si{color:#dd1144}
+.highlight .sx{color:#dd1144}
+.highlight .sr{color:#009926}
+.highlight .s1{color:#dd1144}
+.highlight .ss{color:#990073}
+.highlight .bp{color:#999999}
+.highlight .vc{color:teal}
+.highlight .vg{color:teal}
+.highlight .vi{color:teal}
+.highlight .il{color:#009999}
+.highlight .gc{color:#999;background-color:#EAF2F5}
+</style><title>rh342-skt-memo-20221024</title></head><body><article class="markdown-body"><p><a href="https://rol.redhat.com">https://rol.redhat.com</a></p>
+<ul>
+<li>아이디/비밀번호 입력 후, &ldquo;가입&rdquo; 버튼 혹은 &ldquo;Join&rdquo;누르시면 됩니다.</li>
+<li>로그인 후 &ldquo;Resources&rdquo;에서 PDF내려 받기가 가능합니다. </li>
+<li>시간이 좀 걸리는 클릭후 기다리시면 내려받기가 완료가 됩니다.</li>
+</ul>
+<p>이수증은 교육이 완료가 된 다음에 메일로 발송이 되며, 한국어 버전이 필요하신 경우에는 레드햇 코리아에 별도로 문의 하셔야 합니다.</p>
+<p>강의시 사용한 메모는 아래 주소에서 확인이 가능 합니다.</p>
+<p><a href="https://github.com/tangt64/training_memos/blob/main/redhat/rh342-skt-memo-20221024.md">https://github.com/tangt64/training_memos/blob/main/redhat/rh342-skt-memo-20221024.md</a></p>
+<p><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/tangt64/training_memos/" title="GitHub Repository: tangt64/training_memos">tangt64/training_memos</a> &ndash;&gt; redhat &ndash;&gt; rh342</p>
+<h1 id="_1">계정 정보<a class="headerlink" href="#_1" title="Permanent link"></a></h1>
+<p><strong>레드햇 랩 계정</strong></p>
+<p><strong>ID:</strong> student/student
+<strong>PW:</strong> root/redhat</p>
+<h2 id="_2">가설?<a class="headerlink" href="#_2" title="Permanent link"></a></h2>
+<p>&ldquo;ssh&rdquo;서비스가 올바르게 시작이 되지 않았고, &lsquo;systemctl&rsquo;명령어로 시작을 하였지만, 올바르게 동작하지 않음.</p>
+<ul>
+<li>selinux(22/tcp -&gt; 8899/tcp)</li>
+<li>&lsquo;semanage&rsquo;명령어로 변경된 포트 정보를 명시하지 않는 경우, &ldquo;seccomp&rdquo;에서 차단. </li>
+<li>&ldquo;/etc/sshd/sshd.conf&rdquo;</li>
+<li>&lsquo;semanage fcontext, port&rsquo;</li>
+<li>&lsquo;semanage port -a&rsquo;포트 정보 추가</li>
+</ul>
+<p>systemd에서 &ldquo;journald&rdquo;로 로그를 영구적으로 남기는 경우 아래와 같이 한다. 
+<div class="highlight"><pre><span class="c1"># cp -a /run/log/journal /var/log/</span>
+<span class="c1"># systemctl restart systemd-journald</span>
+<span class="c1"># ls -ld /run/log/journal    ### 올바르게 인식이 되면 이 디렉터리가 없음</span>
+</pre></div></p>
+<p>&ldquo;journald&rdquo;설정 파일은 아래에 위치한다.
+<div class="highlight"><pre><span class="c1"># ls -l /etc/systemd/journald.conf</span>
+</pre></div></p>
+<h2 id="selinux">SELinux<a class="headerlink" href="#selinux" title="Permanent link"></a></h2>
+<p><strong>semanage:</strong> 크게 제일 많이 사용하는 분류는 두 가지.
+- port
+  + tcp 혹은 udp에서 사용하는 포트번호. 애플리케이션 네트워크 통신에 영향을 끼침
+  + semanage port -l, 현재 등록된 애플리케이션 포트번호 출력
+  + &ldquo;-a&rdquo;: add 혹은 append 옵션
+  + &ldquo;-t&rdquo;: 컨텍스트 이름
+  + &ldquo;-a&rdquo;으로 등록하는 경우, selinux labeling D/B에 저장이 됨(.pp)
+    * &lsquo;restorecon&rsquo;명령어로 등록된 정책 기반으로 파일이나 혹은 디렉터리 정책을 재설정함. selinux는 바로 적용되는 정책이 아니기 때문에 반드시 &lsquo;restorecon&rsquo;실행이 필요함.
+  + semanage port/fcontext에 등록되는 내용들은 바로 영구적으로 적용
+    * 리부팅 이후에도 계속 적용
+  + &lsquo;setsebool&rsquo;로 콜 변경(기능)를 한 경우 &ldquo;-P&rdquo;옵션이 없으면 리부팅하면 초기화.
+    * runtime(setsebool httpd_enable_homedirs on) , permanent(setsebool httpd_enable_homedirs on -P)영역으로 구별.
+  + selinux리눅스 반영 후, 리부팅 하여 기존 내용이 그대로 반영이 되어 있는지 확인!!
+  + 절대로 &lsquo;chcon&rsquo;명령어 사용하지 말것!!</p>
+<p><div class="highlight"><pre>                    .---&gt; mod_userdir
++-------+          /
+|       |      ---+----
+| httpd |  --- &lt;SYSCALL&gt; --- [SECCOMP] --- [SELINUX]
+|       |         `- cache_port: 8080        `LABEL(directory/file)
++-------+         &#39;- http_port: 80/tcp        == context
+
+
+                                   SELINUX                               =======
+                              .--- seccomp
+                             /
+                       +---------+
+         fcontext ---  | process |  --- port
+                       +---------+
+                            |
+                            &#39;
+                         boolean  
+</pre></div>
+seccomp + selinux 참조</p>
+<blockquote>
+<p><a href="https://opensource.com/article/21/8/container-linux-technology">https://opensource.com/article/21/8/container-linux-technology</a></p>
+</blockquote>
+<ul>
+<li>fcontext</li>
+<li>컨텍스트 등록시 다음과 같이 &lsquo;semanage&rsquo;를 통해서 등록하기를 권장함.<ul>
+<li>semanage fcontext -a -t httpd_sys_content_t /srv/www/html&rsquo;(/.*)?&rsquo;</li>
+</ul>
+</li>
+</ul>
+<p><strong>set/getsebool:</strong>
+  + 프로그램에 사용하는 특정 기능을 차단 혹은 비차단
+    * 기능 == syscall
+    * userspace &lt;&mdash; selinux &mdash;&gt; kernelspace
+                    [seccomp]
+    * getsebool -a: 전체 불린값이 출력 + -P(고정값(기본값))
+    * semanage port -l 
+<strong>restorecon:</strong>
+  + semanage로 특정 디렉터리에 정책(context)구성 후 바로 적용 하려면 반드시 &lsquo;restorecon -RFvv&rsquo;실행하여 올바르게 context를 재구성하는지 확인.
+  + 위의 명령어 실행 후 생성되는 파일이나 디렉터리는 별도로 실행할 필요가 없음.</p>
+<h2 id="_3">원격 로그 로깅<a class="headerlink" href="#_3" title="Permanent link"></a></h2>
+<h3 id="rsyslogdsyslog">rsyslogd(syslog)<a class="headerlink" href="#rsyslogdsyslog" title="Permanent link"></a></h3>
+<p><div class="highlight"><pre>        .--- Application(stdout, stderr)
+       /                         ------
+      /                          \
+     /                            `---&gt; logging level(ex: info, err)
+    kernel ---&gt; rsyslog &lt;--------&#39;
+                ** 오류 수준 분리가 어려움
+                   분류만 가능(cron, kernel, mail..)
+                   로깅 오류에 대한 추적이 어렵다. 
+</pre></div>
+- reception
+  + module(load=&rdquo;imtcp&rdquo;)
+    input(type=&rdquo;imtcp&rdquo; port=&rdquo;514&rdquo;)
+- Template
+  + 만약에 필요하시면 맨 페이지(man 5 rsyslog.conf)
+    * 맨 페이지 맨 끝에 &ldquo;TEMPLATE&rdquo;참고
+    * 쉽게 사용하는 방법
+<div class="highlight"><pre>man rsyslog.conf                                <span class="c1"># man pages</span>
+srv1# vim /etc/rsyslog.conf     
+</pre></div>
+<div class="highlight"><pre>$ModLoad imudp.so                                
+$UDPServerRun 514          # 이 부분은 설정파일에 주석처리 되어 있음.
+$ModLoad imtcp.so                     
+$InputTCPServerRun 514    
+
+$template DynamicFile,&quot;/var/log/loghost/%HOSTNAME%-message.log&quot; message
+*.* - ?DynamicFile       
+
+$template DynFile, &quot;/var/log/loghosts/message-%HOSTNAME%.log&quot; message 
+</pre></div>
+<div class="highlight"><pre>srv2# vim /etc/rsyslog
+</pre></div>
+<div class="highlight"><pre>systemctl restart rsyslog
+firewall-cmd --add-port<span class="o">=</span>514/udp --permanent
+firewall-cmd --add-port<span class="o">=</span>514/tcp --permanent
+firewall-cmd --reload
+
+servera# logger -p err <span class="s2">&quot;This is error&quot;</span>
+serverb# journalctl -p err
+This is error
+serverb# grep <span class="s2">&quot;This is error&quot;</span> /var/log/messages
+</pre></div>
+- firewalld(service name: syslog)
+- </p>
+<h3 id="journaldremote">journald(remote)<a class="headerlink" href="#journaldremote" title="Permanent link"></a></h3>
+<div class="highlight"><pre>yum install systemd-journal-remote
+</pre></div>
+
+<h3 id="auditctl">auditctl<a class="headerlink" href="#auditctl" title="Permanent link"></a></h3>
+<div class="highlight"><pre>         감사<span class="o">(</span>대상<span class="o">)</span>                 메세지<span class="o">(</span>키워드<span class="o">)</span>
+         --                   --
+auditctl -w /etc/passwd -p wa -k iligal-access
+<span class="sb">```</span>                     --
+                        모니터링 권한
+
+
+r: block에 읽기 시도
+w: block에 쓰기 시도
+x: 실행을 시도하는 경우
+a: 속성변경<span class="o">(</span>attribute chnage<span class="o">)</span>
+</pre></div>
+
+<h1 id="day-2">DAY 2<a class="headerlink" href="#day-2" title="Permanent link"></a></h1>
+<h2 id="sosreport-auditctl-tlog-ansible">sosreport, auditctl, tlog, ansible<a class="headerlink" href="#sosreport-auditctl-tlog-ansible" title="Permanent link"></a></h2>
+<h3 id="sosreport">sosreport<a class="headerlink" href="#sosreport" title="Permanent link"></a></h3>
+<ul>
+<li>생성, 분석</li>
+</ul>
+<div class="highlight"><pre>sos -o xfs -o ssh -o yum
+tar xJf &lt;ARCVICE_FILE&gt; -C /tmp/&lt;DIR&gt;
+</pre></div>
+
+<h3 id="auditctl_1">auditctl<a class="headerlink" href="#auditctl_1" title="Permanent link"></a></h3>
+<ul>
+<li>명령어 사용 방법</li>
+<li>영구적으로 audit rule 정책 등록</li>
+<li>/etc/audit/rules.d/audit.rules
+<div class="highlight"><pre>                                    keyword(search)
+                                 -------------
+auditctl -w /etc/passwd -p wa -k iligal-access
+         -------------- -----
+         고정(대상)      rwxa(attribute)
+
+vi /etc/audit/rules.d/passwd.rules
+-w /etc/passwd -p wa -k iligal-access (v)
+
+auditctl -R /etc/audit/rules.d/passwd.rules (x)
+auditctl -l 
+</pre></div></li>
+</ul>
+<h3 id="tlog">tlog<a class="headerlink" href="#tlog" title="Permanent link"></a></h3>
+<ul>
+<li>명령어 사용 방법
+<div class="highlight"><pre>yum install tlog cockpit-session-recoding -y
+
+tlog-rec --file-path=tlog.log (x)
+tlog-play --file-path=tlog.log (o)
+</pre></div>
+녹화 기능 활성화가 필요한 경우
+<div class="highlight"><pre>cat /etc/sssd/conf.d/sssd-session-recording.conf
+scope=all
+</pre></div></li>
+</ul>
+<h3 id="ansible">ansible<a class="headerlink" href="#ansible" title="Permanent link"></a></h3>
+<ul>
+<li>플레이북 읽는 방법</li>
+<li>ansible.cfg, 인벤토리(서버 리스트)</li>
+<li>ssh root@server2, 공개키파일이 전달이 되어 있는지??</li>
+<li>ansible_user, ansible_password (x)
+<div class="highlight"><pre>yum install ansible
+wget &lt;PLAYBOOK&gt;     ## 자료 내려받기
+mkdir /tmp/ansible
+cd /tmp/ansible
+cat inventory      
+[webservers]                    ## server1,2
+web_prod ansible_host=server1   ## root계정 실행해도 되는건지?
+web_db   ansible_host=server2   ## 사용자가 명시가 된 경우, 특정 사용자로 실행
+--------              -------
+존재하지 않음          실제로 존재하는 서버
+
+
+cat ansible.cfg
+[defaults]
+inventory = inventory (-i옵션을 대신함)
+remote_user = root    (예를 들어 devops라는 사용자로 접속 후 처리)
+&gt;remote_user = devops
+host_key_checking = False (x)
+deprecation_warnings = False (x)                    
+
+ansible-playbook deploy.yaml 
+</pre></div></li>
+</ul>
+<h2 id="bootloader">bootloader<a class="headerlink" href="#bootloader" title="Permanent link"></a></h2>
+<h3 id="blsboot-loader-spec">BLS(Boot Loader Spec)<a class="headerlink" href="#blsboot-loader-spec" title="Permanent link"></a></h3>
+<p>원문을 번역기로 번역 하였습니다. 자세한 내용은 아래에서 기타정보에서 확인 하세요.</p>
+<hr />
+<blockquote>
+<p>더 이상 구성 파일을 명시적으로 다시 쓸 필요가 없으므로 부팅을 보다 강력하게 만들 수 있습니다.
+기존 펌웨어 메커니즘(예: BIOS 호출, UEFI 부팅 서비스) 없이 모든 플랫폼에서 즉시 사용 가능한 부팅 환경을 허용합니다.
+이중 부팅 시나리오를 개선합니다. 현재 여러 Linux 설치는 MBR을 소유한 기본 부트 로더가 되는 부트 로더를 놓고 싸우는 경향이 있으며, 그런 다음 하나의 설치만이 부트 로더 구성을 자유롭게 업데이트할 수 있습니다. 다른 Linux 설치는 MBR을 건드리지 않고 대신 자체 파티션 헤더에 체인 로드 부트 로더를 설치하도록 수동으로 구성해야 합니다. 이 새로운 방식에서는 모든 설치가 로더 디렉토리를 공유하므로 수동 구성이 필요하지 않으며 모든 참가자는 이름 충돌 제거로 인해 암묵적으로 협력하고 다음 항목을 방해하지 않고 자유 의지에 따라 자신의 부트 메뉴 항목을 설치/제거할 수 있습니다. 설치된 다른 운영 체제.
+드롭인 디렉토리는 이제 Linux에서 구성 파일을 편집, 재생성 또는 조작할 필요 없이 구성을 확장할 수 있는 쉬운 방법으로 매우 유비쿼터스합니다. 균일성을 위해 부트 메뉴 확장에 대해서도 동일한 작업을 수행해야 합니다.
+사용자 공간 코드는 부팅 중에 더 이상 USB 키보드를 초기화할 필요가 없는 최신 BIOS에 필수적인 부트 로더 구성을 올바르게 구문 분석할 수 있으므로 사용자가 부팅 메뉴에 접근하기 어렵습니다. 사용자 공간 코드가 부트 로더 구성도 구문 분석할 수 있다면, 이는 시스템을 재부팅하기 전에 부트할 부트 메뉴 항목을 선택할 수 있는 UI를 허용하므로 초기 부트 동안 상호 작용이 필요하지 않습니다.
+다양한 부트 로더의 구성을 통합하고 단순화하여 사용자, 관리자 및 개발자 모두에게 부트 로딩 프로세스 구성을 더 쉽게 만듭니다.
+grub2와 같은 구성 스크립트가 있는 부트 로더의 경우 이 사양을 채택하면 처음 설치 시 한 번만 생성되는 대부분의 정적 스크립트가 허용되지만 드롭인 파일을 통해서만 수행되므로 더 이상 업데이트할 필요가 없습니다.</p>
+</blockquote>
+<div class="highlight"><pre>0 ~ 2048, 4096, 8192
+
+MBR(dos)
+
+EFI ---&gt; uEFI &lt;--- MS 
+           \
+            `---&gt; 인증서
+       &gt; EFI
+</pre></div>
+
+<h2 id="systemd-service">systemd .service<a class="headerlink" href="#systemd-service" title="Permanent link"></a></h2>
+<p><div class="highlight"><pre>/lib/sytstemd/system/:(x)
+/etc/systemd/system/rht-???.service
+
+    forward                  backword
+    =======                  ========
+                [central]
+                   OBJ
+              +-----------+
+     ----     | b.service |   -----
+              +-----------+
+
+    before=a                  after=c      
+    s1               s2            s3            
+    start         start         start
+    wants=net  wants=s1*     wants=s2* 
+    before=s2  after=s1      after=s2
+               before=s3
+
+systemd daemon-reload ---&gt; dracut -f ---&gt; reboot 
+---------------------
+VM에서 간혹가다가 램 디스크가 올바르게 갱신이 안될때가 있음. 
+
+- systemd
+- kernel 
+          = dracut -f 
+</pre></div>
+mkdir -p /etc/systemd/system/postfix.service.d/
+touch                                          postfix.conf
+                                               [Units]
+                                               wants=vsftpd httpd
+                             .&mdash; systemctl start postfix.service
+                            /
+                       +---------+
+          .----------- | postfix | ----------.
+         /             +---------+            \
+        /              want=                   \
+    +--------+                            +-------+
+    | vsftpd |                            | httpd |
+    +--------+                            +-------+
+    requires=                             requires=
+mkdir -p /etc/systemd/system/vsftpd.requires.d    </p>
+<pre><code>                                      mkdir -p /etc/systemd/system/httpd.requires.d/
+</code></pre>
+<h2 id="_4">커널<a class="headerlink" href="#_4" title="Permanent link"></a></h2>
+<div class="highlight"><pre>the ring buffer   ----  driver space
+         strcuture 
+
+ kernel    DRV     user
+      -------------&gt;
+          DOS, RT
+       ||        ||   
+          protect
+          buffer(dmesg)
+          emm386 xms,
+
+  .---&gt; MAKEDEV(systemd,(major file block file character file))
+ /
+| kernelspace   userspace
+|       -----   -----
+|  .---&gt; /sys, /proc
+| /
+dmesg: 현재 시점에서 부팅한 커널 메세지 + 계속 출력 
+             |
+             +-----과거 시점 조회가 필요한 경우 아래 명령어로..
+             |
+             v
+journalctl -b         : bootup message 
+           --list-boot: 
+           -k: kernel message
+
+
+lsmod ---&gt; kernel(x)
+           /sys/
+                       &lt;--- insmod
+
+                       &lt;--- modprobe ---&gt; /etc/modprobe.d/*.conf  ---&gt; /sys/
+                             \
+                              &#39;---&gt; modinfo
+</pre></div>
+
+<h3 id="libvirt">libvirt 가상머신 테스트<a class="headerlink" href="#libvirt" title="Permanent link"></a></h3>
+<div class="highlight"><pre>yum install libvirt -y
+yum provides virt-builder
+yum install libguestfs-tools-c
+virt-builder --list
+virt-builder -o /var/lib/libvirt/images/cirros.qcow2 --format qcow2 
+virt-install --import --disk=path=/var/lib/libvirt/images/cirros.qcow2 --vcpu 1 --memory 300 --name cirros --noautoconsole
+
+virsh console cirros
+virsh domifaddr cirros
+virsh domblklist cirros
+</pre></div>
+
+<h1 id="day-3">Day 3<a class="headerlink" href="#day-3" title="Permanent link"></a></h1>
+<p><a href="https://docs.fedoraproject.org/en-US/modularity/using-modules/">https://docs.fedoraproject.org/en-US/modularity/using-modules/</a></p>
+<h1 id="day-4">Day 4<a class="headerlink" href="#day-4" title="Permanent link"></a></h1>
+<p><a href="https://rhtapps.redhat.com/individualexamscheduler/#/">https://rhtapps.redhat.com/individualexamscheduler/#/</a></p>
+<h2 id="firewall-cmd">firewall-cmd<a class="headerlink" href="#firewall-cmd" title="Permanent link"></a></h2>
+<p>방화벽의 기본 존 영역은 &ldquo;public&rdquo;. &ldquo;drop&rdquo;, &ldquo;block&rdquo;
+block: icmp return
+drop: icmp return(x)</p>
+<div class="highlight"><pre>firewall-cmd --get-default-zone: <span class="s2">&quot;public&quot;</span>으로 되어 있음.
+-&gt; firewall-cmd --set-default-zone<span class="o">=</span>drop
+-&gt; firewall-cmd --add-interface<span class="o">=</span>ens5 --zone<span class="o">=</span>public
+-&gt; firewall-cmd --add-service<span class="o">=</span>http --zone<span class="o">=</span>public 
+firewall-cmd --add-service: 이미 구성이 되어 있는 서비스 정보. /lib/firewalld/services/*.xml등록이 되어 있음.
+             ex: --add-service<span class="o">=</span>http
+             --add-port: 기본 서비스 목록에 등록이 안된 포트는 여기에 등록.
+             ex: --add-port<span class="o">=</span>8080/tcp
+             --add-interface: NIC카드 등록
+             ex: --add-interface<span class="o">=</span>ens3 --zone<span class="o">=</span>drop 
+                 --add-interface<span class="o">=</span>ens4 --zone<span class="o">=</span>external  <span class="c1">## NAT네트워크 등록</span>
+             --add-source: 소스 아이피 등록
+             ex: --add-source<span class="o">=</span>192.168.8.2             
+</pre></div>
+
+<div class="highlight"><pre>ping ---&gt; /etc/hosts ---&gt; /etc/resolv.conf ---&gt; external DNS ---&gt; query
+              1                 2               ------------
+                                                \
+                                                 `---&gt; NetworkManager 
+</pre></div>
+
+<p>system-tap: kernelspace</p>
+<p>server: systemtap, debuginfo </p>
+<h1 id="debuginfo-install-kernel">debuginfo-install kernel<a class="headerlink" href="#debuginfo-install-kernel" title="Permanent link"></a></h1>
+<h1 id="yum-install-systemtap">yum install systemtap<a class="headerlink" href="#yum-install-systemtap" title="Permanent link"></a></h1>
+<h1 id="cd-usrsharesystemtapexamples">cd /usr/share/systemtap/examples/*<a class="headerlink" href="#cd-usrsharesystemtapexamples" title="Permanent link"></a></h1>
+<h1 id="stap-v-p-4-m-iotop-usrsharesystemtapexamplesioiotopstp">stap -v -p 4 -m iotop /usr/share/systemtap/examples/io/iotop.stp<a class="headerlink" href="#stap-v-p-4-m-iotop-usrsharesystemtapexamplesioiotopstp" title="Permanent link"></a></h1>
+<pre><code>   -- ----    -----
+    x   4     이름
+</code></pre>
+<h1 id="_5"><a class="headerlink" href="#_5" title="Permanent link"></a></h1>
+<p>user:</p>
+<p>PCP: userspace</p>
+<h3 id="_6"><a class="headerlink" href="#_6" title="Permanent link"></a></h3>
+<ul>
+<li>LVM vs Stratis</li>
+</ul>
+<h1 id="stratis-archtect">Stratis Archtect<a class="headerlink" href="#stratis-archtect" title="Permanent link"></a></h1>
+<p><a href="https://lwn.net/Articles/755454/">https://lwn.net/Articles/755454/</a></p>
+<h1 id="_7">기타정보<a class="headerlink" href="#_7" title="Permanent link"></a></h1>
+<h2 id="pthread">pthread 분리??<a class="headerlink" href="#pthread" title="Permanent link"></a></h2>
+<p><a href="https://developers.redhat.com/articles/2021/12/17/why-glibc-234-removed-libpthread#the_developer_view">https://developers.redhat.com/articles/2021/12/17/why-glibc-234-removed-libpthread#the_developer_view</a></p>
+<h2 id="ifcfg-">바이바이 ifcfg-*<a class="headerlink" href="#ifcfg-" title="Permanent link"></a></h2>
+<p><a href="https://www.redhat.com/en/blog/rhel-9-networking-say-goodbye-ifcfg-files-and-hello-keyfiles">https://www.redhat.com/en/blog/rhel-9-networking-say-goodbye-ifcfg-files-and-hello-keyfiles</a></p>
+<h2 id="ex342-rhca">EX342 그리고 RHCA<a class="headerlink" href="#ex342-rhca" title="Permanent link"></a></h2>
+<p><a href="https://linuxbuff.wordpress.com/tag/ex342/">https://linuxbuff.wordpress.com/tag/ex342/</a></p>
+<h2 id="irq">IRQ 리스케줄링<a class="headerlink" href="#irq" title="Permanent link"></a></h2>
+<p><a href="https://help.ubuntu.com/community/ReschedulingInterrupts">https://help.ubuntu.com/community/ReschedulingInterrupts</a></p>
+<p>LVM vs Native Parition Performance</p>
+<blockquote>
+<p>tv_22_2015_5_1157_1164.pdf</p>
+</blockquote>
+<p>CPU/MEMORY 오버커밋</p>
+<blockquote>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-overcommitting_with_kvm-overcommitting_virtualized_cpus">https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-overcommitting_with_kvm-overcommitting_virtualized_cpus</a></p>
+</blockquote>
+<p>BLS구체적인 사양</p>
+<blockquote>
+<p><a href="https://systemd.io/BOOT_LOADER_SPECIFICATION/">https://systemd.io/BOOT_LOADER_SPECIFICATION/</a></p>
+<p>램 디스크 풀기
+<a href="https://access.redhat.com/solutions/2037313">https://access.redhat.com/solutions/2037313</a>
+<div class="highlight"><pre>mkdir /tmp/initrd
+cd /tmp/initrd
+/usr/lib/dracut/skipcpio /boot/initramfs-$(uname -r).img | gunzip -c | cpio -idmv
+</pre></div></p>
+</blockquote>
+<h2 id="_8">가상화<a class="headerlink" href="#_8" title="Permanent link"></a></h2>
+<pre><code>        .---&gt; 이스라엘 쿰라넷(윈도우 클라이언트)
+       /
+   ----
+</code></pre>
+<p>( QEMU / KVM )/ Libvirtd(library daemon)
+  ----         --------
+ \  \             /
+  \  <code>---&gt; VM ---'
+   \     관리(dom)</code>.&mdash;&gt; qemu-ga + nbd
+     \
+      &lsquo;&mdash;&gt; cpu, memory, disk, net, bios, 반가상화
+&mdash;</p>
+<h2 id="_9">시험에 도움이 되는 정보<a class="headerlink" href="#_9" title="Permanent link"></a></h2>
+<blockquote>
+<p><a class="magiclink magiclink-github magiclink-repository" href="https://github.com/bschonec/rh342-study" title="GitHub Repository: bschonec/rh342-study">bschonec/rh342-study</a>
+<a href="https://gist.github.com/luckylittle/9991c6b61ed15000ca947b1153472256">https://gist.github.com/luckylittle/9991c6b61ed15000ca947b1153472256</a>
+<a href="https://linuxvaults.com/tag/rhcs-in-linux-diagnostics-and-troubleshooting-exam/">https://linuxvaults.com/tag/rhcs-in-linux-diagnostics-and-troubleshooting-exam/</a></p>
+</blockquote></article></body></html>
