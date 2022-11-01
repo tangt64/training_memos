@@ -1,0 +1,12 @@
+- hosts: localhost
+
+  tasks:
+  - name: Shows NIC interface name
+    debug:
+      msg: "{{ ansible_facts.default_ipv4.interface }}"
+  - name: Shows NIC IP Address 
+    debug:
+      msg: "{{ ansible_facts.default_ipv4.address }}"
+  - name: Shows Block device size
+    debug:
+      msg: "{{ ansible_facts.mounts | json_query('[?mount == `/`].size_available') }}"

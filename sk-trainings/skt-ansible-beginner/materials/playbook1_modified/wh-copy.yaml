@@ -1,0 +1,29 @@
+  - name: install the {{ web_srv_package }} on {{ inventory_hostname }}
+    yum:
+      name: "{{ web_srv_package }}"
+      state: latest
+  - name: make a default web page on {{ inventory_hostname }}
+    copy:
+      content: "Hello SKT World"
+      dest: /var/www/html/index.html
+
+  - name: start to the {{ web_srv_package }} service
+    service:
+      name: "{{ web_srv_package }}"
+      state: started
+      enabled: yes
+
+  - name: install {{ software }}
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - "{{ software }}"
+
+  - name: start to {{ software }} services
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    loop:
+      - mariadb-server

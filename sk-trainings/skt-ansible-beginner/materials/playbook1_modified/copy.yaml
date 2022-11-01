@@ -1,0 +1,37 @@
+- hosts: node1
+  pre_tasks:
+  - name: install the {{ web_srv_package }} on {{ inventory_hostname }}
+    yum:
+      name: "{{ web_srv_package }}"
+      state: latest
+
+  tasks:
+  - name: make a default web page on {{ inventory_hostname }}
+    copy:
+      content: "Hello SKT World"
+      dest: /var/www/html/index.html
+
+  post_tasks:
+  - name: start to the {{ web_srv_package }} service
+    service:
+      name: "{{ web_srv_package }}"
+      state: started
+      enabled: yes
+
+- hosts: node2
+  tasks:
+  - name: install {{ software }}
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - "{{ software }}"
+
+  post_tasks:
+  - name: start to {{ software }} services
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    loop:
+      - mariadb-server

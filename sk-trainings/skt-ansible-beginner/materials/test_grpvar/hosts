@@ -1,0 +1,19 @@
+[web]
+web1.example.com ansible_connection=local
+web2.example.com ansible_connection=local
+web3.example.com ansible_connection=local
+
+[db]
+db1.example.com ansible_connection=local
+db2.example.com ansible_connection=local
+db3.example.com ansible_connection=local
+
+[middle]
+mid1.example.com
+mid2.example.com
+mid3.example.com
+
+[proxy]
+pry1.example.com
+pry2.example.com
+pry3.example.com

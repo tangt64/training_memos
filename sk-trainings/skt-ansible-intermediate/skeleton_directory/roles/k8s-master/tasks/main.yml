@@ -1,0 +1,3 @@
+---
+# tasks file for single-master
+- import_tasks: k8s-master-bootstrap.yaml

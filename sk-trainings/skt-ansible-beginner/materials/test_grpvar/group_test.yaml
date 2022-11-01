@@ -1,0 +1,9 @@
+- hosts: web
+  tasks:
+  - debug:
+      msg: "{{ nodetype }}"
+
+- hosts: db
+  tasks:
+  - debug:
+      msg: "{{ nodetype }}"

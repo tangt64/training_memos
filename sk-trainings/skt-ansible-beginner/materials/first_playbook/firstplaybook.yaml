@@ -1,0 +1,6 @@
+- hosts: k8s_master
+
+  tasks:
+  - name: the first module
+    debug:
+      msg: "Hello World"

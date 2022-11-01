@@ -1,0 +1,39 @@
+- name: copy to the hosts file to {{ inventory_hostname }}
+  copy:
+    src: hosts
+    dest: /etc/hosts
+
+- name: copy to the kernel module file to {{ inventory_hostname }}
+  copy:
+    src: k8s-modules.conf
+    dest: /etc/modules-load.d/99-k8s-modules.conf
+
+- name: restart modules-load.service
+  service:
+    name: systemd-modules-load
+    state: restarted
+
+- name: load up to the kernel modules as runtime
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - br_netfilter
+    - overlay
+
+- name: copy to the kernel parameter file to {{ inventory_hostname }}
+  copy:
+    src: k8s-kernel-para.conf
+    dest: /etc/sysctl.d/99-k8s-para.conf
+
+- name: apply sysctl config
+  shell: sysctl -p --system
+
+- name: apply sysctl config
+  sysctl:
+    name: "{{ item }}"
+    value: 1
+    sysctl_file: /etc/sysctl.d/99-k8s-parameter.conf
+    reload: yes
+  loop:
+    - net.bridge.bridge-nf-call-iptables
