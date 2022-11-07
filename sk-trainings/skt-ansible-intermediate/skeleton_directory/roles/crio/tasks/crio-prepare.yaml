@@ -1,9 +1,13 @@
 - name: delete to all of crio repository files
   file:
-    path: /etc/yum.repos.d/k8s-*
+    path: /etc/yum.repos.d/{{ item }}
     state: absent
   ignore_errors: yes
-
+  loop:
+    - crio-libcontainer-stable-repository.repo
+    - crio-stable-repository.repo
+    - k8s-repository.repo
+    
 - name: copy crio the repository files to /etc/yum.repos.d/
   copy:
     src: "{{ item }}"
