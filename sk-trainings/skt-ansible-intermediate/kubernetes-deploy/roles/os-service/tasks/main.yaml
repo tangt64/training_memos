@@ -1,0 +1,5 @@
+- name: start kubelet.service on {{ inventory_hostname }}
+  systemd:
+    name: kubelet
+    state: started
+    enabled: yes

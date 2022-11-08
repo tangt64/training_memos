@@ -1,0 +1,8 @@
+- name: regenerate to containerd.io config.toml
+  command: containerd config default > /etc/containerd/config.toml
+
+- name: start and enabled to containertd.service
+  systemd:
+    name: containerd
+    state: started
+    enabled: yes

@@ -1,0 +1,7 @@
+- name: copy a kubernete/containerd repository file for YUM(dnf-3)
+  copy:
+    src: files/{{ item }}
+    dest: /etc/yum.repos.d/{{ item }}
+  loop:
+    - kubernetes.repo
+    - containerd.repo

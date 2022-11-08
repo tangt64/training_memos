@@ -1,0 +1,24 @@
+- name: SELinux
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: install the firewalld package
+  package:
+    name: firewalld
+    state: present
+
+- name: start and enabled to the firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: add the kubernetes ports to firewalld {{ inventory_hostname }}
+  firewalld:
+    port: "{{ item }}/tcp"
+    permanent: yes
+    state: enabled
+  loop:
+    - 6443
+    - 10240

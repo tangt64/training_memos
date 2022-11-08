@@ -1,0 +1,19 @@
+- name: install the firewalld package
+  package:
+    name: firewalld
+    state: present
+
+- name: install containerd package on {{ inventory_hostname }}
+  package:
+    name: containerd.io
+    state: present
+
+- name: install kubernetes packages on {{ inventory_hostname }}
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_excludes: all
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl
