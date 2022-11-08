@@ -1,0 +1,10 @@
+[all:vars]
+ansible_password=centos
+ansible_user=root
+
+[master]
+192.168.90.231 nodename=master.skt25.com k8s_ip4_address=10.10.10.231
+
+[worker]
+192.168.90.225   nodename=node1.skt25.com k8s_ip4_address=10.10.10.225
+192.168.90.60    nodename=node2.skt25.com k8s_ip4_address=10.10.10.60

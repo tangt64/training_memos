@@ -19,7 +19,7 @@
 
   - name: add the kubernetes ports to firewalld {{ inventory_hostname }}
     firewalld:
-      port: "{{ item }}"/tcp
+      port: "{{ item }}/tcp"
       permanent: yes
       state: enabled
     loop:
@@ -29,7 +29,7 @@
   - name: copy a kernel module loadup config file
     copy:
       src: files/k8s-modules.conf
-      dest: /etc/modules.d/k8s-modules.conf
+      dest: /etc/modules-load.d/k8s-modules.conf
 
   - name: restart systemd-modules-load.service
     systemd:
@@ -67,9 +67,10 @@
       enabled: yes
 
   - name: install kubernetes packages on {{ inventory_hostname }}
-    package:
+    yum:
       name: "{{ item }}"
       state: present
+      disable_excludes: all
     loop:
       - kubelet
       - kubeadm
