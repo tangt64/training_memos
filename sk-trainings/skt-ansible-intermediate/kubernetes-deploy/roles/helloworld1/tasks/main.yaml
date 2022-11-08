@@ -1,0 +1,6 @@
+- name: message from the helloworld1 role
+  debug:
+    msg: "Hello This is helloworld1"
+
+- debug:
+    msg: "{{ default_var_test }}"

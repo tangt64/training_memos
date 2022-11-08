@@ -1,0 +1,3 @@
+- name: message from the helloworld2 role
+  debug:
+    msg: "Hello This is helloworld2"
