@@ -1,0 +1,4 @@
+- hosts: master
+
+  roles:
+    - { role: remove-k8s-master }
