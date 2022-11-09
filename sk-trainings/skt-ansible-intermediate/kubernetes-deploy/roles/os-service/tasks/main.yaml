@@ -20,4 +20,3 @@
   systemd:
     name: systemd-modules-load
     state: restarted
-
