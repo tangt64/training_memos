@@ -1,0 +1,2 @@
+- include_tasks: ssh.yaml
+- include_tasks: deploy_hosts_j2.yaml
