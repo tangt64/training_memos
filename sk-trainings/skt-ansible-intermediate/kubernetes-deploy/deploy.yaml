@@ -1,0 +1,3 @@
+- import_playbook: playbooks/prepare-host.yaml
+- import_playbook: playbooks/deploy-os.yaml
+- import_playbook: playbooks/deploy-k8s-master.yaml

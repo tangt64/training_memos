@@ -16,3 +16,4 @@
 
 - name: clean up to YUM cachedata
   command: yum clean all
+  when: disabled_cleanup_cache|bool

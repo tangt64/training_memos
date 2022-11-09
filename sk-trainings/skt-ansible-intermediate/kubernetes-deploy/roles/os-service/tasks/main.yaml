@@ -3,12 +3,14 @@
     name: firewalld
     state: started
     enabled: yes
+  when: disabled_firewalld|bool
 
 - name: start and enabled to {{ runtime_type }}.service
   systemd:
-    name: "{{ runtime_type }}"
-    state: started
+    name: containerd
+    state: restarted
     enabled: yes
+  #when: "{{ runtime_type }} == containerd.io"
 
 - name: start kubelet.service on {{ inventory_hostname }}
   systemd:
