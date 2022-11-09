@@ -1,5 +1,5 @@
-- name: init to kubernetes master node {{ inventory_hostname }}
-  command: kubeadm init --apiserver-advertise-address="{{ k8s_api_address }}" --cri-socket="{{ k8s_cri_socket }}" --pod-network-cidr="{{ k8s_pod_net }}" --service-cidr="{{ k8s_pod_net }}"
+- name: init to kubernet
+  command: kubeadm init
 
 - name: create the .kube directory on user
   file:
@@ -10,8 +10,4 @@
   copy:
     src: /etc/kubernetes/admin.conf
     dest: /root/.kube/config
-  remote_src: yes
-
-- name: create kubeadm token with command
-  command: kubeadm token create --print-join-command
-  register: k8s_adm_token
+    remote_src: yes

@@ -1,4 +1,0 @@
-- hosts: master
-
-  roles:
-    - { role: k8s-master }

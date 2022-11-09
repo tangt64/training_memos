@@ -1,5 +1,0 @@
-- hosts: master
-
-  roles:
-    - { role: helloworld1, default_var_test: "main" }
-    #  - { role: helloworld2 }

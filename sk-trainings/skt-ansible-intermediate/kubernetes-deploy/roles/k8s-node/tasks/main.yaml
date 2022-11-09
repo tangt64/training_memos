@@ -1,0 +1,7 @@
+- name: get to the join token from master node
+  command: kubeadm token create --print-join-command
+  register: k8s_node_join_token
+  delegate_to: master
+
+- name: join to node {{ inventory_hostname }}
+  command: "{{ k8s_node_join_token.stdout }}"
