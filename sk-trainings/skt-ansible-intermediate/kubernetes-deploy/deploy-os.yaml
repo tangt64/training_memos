@@ -1,5 +1,4 @@
 - hosts: master, worker
-
   roles:
     - { role: os-repositories }
     - { role: os-packages }

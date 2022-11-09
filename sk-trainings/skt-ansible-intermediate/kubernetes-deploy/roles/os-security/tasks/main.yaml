@@ -8,12 +8,6 @@
     name: firewalld
     state: present
 
-- name: start and enabled to the firewalld
-  systemd:
-    name: firewalld
-    state: started
-    enabled: yes
-
 - name: add the kubernetes ports to firewalld {{ inventory_hostname }}
   firewalld:
     port: "{{ item }}/tcp"

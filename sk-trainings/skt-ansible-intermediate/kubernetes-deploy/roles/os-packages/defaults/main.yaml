@@ -1,0 +1,7 @@
+pkg_state: present
+pkg_k8s:
+  - kubelet
+  - kubectl
+  - kubeadm
+runtime_type: crio
+firewall_type: firewalld
