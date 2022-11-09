@@ -1,11 +1,11 @@
-- name: install the firewalld package
+- name: install the firewalld package as {{ firewall_type }}
   package:
-    name: firewalld
+    name: "{{ firewall_type }}"
     state: "{{ pkg_state }}"
 
-- name: install containerd package on {{ inventory_hostname }}
+- name: install runtime package on {{ inventory_hostname }} as {{ runtime_type }}
   package:
-    name: containerd.io
+    name: "{{ runtime_type }}"
     state: "{{ pkg_state }}"
 
 - name: install kubernetes packages on {{ inventory_hostname }}
@@ -13,7 +13,4 @@
     name: "{{ item }}"
     state: "{{ pkg_state }}"
     disable_excludes: all
-  loop:
-    - kubelet
-    - kubeadm
-    - kubectl
+  loop: "{{ pkg_k8s }}"

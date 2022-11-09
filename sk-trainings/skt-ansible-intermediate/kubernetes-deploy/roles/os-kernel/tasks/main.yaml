@@ -3,16 +3,10 @@
     src: files/k8s-modules.conf
     dest: /etc/modules-load.d/k8s-modules.conf
 
-- name: restart systemd-modules-load.service
-  systemd:
-    name: systemd-modules-load
-    state: restarted
-
 - name: copy a kernel parameter config file for iptables(nftables)
   copy:
     src: files/99-k8s.conf
     dest: /etc/sysctl.d/99-k8s.conf
 
-- name: apply the kernel parameter on {{ inventory_hostname }} 
+- name: apply the kernel parameter on {{ inventory_hostname }}
   command: sysctl -p --system
-

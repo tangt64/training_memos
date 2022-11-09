@@ -1,5 +1,23 @@
+- name: start and enabled to the firewalld
+  systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: start and enabled to {{ runtime_type }}.service
+  systemd:
+    name: "{{ runtime_type }}"
+    state: started
+    enabled: yes
+
 - name: start kubelet.service on {{ inventory_hostname }}
   systemd:
     name: kubelet
     state: started
     enabled: yes
+
+- name: restart systemd-modules-load.service
+  systemd:
+    name: systemd-modules-load
+    state: restarted
+
