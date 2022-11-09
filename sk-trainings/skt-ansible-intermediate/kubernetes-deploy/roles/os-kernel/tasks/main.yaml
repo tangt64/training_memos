@@ -10,3 +10,6 @@
 
 - name: apply the kernel parameter on {{ inventory_hostname }}
   command: sysctl -p --system
+
+- name: off to the swap parition or file
+  command: swapoff -a

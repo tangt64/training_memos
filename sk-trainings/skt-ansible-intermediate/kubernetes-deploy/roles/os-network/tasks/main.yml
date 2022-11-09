@@ -1,0 +1,5 @@
+---
+# tasks file for os-network
+- import_tasks: net-tc.yaml
+- import_tasks: net-nftables.yaml
+- import_tasks: net-firewalld.yaml
