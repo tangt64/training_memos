@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-httpd
+  labels:
+    type: test
+    system: linux
+spec:
+  selector:
+    matchLabels:
+      run: my-httpd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-httpd
+    spec:
+      containers:
+      - name: my-httpd
+        image: httpd
+        ports:
+        - containerPort: 80
