@@ -1,20 +1,19 @@
-- name: delete to all of crio repository files
-  file:
-    path: /etc/yum.repos.d/{{ item }}
-    state: absent
-  ignore_errors: yes
-  loop:
-    - crio-libcontainer-stable-repository.repo
-    - crio-stable-repository.repo
-    - k8s-repository.repo
-    
 - name: copy crio the repository files to /etc/yum.repos.d/
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/yum.repos.d/{{ item }}.repo"
-  loop:
-    - rhel8-crio-stable-repository
-    - rhel8-crio-libcontainer-stable-repository
+  block:
+    - copy:
+        src: "{{ item }}"
+        dest: "/etc/yum.repos.d/{{ item }}.repo"
+      loop:
+        - rhel8-crio-stable-repository
+        - rhel8-crio-libcontainer-stable-repository
+      when: ( ansible_distribution == "CentOS" and ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9" )
+  rescue:
+  - copy:
+      src: "{{ item }}"
+      dest: "/etc/yum.repos.d/{{ item }}.repo"
+    loop:
+      - rhel7-crio-stable-repository
+      - rhel7-crio-libcontainer-stable-repository
 
 - name: install the crio runtime package
   package:
