@@ -248,6 +248,25 @@ exclude=kubelet kubeadm kubectl
    파일이 내려받기가 안되는 경우 아래서 그냥 저장소 파일 받으세요.
    https://github.com/tangt64/duststack-k8s-auto/tree/master/roles/kubernetes/k8s-prepare/files
 ```
+6. kernel module and parameters
+```bash
+## centos 7
+# vi /etc/modules-load.d/99-kubernets-modules.conf
+br_netfilter (v)
+overlay      (v)
+ip_vs_rr
+ip_vs_wrr
+ip_vs_sh
+ip_vs
+nf_conntrack_ipv4(rhel 8/9(x))
+# dracut -f 
+-----------------
+POD/SVC에서 발생한 연결(connection) 추적
+
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+```
 
 
 ```
