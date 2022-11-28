@@ -32,9 +32,9 @@ VM 총 3대 사용.
 
   - 내부 네트워크(API, Node to Node)
   - 외부 네트워크(ExternalIP, kubectl, 관리 네트워크)
-  	* 스토리지 네트워크
-  	* 외부 네트워크
-  	* 관리 네트워크
+    * 스토리지 네트워크
+    * 외부 네트워크
+    * 관리 네트워크
 
 ### 쿠버네티스 설치시 자원 고려 사항
 
@@ -61,3 +61,113 @@ vCPU: 2개 이상을 요구(이번 교육에서는 권장 4 vCPU)
 >master: master.example.com, 4 vcpu, 4096
 >worker node1: node1.example.com. 4 vcpu, 2048 
 >worker node2: node2.example.com, 4 vcpu, 2048
+
+
+메모는 여기에서 확인이 가능 합니다!!
+
+https://github.com/tangt64/training_memos/blob/main/opensource/kubernetes-101/20221128-kubernetes-tmax.md
+
+
+만약 아이피 주소 확인이 안되는 경우 다음처럼 실행 합니다.
+절대 'ip up', 'ifconfig up' 사용하지 마세요.
+
+```bash
+nmcli con up eth0
+ip a s eth0
+```
+
+CentOS7: 네트워크 스크립트 지원 --> 8/9-Stream/Rocky/RHEL
+NetworkManager를 무조건 사용하셔야 됨. 
+
+
+### 커널과 관계
+
+컨테이너를 사용하기 위해서는 다음과 같은 기능이 필요함.
+
+- namespace
+  * 커널에서 사용자 프로세스를 격리하는 공간. 네임스페이스는 말 그대로 이름만 존재하는 공간이며, 실제 장치들 혹은 자원은 존재하지 않는다.
+  * cmd: lsns, nsenter
+  * cmd:ls -l /proc/$$/ns
+
+- cgroup
+  * 사용자가 생성한 프로세스에서 자원 분류별로 추적 및 감사를 한다. 컨테이너 런타임에서는 cgroup를 통해서 컨테이너 자원 사용상태를 추적 및 모니터링 한다. 쿠버네티스 kubelet은 systemd-cgroup으로 통합된 cgroup driver를 사용하고 있다. 
+  * systemd-cgls
+  * cmd: cgget -n -g cpu /
+  * 
+- seccomp
+  * seccomp는 컨테이너에서 실행을 허용할 시스템 콜 목록을 가지고 있다. 허용하지 않는 시스템 콜이 호출이 되는 경우 컨테이너는 eBPF를 통해서 콜 실행이 차단된다. 
+  *  BPF (Berkeley Packet Filter) facility
+   + focus on the extended BPF version (eBPF)
+   + https://docs.kernel.org/bpf/index.html
+
+
+```bash
+lsns 
+cd /proc/$$/ns
+```
+
+### 포드만 설치(컨테이너/POD)
+```
+yum install podman -y
+podman run -d --pod new:httpd-8008 --name httpd-8080 -p 8080:80 httpd
+firewall-cmd --add-port=8080/tcp 
+podman container ls == podman ps 
+podman pod ls 
+
+ Open Container Image/Inititive(OCI**)
+ Open Container Network(OCN)
+ Container Storage Interface(CSI)                                  
+                                                                   .---> conmon: container monitor
+                                                                   |
+ POD == Pause                                                      v
+                                                           .---> runc ---> <container>
+ /usr/bin/conmon                                          /      (golang), crun(c lang)
+-r: runc (runtime container)                        -------------
+    ----                                              podman
+     -> /var/lib/containers/                        -------------
+     -> /run/containers/                                  |
+                                .--- NAMESPACE            |
+                               /                          |                 /var/lib/containers
+                              +-----+                +---------+          +-------+
+        | USER |     --->     | POD |       ----     | RUNTIME |   ---    | IMAGE |
+                    mnt       +-----+                +---------+          +-------+
+                    net   ---> [ namespace ] ---> veth ---> [ Linux Bridge ]                          
+                    uts        
+                    ipc
+ipc: container ---> host kenrel call share
+mnt: container ---> filesystem, device(binding)                
+uts: System Time(in kernel)
+net: POD에서 외부와 통신시 사용하는 네트워크 장치(veth, vpair)
+
+```
+
+rootless container: 
+ - 부팅 과정이 없음(init 1)
+ - ring structure가 없음(0~3)
+
+backingFsBlockDev:
+ - 컨테이너 이미지를 마치 블록 장치처럼 구성해주는 기능
+ - "l, link"를 통해서 이미지 레이어 링크를 구성함
+
+                 .---> COPY index.html /htdocs/index.html
+                /
+               .---> RUN mkdir /htdocs
+              /
+             .---> yum install httpd -y
+            /
++----------------+
+| CentOS7:latest |
++----------------+
+
+```                                     
+                                             <container>
+                                                  |                                          .---> Redhat, SuSE, Google, IBM
+                                                  |                                         /
+                                                  |                                     ---'
+      .------------------.                    [runtime] ---> docker(x), crio(v)
+     /   isolate area     \                       |          =containerd(v)
+   [ ISOLATE ] --- [namespace] --- mnt            |
+                  <kernel space>   net  --- | application |  --- limit --- cgroup --- CPU(*)
+                                   ipc                                            MEM(*)
+                                   uts                                            DISK(-)
+```
