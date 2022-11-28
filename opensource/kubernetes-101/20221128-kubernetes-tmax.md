@@ -148,7 +148,7 @@ rootless container:
 backingFsBlockDev:
  - 컨테이너 이미지를 마치 블록 장치처럼 구성해주는 기능
  - "l, link"를 통해서 이미지 레이어 링크를 구성함
-
+```
                  .---> COPY index.html /htdocs/index.html
                 /
                .---> RUN mkdir /htdocs
@@ -158,6 +158,8 @@ backingFsBlockDev:
 +----------------+
 | CentOS7:latest |
 +----------------+
+```
+
 
 ```                                     
                                              <container>
