@@ -184,48 +184,8 @@ https://kubernetes.io/ko/docs/setup/production-environment/tools/kubeadm/install
 
 ### 조건사항
 
-1. firewalld,   nftables, iptables
-    + nftables            (rhel 7)
-     (d)
-
-  6443, 10250/tcp: firewall-cmd --add-port=6443/tcp     
-                                           10250/tcp
-                   systemctl stop firewalld
-                   systemctl stop iptables
-2. SWAP부분
-   RSS 메모리 + 페이지 메모리(swap off)
-  -----------
-  cgroup audit
-  # swapoff -a, swapon -s 
-  # vi /etc/fstab 
-
-3.  [WARNING Hostname]: hostname "master1.example.com" could not be reached
-   /etc/hosts
-   <MASTER_IP>    <FQDN>   <HOSTNAME>
-   <NODE1>        <FQDN>   <HOSTNAME>
-   <NODE2>        <FQDN>   <HOSTNAME>
-
-4. [WARNING Service-Kubelet]: kubelet service is not enabled, please run 'systemctl enable kubelet.service'
-  yum install kubeadm kubelet kubectl
-  systemctl enable --now kubelet.service 
-
-5. [ERROR CRI]: container runtime is not running:
-   **containerd**
-   https://download.docker.com/linux/centos/
-   yum install wget
-   cd /etc/yum.repos.d/
-   wget https://download.docker.com/linux/centos/docker-ce.repo
-   yum install containerd
-   containerd config default > /etc/containerd/config.toml
-   systemctl enable --now containerd
-   **CRIO**
-   https://cri-o.io/
-   OS=CentOS_7
-   VERSION=1.17
-   curl x 2
-   파일이 내려받기가 안되는 경우 아래서 그냥 저장소 파일 받으세요.
-   https://github.com/tangt64/duststack-k8s-auto/tree/master/roles/kubernetes/k8s-prepare/files
-
+0. 쿠버네티스 저장소 등록
+```
 # yum install kubeadm --disableexcludes=kubernetes
 # cat kubernetes.repo
 [kubernetes]
@@ -235,7 +195,59 @@ enabled=1
 gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
---disableexcludes=
+```
+
+1. firewalld,   nftables, iptables
+```
+    + nftables            (rhel 7)
+     (d)
+
+  6443, 10250/tcp: firewall-cmd --add-port=6443/tcp     
+                                           10250/tcp
+                   systemctl stop firewalld
+                   systemctl stop iptables
+```                   
+2. SWAP부분
+```
+   RSS 메모리 + 페이지 메모리(swap off)
+  -----------
+  cgroup audit
+  # swapoff -a, swapon -s 
+  # vi /etc/fstab 
+```
+3.  [WARNING Hostname]: hostname "master1.example.com" could not be reached
+```  
+   /etc/hosts
+   <MASTER_IP>    <FQDN>   <HOSTNAME>
+   <NODE1>        <FQDN>   <HOSTNAME>
+   <NODE2>        <FQDN>   <HOSTNAME>
+```
+4. [WARNING Service-Kubelet]: kubelet service is not enabled, please run 'systemctl enable kubelet.service'
+```
+   yum install kubeadm kubelet kubectl
+   systemctl enable --now kubelet.service 
+```  
+
+5. [ERROR CRI]: container runtime is not running:
+   **containerd**
+```
+   https://download.docker.com/linux/centos/
+   yum install wget
+   cd /etc/yum.repos.d/
+   wget https://download.docker.com/linux/centos/docker-ce.repo
+   yum install containerd
+   containerd config default > /etc/containerd/config.toml
+   systemctl enable --now containerd
+```
+   **CRIO**
+```   
+   https://cri-o.io/
+   OS=CentOS_7
+   VERSION=1.17
+   curl x 2
+   파일이 내려받기가 안되는 경우 아래서 그냥 저장소 파일 받으세요.
+   https://github.com/tangt64/duststack-k8s-auto/tree/master/roles/kubernetes/k8s-prepare/files
+```
 
 
 ```
