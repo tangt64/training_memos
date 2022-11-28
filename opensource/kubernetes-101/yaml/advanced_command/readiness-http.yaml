@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-readiness-probe
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          initialDelaySeconds: 1
+          periodSeconds: 2
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 1
+          httpGet:
+            host:
+            scheme: HTTP
+            path: /
+            httpHeaders:
+            - name: Host
+              value: exampleapp.com
+            port: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+  namespace: default
+spec:
+  ports:
+  - name: kubernetes-readiness-probe-port
+    port: 80
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: NodePort
