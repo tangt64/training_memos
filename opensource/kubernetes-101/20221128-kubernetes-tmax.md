@@ -272,22 +272,103 @@ net.bridge.bridge-nf-call-ip6tables = 1
 7. 노드 상태 확인하기
 
 
-**이 작업은 마스터 서버에서 해주시면 됩니다**
-**SELinux가 켜져 있는 경우 'setenforce 0'으로 꺼주세요**
+**이 작업은 마스터 서버에서 해주시면 됩니다**, **SELinux가 켜져 있는 경우 'setenforce 0'으로 꺼주세요**
+
+/etc/selinux/config: 여기에서 selinux 영구적으로 끌수 있습니다.
+/etc/fstab: 여기에서 스왑을 영구적으로 주석처리 혹은 삭제 
+
 ```
 mkdir -p ~/.kube/
 cp /etc/kubernetes/admin.conf ~/.kube/config
 kubectl get nodes
 kubectl get pods -A
-
 ```
 
 8. 네트워크 추가하기
 
-(https://projectcalico.docs.tigera.io/getting-started/kubernetes/quickstart)
+[칼리코](https://projectcalico.docs.tigera.io/getting-started/kubernetes/quickstart)
 
 
 ```
 ansible-galaxy collection install ansible.posix
+```
+
+
+# day 2
+
+**수동 설치 진행**
+PoC : master x 1, node x 2  (x)
+Prod: master x 3, node x 2 (v)
+- 네트워크 추가(터널링)
+- 런타임(containerd --> crio)
+
+1. 쿠버네티스는 SELinux를 공식적으로 지원하지 않음.
+```
+  1-1. SELinux 정책에 쿠버네티스가 등록이 안되어 있음. 
+       ------------
+       \
+        `---> 별도로 구성 혹은 OpenShift(OKD)
+  1-2. seccomp(BPF/eBPF)
+```        
+2. firewalld, 대체적으로 올바르게 동작하지 않음.
+  - 6443이외 포트도 확인 후 등록이 필요.
+  - systemctl stop firewalld(nftables)
+
+3. kernel modules, parameters
+  - modules-load.d/
+    + modprobe <MODULE_NAME>
+    + "br_netfilter" 이 모듈이 제일 중요함.
+    + modprobe $(cat 99-k8s-modules.conf)
+  - sysctl.d/
+    + 99-k8s.conf
+4. swapoff!!
+  - swapon -s && swapoff -a
+
+
+## 다중 마스터 서버 구축
+
+
+요구사항: 3대의 마스터 서버 + 1
+         1EA, Bootstrap Node(MultiMaster Deployment Done...remove..)
+              --upload-certs
+              --control-plane               
+         3EA, MultiMaster Nodes
+
+참고 메뉴얼
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
+
+
+### 준비물
+
+http://github.com/tangt64/duststack-k8s-auto/
+                                             roles/kubernetes/
+**HAproxy** , Nginx 
+
+Masters 3~4대가 준비가 되야 됨. +2
+Master Node : kubeadm reset --force              
+Compute Node: kubeadm reset --force
+
+### 멀티 마스터 명령어 정리
+
+```
+
+kubeadm init --control-plane-endpoint 172.31.137.87  --upload-certs
+                                      -------------
+                                      \
+                                       `---> 이 위치에 본래는 haproxy서버 정보가 들어감.
+                                             우리 랩에서는 haproxy가 없기에 첫번째 서버가 그 역할을 함. 
+
+kubeadm init phase upload-certs --upload-certs
+                   ---------------------------
+                   \
+                    `---> init 이후 별도로 마스터 노드 추가 하는 경우 이 명령어 사용
+
+kubeadm join 172.31.137.87:6443 --token sdhejm.ef26z515jnhgeeqd \
+        --discovery-token-ca-cert-hash sha256:650a711d2854c764bb1565ed11dba174b3ed8189425a2aa1e4733cd31c36d8c8 \
+        --control-plane --certificate-key aa820c2b9770ad2e7792cf91c9c4dcbf12a1f6724f5d37bb16151a9667e33a9a                    
+
+kubeadm join 172.31.137.87:6443 --token sdhejm.ef26z515jnhgeeqd \
+        --discovery-token-ca-cert-hash sha256:650a711d2854c764bb1565ed11dba174b3ed8189425a2aa1e4733cd31c36d8c8
+
 
 ```
