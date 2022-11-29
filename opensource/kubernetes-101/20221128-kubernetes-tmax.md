@@ -372,3 +372,32 @@ kubeadm join 172.31.137.87:6443 --token sdhejm.ef26z515jnhgeeqd \
 
 
 ```
+
+
+
+### 최종 랩 설치
+
+master x 3
+node x 2
+
+runtime: crio
+API interface: eth1
+
+
+``` bash
+nmtui
+eth1 active and link up
+
+
+수동
+nmcli con mod eth1 ipv4.addresses 192.168.90.78/24 ipv4.gateway 0.0.0.0 ipv4.method manual
+nmcli con up eth1
+
+yum install cri-o -y
+systemctl enable --now cri-o
+                                                                                                      eth1
+                                                                                                  -------------
+kubeadm init --control-plane-endpoint 192.168.89.87  --upload-certs --apiserver-advertise-address=192.168.90.87
+
+
+```
