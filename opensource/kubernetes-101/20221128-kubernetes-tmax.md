@@ -424,7 +424,7 @@ https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cnis/c
 kubeadm reset --force
 kubeadm init --control-plane-endpoint 192.168.90.87  --upload-certs --apiserver-advertise-address=192.168.90.87 --pod-network-cidr=192.168.0.0/16
 nmcli con up eth1
-nmcli con mod eth1 connection.auto yes
+nmcli con mod eth1 autoconnect yes
 systemctl disable firewalld
 systmctl stop firewalld
 setenforce 0
