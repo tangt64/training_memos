@@ -475,9 +475,9 @@ spec:
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
-
+  registry: quay.io
+  
 ---
-
 # This section configures the Calico API server.
 # For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.APIServer
 apiVersion: operator.tigera.io/v1
@@ -486,6 +486,8 @@ metadata:
   name: default
 spec: {}
 
+
 # 설정 값 등록 
-kubectl create -f custom-resources.yaml
+kubectl create -f custom-resources.yaml   ## 10.xx으로 되어 있으면 안됨 수정(192.168) 후 아래명령어 실행
+kubectl replace -f custom-resources.yaml 
 ```
