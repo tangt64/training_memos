@@ -428,7 +428,9 @@ kubectl get nodes
 
 # 만약 dump가 안되면..
 cat /etc/kubernetes/manifests/kube-controller-manager.yaml | grep cluster-cidr
+ps -ef | grep cidr
 
+기본 POD주소: 10.96.0.0/12
 
 # 쿠버네티스 클러스터에서 사용하는 POD 네트워크 정보 확인
 kubectl cluster-info dump | grep cidr
