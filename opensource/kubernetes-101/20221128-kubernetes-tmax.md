@@ -418,10 +418,32 @@ https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cnis/c
 
 
 ```bash
-# kubectl cluster-info dump | grep cidr
-# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
 
-# vi custom-resources.yaml
+# eth1인터페이스 활성 후 "kubectl"명령어 사용이 가능
+nmcli con up eth1
+
+# kubectl 명령어 안되시면(8080) 아래 명령어 실행
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+
+# 만약 dump가 안되면..
+cat /etc/kubernetes/manifests/kube-controller-manager.yaml | grep cluster-cidr
+
+
+# 쿠버네티스 클러스터에서 사용하는 POD 네트워크 정보 확인
+kubectl cluster-info dump | grep cidr
+"--allocate-node-cidrs=true",
+"--cluster-cidr=192.168.0.0/16",
+"--allocate-node-cidrs=true",
+"--cluster-cidr=192.168.0.0/16",
+"--allocate-node-cidrs=true",
+"--cluster-cidr=192.168.0.0/16",
+
+# calico(vxlan) 터널링 네트워크 생성
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+
+# calico에서 POD네트워크를 연결한 대역을 설정
+vi custom-resources.yaml
 apiVersion: operator.tigera.io/v1
 kind: Installation
 metadata:
@@ -432,7 +454,7 @@ spec:
     # Note: The ipPools section cannot be modified post-install.
     ipPools:
     - blockSize: 26
-      cidr: 192.168.0.0/16
+      cidr: 10.96.0.0/16 <
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
