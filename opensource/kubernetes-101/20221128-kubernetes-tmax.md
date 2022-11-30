@@ -411,7 +411,7 @@ kubectl get nodes
 https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cnis/cni-calico/files/tigera-operator.yaml
 
 
-# day 4
+# day 3
 
 
 ## 네트워크 구성(POD)
@@ -445,7 +445,7 @@ kubectl get nodes
 cat /etc/kubernetes/manifests/kube-controller-manager.yaml | grep cluster-cidr
 ps -ef | grep cidr
 
-기본 POD주소: 10.96.0.0/12
+기본 POD주소: 10.88.0.0/12  ## ip netns exec cni-<~~~> ip a 
 
 # 쿠버네티스 클러스터에서 사용하는 POD 네트워크 정보 확인
 kubectl cluster-info dump | grep cidr
@@ -471,7 +471,7 @@ spec:
     # Note: The ipPools section cannot be modified post-install.
     ipPools:
     - blockSize: 26
-      cidr: 10.96.0.0/16
+      cidr: 192.168.0.0/16
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
