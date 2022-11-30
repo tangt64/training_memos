@@ -471,4 +471,6 @@ metadata:
   name: default
 spec: {}
 
+# 설정 값 등록 
+kubectl create -f custom-resources.yaml
 ```
