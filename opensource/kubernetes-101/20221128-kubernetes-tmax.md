@@ -394,10 +394,57 @@ nmcli con mod eth1 ipv4.addresses 192.168.90.78/24 ipv4.gateway 0.0.0.0 ipv4.met
 nmcli con up eth1
 
 yum install cri-o -y
+systemctl stop containerd
+systemctl disable containerd
 systemctl enable --now cri-o
-                                                                                                      eth1
-                                                                                                  -------------
-kubeadm init --control-plane-endpoint 192.168.89.87  --upload-certs --apiserver-advertise-address=192.168.90.87
+vi /etc/hosts
+172.31.13x.* ---> 192.168.90.X
+kubeadm reset --force ## 모든서버
+                                          eth1                                                       eth1
+                                      -------------                                              -------------
+kubeadm init --control-plane-endpoint 192.168.90.87  --upload-certs --apiserver-advertise-address=192.168.90.87
 
+cp /etc/kubernetes/admin.conf ~/.kube/config
+kubectl get nodes
+```
+
+https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cnis/cni-calico/files/tigera-operator.yaml
+
+
+# day 4
+
+
+## 네트워크 구성(POD)
+
+
+```bash
+# kubectl cluster-info dump | grep cidr
+# kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+
+# vi custom-resources.yaml
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  # Configures Calico networking.
+  calicoNetwork:
+    # Note: The ipPools section cannot be modified post-install.
+    ipPools:
+    - blockSize: 26
+      cidr: 192.168.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+
+---
+
+# This section configures the Calico API server.
+# For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.APIServer
+apiVersion: operator.tigera.io/v1
+kind: APIServer
+metadata:
+  name: default
+spec: {}
 
 ```
