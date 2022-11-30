@@ -418,9 +418,24 @@ https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cnis/c
 
 
 ```bash
+## 잘 안되시는분들 아래처럼 진행 후 다시 시작!
 
-# eth1인터페이스 활성 후 "kubectl"명령어 사용이 가능
+## master 1~3, node 1~2
+kubeadm reset --force
+kubeadm init --control-plane-endpoint 192.168.90.87  --upload-certs --apiserver-advertise-address=192.168.90.87 --pod-network-cidr=192.168.0.0/16
 nmcli con up eth1
+nmcli con mod eth1 connection.auto yes
+systemctl disable firewalld
+systmctl stop firewalld
+setenforce 0
+vi /etc/selinux/config
+SELINUX=permissive
+
+## master 1~3 
+kubeadm join --control-plane
+
+## node 1~3 
+kubeadm join 
 
 # kubectl 명령어 안되시면(8080) 아래 명령어 실행
 export KUBECONFIG=/etc/kubernetes/admin.conf
