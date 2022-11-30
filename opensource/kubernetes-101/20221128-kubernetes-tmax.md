@@ -414,7 +414,41 @@ https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cnis/c
 # day 3
 
 
-## 네트워크 구성(POD)
+## 네트워크 구성(POD) + 최종정리
+
+
+```bash
+
+eth0: nat, external
+eth1: API, internal,static IP   <--- kubectl 
+
+## firewalld
+systemctl stop firewalld
+systemctl disable firewalld
+
+## selinux
+vi /etc/selinux/config 
+getenforce
+setenforce
+
+## swap
+vi /etc/fstab
+swapon -s
+swapoff -a
+
+
+                                                                    .---> ETCD서버에 업로드
+## kubeadm for master                [PROXY IP(VIP)]               /
+                                     --------------  --------------
+kubeadm init --control-plane-endpoint=192.168.90.87  --upload-certs --apiserver-advertise-address=192.168.90.87 --pod-network-cidr=192.168.0.0/16 --svc-network-cidr=10.
++ --cri-socket="/var/lib/crio|contaienrd"
+## rest of masters
+kubeadm join --control-plane
+
+## node 
+kubeadm join 
+
+```
 
 
 ```bash
@@ -438,14 +472,15 @@ kubeadm join --control-plane
 kubeadm join 
 
 # kubectl 명령어 안되시면(8080) 아래 명령어 실행
-export KUBECONFIG=/etc/kubernetes/admin.conf
+export KUBECONFIG=/etc/kubernetes/admin.conf   ## 실제 제품 환경에서는 공유하면 안됨.
 kubectl get nodes
 
 # 만약 dump가 안되면..
 cat /etc/kubernetes/manifests/kube-controller-manager.yaml | grep cluster-cidr
 ps -ef | grep cidr
 
-기본 POD주소: 10.88.0.0/12  ## ip netns exec cni-<~~~> ip a 
+기본 POD주소: 10.88.0.0/12  ## ip netns exec cni-<~~~> ip a  
+             10.90
 
 # 쿠버네티스 클러스터에서 사용하는 POD 네트워크 정보 확인
 kubectl cluster-info dump | grep cidr
@@ -476,7 +511,7 @@ spec:
       natOutgoing: Enabled
       nodeSelector: all()
   registry: quay.io
-  
+
 ---
 # This section configures the Calico API server.
 # For more information, see: https://projectcalico.docs.tigera.io/master/reference/installation/api#operator.tigera.io/v1.APIServer
@@ -491,3 +526,46 @@ spec: {}
 kubectl create -f custom-resources.yaml   ## 10.xx으로 되어 있으면 안됨 수정(192.168) 후 아래명령어 실행
 kubectl replace -f custom-resources.yaml 
 ```
+
+```
+yum install epel-release
+yum install ansible git 
+
+git clone https://github.com/tangt64/duststack-k8s-auto/
+
+cd duststack-k8s-auto/
+vi inventory/YAML-kubernetes.yaml
+console:
+  hosts:
+    172.31.137.87:   <--- eth0, master
+k8s_master:
+  hosts:
+    172.31.137.87:   <--- eth0, master
+      nodename: master1.example.com <--- hostname
+      k8s_ip4: 192.168.100.87 <--- eth1, master
+k8s_node:
+  hosts:
+    172.31.143.23: <--- eth0, node1 
+      nodename: node1.example.com 
+      k8s_ip4: 192.168.100.23 <--- eth1, node1
+    172.31.135.150: <--- eth0, node2
+      nodename: node2.example.com
+      k8s_ip4: 192.168.100.150 <--- eth1, node2   
+
+sh deploy_k8s.sh
+
+```
+
+#### bash 자동완성 활성화(쉘마다 다름)
+```
+kubectl completion -h
+yum install bash-completion
+kubectl completion bash > ~/.kube/completion.bash.inc
+cat ~/.kube/completion.bash.inc >> ~/.bash_profile
+source ~/.bash_profile
+complete -r -p
+bash
+
+```
+
+1000m -> pCore, vCore 1
