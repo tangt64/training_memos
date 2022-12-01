@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: apache
+  name: svc-apache
+  namespace: basic
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8088
+  externalIPs:
+    - 172.31.137.87
+  selector:
+    app.kubernetes.io/name: apache
