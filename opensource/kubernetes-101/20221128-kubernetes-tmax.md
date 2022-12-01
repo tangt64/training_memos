@@ -611,7 +611,7 @@ https://www.docker.com/blog/mergediff-building-dags-more-efficiently-and-elegant
 For more on overlay filesystems (overlay2 is a newer release, but I don't believe there are any user visible changes), see the kernel docs:
 
 
-
+```
  (master, node1,2)
 kubeadm --reset
 
@@ -639,8 +639,7 @@ k8s_node:                                    ---> ssh-keygent
     172.19.134.97: (eth0)
       nodename: node2.example.com
       k8s_ip4: 192.168.100.97 (eth1)
-
-
+```
 
 
 
