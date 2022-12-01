@@ -2,8 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   labels:
-    name: apache
-  name: svc-apache
+    name: apache-lb
+  name: apache-lb
   namespace: basic
 spec:
   ports:
@@ -12,4 +12,5 @@ spec:
   externalIPs:
     - 172.31.137.87
   selector:
-    app.kubernetes.io/name: apache
+    app: apache
+  type: LoadBalancer
