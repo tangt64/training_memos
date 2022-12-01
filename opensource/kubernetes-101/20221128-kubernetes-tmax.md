@@ -565,7 +565,91 @@ cat ~/.kube/completion.bash.inc >> ~/.bash_profile
 source ~/.bash_profile
 complete -r -p
 bash
-
 ```
 
-1000m -> pCore, vCore 1
+yaml/base_command/basic-deployment-nginx.yaml
+
+# day 4
+
+
+```bash
+
+kubectl create namespace basic
+kubectl get namespaces 
+kubectl config set-context --current --namespace basic
+
+vi basic-deployment-apache.yaml
+vi basic-deployment-nginx.yaml
+
+kubectl create -f basic-deployment-nginx.yaml
+                  basic-deployment-apache.yaml
+
+kubectl expose deploy nginx
+                      apache
+
+kubectl get endpoint       
+
+@master> kubectl describe <POD>
+         node, PODIP확인
+@nodeX> crictl ps | grep <POD-NAME>
+@nodeX> crictl pods ls | grep <POD-NAME>                         
+```
+
+container =/= POD
+container: application
+POD: resource(isolate)
+
+https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt
+https://www.docker.com/blog/mergediff-building-dags-more-efficiently-and-elegantly/
+
+- LowerDir: these are the read-only layers of an overlay filesystem. For docker, these are the image layers assembled in order.
+- UpperDir: this is the read-write layer of an overlay filesystem. For docker, that is equivalent to the container specific layer which contains changes made by that container.
+- WorkDir: this is a required directory for overlay, it needs an empty directory for internal use.
+
+- MergedDir: this is the result of the overlay filesystem. Docker effectively chroot's into this directory when running the container.
+
+For more on overlay filesystems (overlay2 is a newer release, but I don't believe there are any user visible changes), see the kernel docs:
+
+
+
+ (master, node1,2)
+kubeadm --reset
+
+yum remove kube* 
+yum install git
+git clone https://github.com/tangt64/duststack-k8s-auto
+
+yum epel-release -y
+yum install ansible -y
+cd duststak-k8s-auto
+vi inventory/kubernetes.yaml
+console:
+  hosts:
+    172.19.136.42: (eth0)
+k8s_master:
+  hosts:                                             * ssh_remote_password: centos
+    172.19.136.42: (eth0)                              * ssh_remote_user: root
+      nodename: master1.example.com          ---> vi inventory/group_vars/all/kubernetes  
+      k8s_ip4: 192.168.100.42 (eth1)           ---> ansible-galaxy collection install -r requirements.yaml
+k8s_node:                                    ---> ssh-keygent 
+  hosts:                                     ---> sh deploy_k8s.sh
+    172.19.142.239: (eth0)
+      nodename: node1.example.com
+      k8s_ip4: 192.168.100.239 (eth1)
+    172.19.134.97: (eth0)
+      nodename: node2.example.com
+      k8s_ip4: 192.168.100.97 (eth1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
