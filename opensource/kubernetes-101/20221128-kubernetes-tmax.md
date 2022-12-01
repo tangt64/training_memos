@@ -619,7 +619,7 @@ yum remove kube*
 yum install git
 git clone https://github.com/tangt64/duststack-k8s-auto
 
-yum epel-release -y
+yum install epel-release -y
 yum install ansible -y
 cd duststak-k8s-auto
 vi inventory/kubernetes.yaml
@@ -627,7 +627,7 @@ console:
   hosts:
     172.19.136.42: (eth0)
 k8s_master:
-  hosts:                                             * ssh_remote_password: centos
+  hosts:                                               * ssh_remote_password: centos
     172.19.136.42: (eth0)                              * ssh_remote_user: root
       nodename: master1.example.com          ---> vi inventory/group_vars/all/kubernetes  
       k8s_ip4: 192.168.100.42 (eth1)           ---> ansible-galaxy collection install -r requirements.yaml
@@ -643,12 +643,83 @@ k8s_node:                                    ---> ssh-keygent
 
 
 
+```
+                    
+
+       (deployment(o) RS =/= RC(deployconfig(x))          
+
+
+                                   .---> configmap, secret, limit, quota....
+                                  /
+                                 /
+                              DEPLOY           SVC               
+                              ======          =====
+                              label:          label:
+                                ^             selector: ---------.
+                                |             "deploy label"     |
+                                |             "SEP"              |
+                                |                                |
+                                v                                v
+                                RS --->    RUNTIME     --->     POD
+                               ====                         =============
+                               spec:                              3 == [SVCIP + PORT, ClusterIP]
+                               replicas: 3 
+                                 template:
+                                 selector:
+
+
+
+```
+
+
+externalname 동영상
 
 
 
 
+```bash
+tang@linux.com
+
+yum install epel-release
+yum install git ansible 
+git clone https://github.com/tangt64/duststack-k8s-auto
+cd duststack-k8s-auto/
+
+## eth0에 강제로 static으로 아이피 설정.
+
+vi inventory/kubernetes.yaml
+console:                        ### master 아이피
+  hosts:
+    172.19.136.42:              ### eth0
+k8s_master:
+  hosts:
+    172.19.136.42:              ### eth0
+      nodename: master1.example.com
+      k8s_ip4: 192.168.100.42   ### eth1
+k8s_node:
+  hosts:
+    172.19.142.239:             ### eth0
+      nodename: node1.example.com
+      k8s_ip4: 192.168.100.239  ### eth1
+    172.19.134.97:              ### eth0
+      nodename: node2.example.com
+      k8s_ip4: 192.168.100.97   ### eth1
+
+vi inventory/group_vars/all/kubernetes
+ssh_remote_user: root
+ssh_remote_password: centos
+
+ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
+ansible-galaxy collection install -r requirements.yaml
+sh deploy-k8s.sh
+sh remove-k8s.sh
+
+```
 
 
+메일주소
 
-
+tang@linux.com
+bluehelix@gmail.com
+최국현, 연락처는 010-4126-8902
 
