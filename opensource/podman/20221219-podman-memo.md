@@ -318,6 +318,10 @@ curl localhost:8081
 
 ```
 ## 이미지 빌드(연습용)
+
+
+현재 만든 컨테이너에, content.html대신 index.html으로 교체.
+
 ```
 vi Containerfile
 FROM quay.io/centos/centos:stream8
@@ -326,10 +330,11 @@ MAINTAINER CHOI GOOK HYUN,<bluehelix@gmail.com>
 RUN yum install httpd vsftpd php -y && yum clean all
 USER root
 WORKDIR /var/www/html/
-COPY content.html .         ## index.html
+COPY content.html .            ## index.html
 #COPY httpd.conf /etc/httpd/conf/httpd.conf
 COPY root-httpd.conf /root/httpd.conf
 EXPOSE 80
+VOLUME /var/www/html
 CMD /usr/sbin/httpd -DFOREGROUND -f /root/httpd.conf
 
 echo "Hello My first container" > content.html
@@ -343,6 +348,25 @@ curl localhost:8080
 curl localhost:8080/content.html
 
 ```
+
+## 연습문제
+
+
+1. nginx를 centos-9-stream기반으로 구성.
+2. 빌드된 이미지안에서 content.html를 nginx웹 디렉터리에 추가.
+  - "Hello my nginx"
+  - nginx프로그램도 설치가 되어야 됨
+  - Dockerfile, Containerfile 둘 중 하나 이용해서 빌드
+3. 컨테이너 접근 포트번호는 80/tcp, nginx
+  - 외부에서 접근하는 포트는 9797/tcp
+4. 외부에서 nginx /usr/share/nginx/html으로 외부 디렉터리 바인딩.
+  - 이 위치에 반드시 content.html이 있어야 됨.
+5. 이미지는 여러분 quay.io에 업로드.
+  - my-nginx:1.0
+6. 올바르게 컨테이너로 실행이 되어야 됨.   
+  - cmd에다가 nginx 실행명령어 
+  - nginx -g daemon off
+
 
 
 **MAC:** Mandatory Access Control
