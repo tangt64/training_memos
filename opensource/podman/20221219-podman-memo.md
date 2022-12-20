@@ -2,6 +2,7 @@
 
 ## 가상머신 웹 대시보드
 <https://con.dustbox.kr>
+(https://wbd.ms/share/v2/aHR0cHM6Ly93aGl0ZWJvYXJkLm1pY3Jvc29mdC5jb20vYXBpL3YxLjAvd2hpdGVib2FyZHMvcmVkZWVtLzA3MmRkNDAxZTA0ZjQ1ODhhN2RiMTU0YTM2YWIyMjI0X0JCQTcxNzYyLTEyRTAtNDJFMS1CMzI0LTVCMTMxRjQyNEUzRF85N2QyODU5YS0xZWQ3LTQ1YTQtYmNlMi0wOTk3NjE5ZWJhNzE=)
 
 ## 게이트웨이 터미널 서버
 <ssh://console.dustbox.kr>
