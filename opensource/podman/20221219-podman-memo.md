@@ -16,22 +16,6 @@
 
 "Podman-in-Action-ebook-MEAP-Red-Hat-Developer-All-Chapters.pdf"
 
-## 알면 좋은것?
-
-MAC: Mandatory Access Control
-> SElinux, AppArmor
-> context, boolean(syscall), port, senstive level
-
-DAC: Discretionary Access Control
-> chown, chmod, uid, gid     
-
-Docker ---> Docker-shim   (x,k8s)
-            Dockerd       --->   Containerd(support, k8s)
-                                 ----------
-                                 runc(OCI)
-
-
-
 ## podman vs docker
 
 OCI: Open Container initiative, (https://opencontainers.org/)
@@ -198,17 +182,58 @@ ipc  mnt  net  pid  uts  user
 podman stop -a 
 podman rm -a
 podman run -d --pod new:pod-apache --name container-apache -p8080:8080 quay.io/centos7/httpd-24-centos7
-
-
 ```
 
-
 # 연습문제
-
 
 1. nginx이미지를 quay.io 혹은 hub.docker.com에서 찾으세요.
 2. 포트번호 몇번을 사용하는지 확인 후 포트 맵핑(-p)로 접근이 가능해야 됨.
 3. 'inspect'로 컨테이너 포트 번호 정보 확인이 가능.
   - expose라는 값이 일반적으로 애플리케이션에서 사용하는 포트
 4. '-v'사용해서 "hello nginx"라는 메세지를 출력
+  - /srv/nginx/htdocs/hello.html
+    * 내용은 반드시 "this is nginx service"
+    * SELinux가 반드시 켜져 있어야 됨
 5. pod도 생성. "pod-nginx"로 컨테이너 "container-nginx"와 함께 실행.
+
+
+
+# day 2
+
+## 기타 잡지식+
+```bash
+                           <FILE>,<DIR>,<PORT>
+   podman                           |
+=============                       |
+                                    v
+pod/container --- namespace --- [seccomp] kernel
+                  cgroup        [selinux]
+
+```
+**get/setenforce:** selinux 상태확인
+  - 0: 임시적으로 꺼져있는 상태
+  - 1: 동작중인 상태(강제로 프로세스 정책 적용)
+
+```bash
+getenforce
+semanage fcontext -l | grep container_
+chcon
+semanage fcontext -a -t container_file_t "/root/nginx-htdocs(/.*)?"
+# -a: append, 추가
+# -t: context, 레이블 혹은 컨텍스트
+# semanage로 실행하면, 적용되는게 아니라, selinux 상태db에 등록
+restorecon -RFvv /root/nginx-htdocs
+ls -aldZ /root/nginx-htdocs
+```
+
+**MAC:** Mandatory Access Control
+> SElinux, AppArmor
+> context, boolean(syscall), port, senstive level
+
+DAC: Discretionary Access Control
+> chown, chmod, uid, gid     
+
+Docker ---> Docker-shim   (x,k8s)
+            Dockerd       --->   Containerd(support, k8s)
+                                 ----------
+                                 runc(OCI)  
