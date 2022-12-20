@@ -2,7 +2,8 @@
 
 ## 가상머신 웹 대시보드
 <https://con.dustbox.kr>
-(https://wbd.ms/share/v2/aHR0cHM6Ly93aGl0ZWJvYXJkLm1pY3Jvc29mdC5jb20vYXBpL3YxLjAvd2hpdGVib2FyZHMvcmVkZWVtLzA3MmRkNDAxZTA0ZjQ1ODhhN2RiMTU0YTM2YWIyMjI0X0JCQTcxNzYyLTEyRTAtNDJFMS1CMzI0LTVCMTMxRjQyNEUzRF85N2QyODU5YS0xZWQ3LTQ1YTQtYmNlMi0wOTk3NjE5ZWJhNzE=)
+
+(화이트보드)[https://wbd.ms/share/v2/aHR0cHM6Ly93aGl0ZWJvYXJkLm1pY3Jvc29mdC5jb20vYXBpL3YxLjAvd2hpdGVib2FyZHMvcmVkZWVtLzA3MmRkNDAxZTA0ZjQ1ODhhN2RiMTU0YTM2YWIyMjI0X0JCQTcxNzYyLTEyRTAtNDJFMS1CMzI0LTVCMTMxRjQyNEUzRF85N2QyODU5YS0xZWQ3LTQ1YTQtYmNlMi0wOTk3NjE5ZWJhNzE=]
 
 ## 게이트웨이 터미널 서버
 <ssh://console.dustbox.kr>
@@ -16,6 +17,11 @@
                                                           opensource/podman
 
 "Podman-in-Action-ebook-MEAP-Red-Hat-Developer-All-Chapters.pdf"
+https://www.informit.com/articles/article.aspx?p=29961&seqNum=2
+
+https://people.redhat.com/~jupittma/cheatsheets/podman.html
+
+google: people redhat jupittma
 
 ## podman vs docker
 
@@ -227,6 +233,118 @@ restorecon -RFvv /root/nginx-htdocs
 ls -aldZ /root/nginx-htdocs
 ```
 
+## directory binding or mount binding
+```bash
+
+```
+
+## container image structure(as runtime)
+
+```
+podman run -d ~~~
+podman container ls --size
+
+     Changed/Modifed/Added: 12B
+    +-------------------
+    |merge, upper, diff    ## 최상위 레이어, 파일 변경 및 추가 수정 여기에 기록
+    +-------------------
+            |
+       [link layer]
+            |
+ [3]=================== -- 
+ [2]===================   |[layers, virtual 736kB]
+ [1]===================   |ReadOnly, lower
+ [0]=================== --
+```
+
+
+## 스타벅스 걸리 문제!! :)
+
+systemctl stop, service stop  == podman stop 
+kill 
+
+podman stop <CID>
+  1. namespace isolate(kernel)
+  2. stop ---> exit 
+     (-15)      (-f, -9)
+               Overlay에 저장을 못할 가능성이 높음. 
+
+왜!? stop후에 container종료를 할까요? (1)
+             ---------
+              [process] <--- kill (2)
+                          1. -15   
+                          2. -9: Z/D 상태(process)
+                          
+
+
+
+```bash
+ HOST         ----->      CONTAINER
+======       [BINDING]   ===========
+            -v: volume                                       <curl>
+[1] /root/test/index.html < -------------------------------------.
+                           [0] /usr/share/nginx/html/index.html   `------ :)-<-<
+                              <index.html>        [HTTP]
+
+$ curl localhost:8080 ## /usr/share/nginx/html 
+```
+
+커밋된 이미지를 컨테이너로 생성 후 서비스 호출
+
+JSON: 메타정보를 가지고 있음. 
+```
+
+dataStore: /var/lib/containers/storages
+                          \
+Cow: Copy On Write == backingFsBlockDev
+                            \
+                             '--- <overlay>, runtime 정보(commit전)
+                                    /
+  podman create    --->   <overlay-containers>
+                                   |\
+                                   | `---> containers.json
+                                   |       # podman container ls
+                           <overlay-images>
+                                    \
+                                     `---> images.json
+                                           # podman images 
+
+
+```  
+```
+podman run -d -p8081:80 
+localhost/commit-container-nginx
+curl localhost:8081
+
+```
+## 이미지 빌드(연습용)
+```
+vi Containerfile
+FROM quay.io/centos/centos:stream8
+LABEL type="devel"
+MAINTAINER CHOI GOOK HYUN,<bluehelix@gmail.com>
+RUN yum install httpd vsftpd php -y && yum clean all
+USER root
+WORKDIR /var/www/html/
+COPY content.html .         ## index.html
+#COPY httpd.conf /etc/httpd/conf/httpd.conf
+COPY root-httpd.conf /root/httpd.conf
+EXPOSE 80
+CMD /usr/sbin/httpd -DFOREGROUND -f /root/httpd.conf
+
+echo "Hello My first container" > content.html
+cp /etc/httpd/conf/httpd.conf .
+
+podman build . -t quay.io/xinick/containerlab/httpd:first
+podman tag <IMAGE_ID> quay.io/xinick/containerlab/httpd:first
+
+podman run -d -p8080:80 quay.io/xinick/containerlab/httpd:first
+curl localhost:8080
+curl localhost:8080/content.html
+
+```
+
+
 **MAC:** Mandatory Access Control
 > SElinux, AppArmor
 > context, boolean(syscall), port, senstive level
@@ -238,3 +356,6 @@ Docker ---> Docker-shim   (x,k8s)
             Dockerd       --->   Containerd(support, k8s)
                                  ----------
                                  runc(OCI)  
+
+
+
