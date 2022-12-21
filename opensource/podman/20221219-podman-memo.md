@@ -352,20 +352,22 @@ curl localhost:8080/content.html
 ## 연습문제
 
 
-1. nginx를 centos-9-stream기반으로 구성.
+1. nginx를 centos-9-stream기반으로 구성. [v]
+  - quay.io/centos/centos:stream9 [v]
 2. 빌드된 이미지안에서 content.html를 nginx웹 디렉터리에 추가.
-  - "Hello my nginx"
-  - nginx프로그램도 설치가 되어야 됨
-  - Dockerfile, Containerfile 둘 중 하나 이용해서 빌드
+  - "Hello my nginx" [v]
+  - nginx프로그램도 설치가 되어야 됨 [v]
+  - Dockerfile, Containerfile 둘 중 하나 이용해서 빌드 [v]
 3. 컨테이너 접근 포트번호는 80/tcp, nginx
   - 외부에서 접근하는 포트는 9797/tcp
 4. 외부에서 nginx /usr/share/nginx/html으로 외부 디렉터리 바인딩.
   - 이 위치에 반드시 content.html이 있어야 됨.
+  - /usr/share/nginx/html [v]
 5. 이미지는 여러분 quay.io에 업로드.
   - my-nginx:1.0
-6. 올바르게 컨테이너로 실행이 되어야 됨.   
-  - cmd에다가 nginx 실행명령어 
-  - nginx -g daemon off
+6. 올바르게 컨테이너로 실행이 되어야 됨.[v]
+  - cmd에다가 nginx 실행명령어  [v]
+  - nginx -g 'daemon off;'    [v]
 
 
 
@@ -383,3 +385,47 @@ Docker ---> Docker-shim   (x,k8s)
 
 
 
+# day 3
+
+```bash
+cat <<EOF> entrypoint.sh
+#!/bin/sh
+/usr/sbin/nginx -g 'daemon off;'
+EOF
+chmod +x entrypoint.sh
+```
+
+```Containerfile
+FROM quay.io/centos/centos:stream9
+LABEL TYPE="test"
+LABEL RUNTIME="podman"
+MAINTAINER CHOI GOOK HYUN,<bluehelix@gmail.com>
+RUN yum install nginx -y && yum clean all
+RUN mkdir /entrypoint/
+COPY entrypoint.sh /entrypoint/run.sh
+COPY nginx-data/content.html /usr/share/nginx/html/content.html
+EXPOSE 80
+ENTRYPOINT /entrypoint/run.sh
+```
+
+```bash
+podman build -f Containerfile-nginx -t quay.io/xinick/containerlab/httpd:nginx-rev2
+```
+
+```bash
+podman images 
+podman run -p8081:80 quay.io/xinick/containerlab/httpd:nginx-rev2
+curl localhost:8081/content.html
+```
+
+run: 컨테이너 빌드시 실행하는 명령어
+cmd: 컨테이너 실행시 실행하는 명령어
+  - cmd명령어는 컨테이너의 ENV를 사용함
+    * httpd -DFOREGROUND
+  - entrypoint: 컨테이너 실행시 실행하는 명령어 [v]
+    * 가급적이면 절대경로로 실행
+  - "entrypoint" + "cmd"
+    = httpd         -DFOREGROUND
+
+entrypoint, cmd: 실행 시, 컨테이너 런타임이 'sh -c'로 명령어 실행    
+  - 'podman inspect'로 command확인이 가능
