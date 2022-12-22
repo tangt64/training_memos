@@ -521,3 +521,39 @@ $ systemctl --user status nginx.service
 $ podman stop -a 
 # loginctl linger loginctl enable-linger rootless
 ```
+
+
+
+# day 4
+
+**저장소 본래 주소:** https://github.com/gotmax23
+> https://github.com/gotmax23/Containerfiles/blob/main/Containerfiles/systemd/CentOS/CentOS.7.Containerfile
+
+
+
+컨테이너에서 "systemd"혹은 "init"사용하는 케이스
+> https://wiki.openstack.org/wiki/Kolla
+> systemd를 사용하는 컨테이너는 컨테이너 안에서, init호출이 필요한 경우 
+
+### 사용예제(systemd)
+https://hub.docker.com/layers/kolla/ubuntu-source-nova-novncproxy/pike/images/sha256-5cfd84ae1ee26b43a50aec224a80ed4fb7597efeb213f781ea033d339570b595?context=explore
+
+
+
+
+### 총정리 2
+
+
+1. 컨테이너 이미지 빌드
+  - ubuntu로 원하시는 버전 사용
+  - apache가 설치가 되어 있어야 됨
+  - /var/www/html/
+    + index.html
+    + content.html
+    + data.dat
+    + 위의 파일들은 volume혹은 디렉터리 바인딩으로 제공
+2. apache컨테이너를 포트 9090:80으로 서비스 구성
+3. curl접근이 가능해야 되며 index.html, content.html의 아무 내용이나 출력이 되면 됨.
+4. 반드시 SELinux가 활성화가 되어 있어야 됨.
+5. quay.io서버에 "ubuntu-apache:v1"으로 업로드
+6. 최종적으로 사용자 ubuntu-apache생성 후 .service으로 동작이 되어야됨.     
