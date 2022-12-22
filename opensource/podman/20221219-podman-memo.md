@@ -545,15 +545,32 @@ https://hub.docker.com/layers/kolla/ubuntu-source-nova-novncproxy/pike/images/sh
 
 
 1. 컨테이너 이미지 빌드
-  - ubuntu로 원하시는 버전 사용
-  - apache가 설치가 되어 있어야 됨
-  - /var/www/html/
-    + index.html
-    + content.html
-    + data.dat
-    + 위의 파일들은 volume혹은 디렉터리 바인딩으로 제공
-2. apache컨테이너를 포트 9090:80으로 서비스 구성
-3. curl접근이 가능해야 되며 index.html, content.html의 아무 내용이나 출력이 되면 됨.
-4. 반드시 SELinux가 활성화가 되어 있어야 됨.
+  - ubuntu로 원하시는 버전 사용 [v]
+  - apache가 설치가 되어 있어야 됨 
+  - /var/www/html/  [v, "volume import", tar]
+    + index.html [v]
+    + content.html [v]
+    + data.dat [v]
+    + 위의 파일들은 volume혹은 디렉터리 바인딩으로 제공 [v]
+2. apache컨테이너를 포트 9090:80으로 서비스 구성 [v]
+3. curl접근이 가능해야 되며 index.html, content.html의 아무 내용이나 출력이 되면 됨. [v]
+4. 반드시 SELinux가 활성화가 되어 있어야 됨. 
 5. quay.io서버에 "ubuntu-apache:v1"으로 업로드
 6. 최종적으로 사용자 ubuntu-apache생성 후 .service으로 동작이 되어야됨.     
+
+
+## 미니큐베(podman 버전)
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+install kubectl /usr/local/bin/
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube
+install minikube /usr/local/bin/
+
+
+minikube config set rootless true(==rootless ALL=(ALL) NOPASSWD: /usr/bin/podman)
+./minikube start --driver=podman --container-runtime=cri-o
+
+
