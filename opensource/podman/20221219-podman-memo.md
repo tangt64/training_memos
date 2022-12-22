@@ -395,18 +395,27 @@ EOF
 chmod +x entrypoint.sh
 ```
 
+meta:
+  name:sdsds
+  labels:
+    app: test
 ```Containerfile
 FROM quay.io/centos/centos:stream9
-LABEL TYPE="test"
+LABEL TYPE="test"                    ## CONTAINER ENV(metadata + selector)
 LABEL RUNTIME="podman"
+ENV ANNOTATION_COMPANY="TMAX"        ## SHELL ENV(metadata + application config)
+ENV ANNOTATION_DIVSION="MIDDLEWARE"
 MAINTAINER CHOI GOOK HYUN,<bluehelix@gmail.com>
 RUN yum install nginx -y && yum clean all
 RUN mkdir /entrypoint/
+VOLUME /usr/share/nginx/html /etc/nginx    ## -v, binding, volume 
 COPY entrypoint.sh /entrypoint/run.sh
 COPY nginx-data/content.html /usr/share/nginx/html/content.html
 EXPOSE 80
 ENTRYPOINT /entrypoint/run.sh
 ```
++ENV
++VOLUME
 
 ```bash
 podman build -f Containerfile-nginx -t quay.io/xinick/containerlab/httpd:nginx-rev2
@@ -429,3 +438,86 @@ cmd: 컨테이너 실행시 실행하는 명령어
 
 entrypoint, cmd: 실행 시, 컨테이너 런타임이 'sh -c'로 명령어 실행    
   - 'podman inspect'로 command확인이 가능
+
+
+  ### 제가 잘못 설명한 부분
+
+  1. "-v": 굳이, "containerfile"에서 "VOLUME"으로 선언할 필요가 없음.
+    - 그냥 '-v'옵션으로 바인딩이 됩니다.
+      * podman -v /var/www/html/:/usr/share/nginx/html/
+      * 이건 바인딩(binding, mount -obind /var/www/html/ /usr/share/nginx/html)
+      * /usr/share/nginx/html ---> /var/lib/containers/container-overlay
+
+  2. "VOLUME"의 역할은, 컨테이너 런타임에서 관리하는 "VOLUME"자원을 디바이스 형태로 영구적으로 저장이 필요한 경우 사용한다.
+    - local, devicemapper와 같은 컨테이너 스토리지 드라이버 사용
+    - /etc/containers/storage.conf, container.conf 설정이 가능
+    - 영구적으로 데이터 저장
+    - VOLUME생성된 장치를 컨테이너 안에 맵핑을 하려면 반드시 "VOLUME"에서 선언이 되어 있어됨
+      * podman volume create nginx-htdocs
+      * 기본적으로 "local driver"
+      * /var/lib/containers/storage/volume/
+    - 위치 변경은 "/etc/containers/storage.conf"에서 "graphroot"값으로 변경 가능
+      * "driver: local"으로만 적용
+      * xfs, btrfs, devicemapper, overlay(with fuse), nfs
+    - podman CSI driver
+      * CSI: Container Storage Interface
+      * Kubernetes도 위의 사양을 따름
+
+    [드라이버 참고](https://github.com/dell/csi-unity/blob/main/Dockerfile.podman)
+
+
+
+```containerfile
+CMD nginx 
+CMD httpd -DFOREGROUND
+    ## bash httpd -DFOREGROUND
+    ## ----
+    ## bash_profile, bashrc
+    ## 컨테이너 안쪽에서 실행
+ENTRYPOINT nginx
+ENTRYPOINT /usr/sbin/nginx    
+      ## sh -c /usr/bin/nginx  --- post ran ---> ENV APPLY 
+      ## $PATH
+      ## (NULL ENV)
+      ## 컨테이너 안쪽에서 실행, 대신 환경변수가 적용되기 전
+```
+
+
+https://github.com/goharbor
+https://github.com/quay/quay
+https://www.open-scap.org/
+
+
+## rootless
+
+1. 말 그대로 루트가 없음. 
+  - 일반 사용자에서 컨테이너 실행 시.
+  - 컨테이너 내부에서는 root권한이 필요함. 
+    + 특정 서비스 혹은 프로그램에서 요구하는 경우
+    + 사용자가 nginx인 경우
+
+2. 예를 들어서 사용자 이름이 "tmax". 현재 사용중임
+  - DAC기반으로 리눅스는 시스템이 동작함.
+  - tmax]$ podman run --name tmax-nginx nginx:latest
+  - nginx
+    + nginx(uid,gid)
+    + init(pid, root)
+  - namespace 
+
+## rootless 2(드라이버, 소프트웨어 드라이버(추상 드라이버))
+
+1. 부팅 과정이 없음
+2. 드라이버 초기화가 없음
+
+```bash
+ssh rootless@localhost
+$ podman run -d -p 8080:80 --name nginx <IMG ID>     ## .service파일 생성하기 전까지 실행
+$ mkdir -p ~/home/.config/systemd/user/
+$ podman generate systemd --new --files --name nginx
+$ mv nginx.service ~/home/.config/systemd/user/
+$ systemctl --user daemon-reload
+$ systemctl --user enable nginx.service
+$ systemctl --user status nginx.service
+$ podman stop -a 
+# loginctl linger loginctl enable-linger rootless
+```
