@@ -169,6 +169,11 @@ dnf install epel-release -y
 dnf search containerd
 dnf install yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf repolist
+dnf install containerd -y
+systemctl start containerd
+systemctl status containerd
+systemctl enable containerd
 ```
 
 # 참고자료
