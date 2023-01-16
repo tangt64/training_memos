@@ -151,8 +151,10 @@ Debian --- stable
 ```bash
 vi /etc/hosts
 192.168.90.100 master1.example.com
-192.168.90.130 node1.example.com
-192.168.90.140 node2.example.com
+--------------
+    <eth0>
+#192.168.90.130 node1.example.com
+#192.168.90.140 node2.example.com
 
 swapon -s
 swapoff -a
@@ -160,21 +162,17 @@ vi /etc/fstab
 #/dev/mapper/cs-swap     none                    swap    defaults        0 0
 
 systemctl stop firewalld
-systemctl disable firewalld
 
-firewall-cmd --list-all --zone=public
-firewall-cmd --add-port=6443/tcp 
-
-dnf install epel-release -y 
+dnf install epel-release -y ## 선택사항
 dnf search containerd
 dnf install yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf repolist
 dnf install containerd -y
-systemctl start containerd
-systemctl status containerd
-systemctl enable containerd
+systemctl enable --now containerd
+systemctl is-active containerd
 ctr c ls
+
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -188,9 +186,10 @@ EOF
 # permissive 모드로 SELinux 설정(효과적으로 비활성화)
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
-yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
-systemctl enable --now kubelet
-kubeadm init
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes ## 업데이트 장애 방지
+systemctl enable --now kubelet ## 'activing..'
+
+kubeadm init  ## 시스템 설정 전
 
 firewall-cmd --add-port=6443/tcp --permanent
 firewall-cmd --add-port=10250/tcp --permanent
@@ -209,10 +208,15 @@ iptables ---> nftables <---> <backend> <--- firewalld
    `-------------------------'
       [kernel parameter]
         # sysctl -a | grep forward
-        # sysctl -w net.ipv4.ip_forward=1
-        
+        # sysctl -w net.ipv4.ip_forward=1 
+        # cat <<EOF> /etc/sysctl.d/k8s_forward.conf
+          net.ipv4.ip_forward=1 
+          EOF
+        # sysctl -p -f
 modprobe br_netfilter
+
 kubeadm init
+kubeadm reset
 
 ```
 
