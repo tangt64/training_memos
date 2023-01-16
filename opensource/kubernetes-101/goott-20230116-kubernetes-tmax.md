@@ -5,17 +5,19 @@
 
 과정은 "쿠버네티스 설치+간단한 명령어 운영"
 
+### 내부 ISO내려받기 주소
+
+http://172.16.8.31/
+
 
 ## 랩을 위한 필요한 도구
 
-### 리눅스 배포판
-https://github.com/tangt64/training_memos/
-                                          opensource/  
-                                                     kubernetes-101/
-                                                                    goott-20230116-kubernetes-tmax.md
-__레드햇 계열__            
+### 리눅스 배포판 설명
+
+#### 레드햇 계열
 
 __centos-stream:__ https://www.centos.org/centos-stream/
+
 __rocky linux:__ https://rockylinux.org/ko/download
 
 ``` bash
@@ -57,6 +59,11 @@ Debian --- stable
 - VMware Workstation, Player
   * 라이센스 문제
 
+# 참고자료
 
-
-# 
+[한국어 에코 설명](https://blog.siner.io/2021/10/23/container-ecosystem/)
+[OCI 사양 설명](https://medium.com/@avijitsarkar123/docker-and-oci-runtimes-a9c23a5646d6)		
+[OCI 사양](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)
+[RKT, Rocket](https://en.bmstu.wiki/index.php?title=Rocket_%28rkt%29&mobileaction=toggle_view_desktop)
+[DevSecOps(Legacy Ver)](https://devopedia.org/container-security)
+[Kubernetes Containerd Integration Goes GA](https://kubernetes.io/blog/2018/05/24/kubernetes-containerd-integration-goes-ga/)
