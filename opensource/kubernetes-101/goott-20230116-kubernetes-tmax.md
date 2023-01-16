@@ -258,16 +258,7 @@ vi /etc/hosts
 cd /etc/yum.repos.d/
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
-cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-exclude=kubelet kubeadm kubectl
-EOF
-
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/kubernetes.repo
 swapon -s
 swapoff -a
 vi /etc/fstab
