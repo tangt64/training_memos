@@ -215,8 +215,37 @@ iptables ---> nftables <---> <backend> <--- firewalld
         # sysctl -p -f
 modprobe br_netfilter
 
+cd /etc/cni/net.d/
+cat <<EOF> 100-cri-bridge.conf
+{
+    "cniVersion": "0.3.0",
+    "name": "crio-bridge",
+    "type": "bridge",
+    "bridge": "cni0",
+    "isGateway": true,
+    "ipMasq": true,
+    "ipam": {
+        "type": "host-local",
+        "subnet": "10.244.0.0/16",
+        "routes": [
+            { "dst": "0.0.0.0/0" }
+        ]
+    }
+}
+EOF
+
+cat <<EOF> 200-loopback.conf
+{
+    "cniVersion": "0.3.1",
+    "type": "loopback"
+}
+EOF                 
+
 kubeadm init
-kubeadm reset
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+
 
 ```
 
