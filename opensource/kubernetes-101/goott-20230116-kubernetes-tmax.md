@@ -288,8 +288,14 @@ EOF
 systemctl daemon-reload  ## dracut 정보갱신
 dracut -f                ## 램-디스크 강제 재생성
 
+systemctl enable --now crio
+
 dnf search cri-o 
 dnf install cri-o
+
+@master]# kubeadm token create --print-join-command
+kubeadm join 172.29.220.234:6443 --token ja57hx.4n6g9cbnmcqxjrxk --discovery-token-ca-cert-hash sha256:fa772f99cd9b5385ae3bd9f2fbb3f7f85ec75ed9faf6ddf35540a93e1e3f2c7c
+@node]# kubeadm join 172.29.220.234:6443 --token ja57hx.4n6g9cbnmcqxjrxk --discovery-token-ca-cert-hash sha256:fa772f99cd9b5385ae3bd9f2fbb3f7f85ec75ed9faf6ddf35540a93e1e3f2c7c
 
 ```
 
