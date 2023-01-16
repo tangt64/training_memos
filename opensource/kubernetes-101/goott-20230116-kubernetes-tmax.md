@@ -162,17 +162,9 @@ vi /etc/fstab
 #/dev/mapper/cs-swap     none                    swap    defaults        0 0
 
 systemctl stop firewalld
-
-dnf install epel-release -y ## 선택사항
-dnf search containerd
-dnf install yum-utils
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf repolist
-dnf install containerd -y
-systemctl enable --now containerd
-systemctl is-active containerd
-ctr c ls
-
+```
+## kubernetes 저장소 및 설치 준비
+```bash
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -189,74 +181,70 @@ sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes ## 업데이트 장애 방지
 systemctl enable --now kubelet ## 'activing..'
 
-kubeadm init  ## 시스템 설정 전
-
 firewall-cmd --add-port=6443/tcp --permanent
 firewall-cmd --add-port=10250/tcp --permanent
 firewall-cmd --reload
 firewall-cmd --list-all --zone=public
 systemctl stop firewalld
-
-containerd config default > /etc/containerd/config.toml
-systemctl restart containerd
-
+```
 ## netfilter 참고 그림
+```bash
   .----netfilter----.
  /                   \
 iptables ---> nftables <---> <backend> <--- firewalld
   \                           /
    `-------------------------'
-      [kernel parameter]
-        # sysctl -a | grep forward
-        # sysctl -w net.ipv4.ip_forward=1 
-        # cat <<EOF> /etc/sysctl.d/k8s_forward.conf
-          net.ipv4.ip_forward=1 
-          EOF
-        # sysctl -p -f
-modprobe br_netfilter
+       [kernel parameter]
+```
 
-cd /etc/cni/net.d/
-cat <<EOF> 100-cri-bridge.conf
-{
-    "cniVersion": "0.3.0",
-    "name": "crio-bridge",
-    "type": "bridge",
-    "bridge": "cni0",
-    "isGateway": true,
-    "ipMasq": true,
-    "ipam": {
-        "type": "host-local",
-        "subnet": "10.244.0.0/16",
-        "routes": [
-            { "dst": "0.0.0.0/0" }
-        ]
-    }
-}
+## 커널 파라메타 정보 수정 및 모듈 추가
+```bash
+
+sysctl -a | grep forward
+sysctl -w net.ipv4.ip_forward=1 
+cat <<EOF> /etc/sysctl.d/k8s_forward.conf    ## 영구적인 설정(kernel parameter)
+net.ipv4.ip_forward=1 
 EOF
 
-cat <<EOF> 200-loopback.conf
-{
-    "cniVersion": "0.3.1",
-    "type": "loopback"
-}
-EOF                 
+sysctl -p -f
+modprobe br_netfilter     ## 일시적으로 메모리 상주
 
-kubeadm init
+cat <<EOF> /etc/modules-load.d/k8s_modules.conf   ## 영구적으로 부팅시 자동 상주
+br_netfilter
+EOF
 
-export KUBECONFIG=/etc/kubernetes/admin.conf
-kubectl get nodes
-
-
+systemctl daemon-reload  ## dracut 정보갱신
+dracut -f                ## 램-디스크 강제 재생성
 ```
 
-### CRIO
+### CRIO(centos-9-stream) 기반 설치
 
-```
+```bash
 cd /etc/yum.repos.d/
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.18_1.18.3.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24%201.24.4.repo
 dnf search cri-o 
 dnf install cri-o
+kubeadm init 
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+```
+
+## containerd 기반 설치 
+```bash
+dnf install epel-release -y ## 선택사항
+dnf search containerd
+dnf install yum-utils
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf repolist
+
+dnf install containerd -y
+containerd config default > /etc/containerd/config.toml
+systemctl enable --now containerd
+systemctl is-active containerd
+kubeadm init
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
 ```
 
 # 참고자료
