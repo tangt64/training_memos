@@ -62,8 +62,13 @@ Debian --- stable
 # 참고자료
 
 [한국어 에코 설명](https://blog.siner.io/2021/10/23/container-ecosystem/)
-[OCI 사양 설명](https://medium.com/@avijitsarkar123/docker-and-oci-runtimes-a9c23a5646d6)		
+
+[OCI 사양 설명](https://medium.com/@avijitsarkar123/docker-and-oci-runtimes-a9c23a5646d6)	
+
 [OCI 사양](https://github.com/opencontainers/distribution-spec/blob/main/spec.md)
+
 [RKT, Rocket](https://en.bmstu.wiki/index.php?title=Rocket_%28rkt%29&mobileaction=toggle_view_desktop)
+
 [DevSecOps(Legacy Ver)](https://devopedia.org/container-security)
+
 [Kubernetes Containerd Integration Goes GA](https://kubernetes.io/blog/2018/05/24/kubernetes-containerd-integration-goes-ga/)
