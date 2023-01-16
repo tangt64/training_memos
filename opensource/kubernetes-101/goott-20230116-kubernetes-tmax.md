@@ -190,6 +190,30 @@ setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl enable --now kubelet
+kubeadm init
+
+firewall-cmd --add-port=6443/tcp --permanent
+firewall-cmd --add-port=10250/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-all --zone=public
+systemctl stop firewalld
+
+containerd config default > /etc/containerd/config.toml
+systemctl restart containerd
+
+## netfilter 참고 그림
+  .----netfilter----.
+ /                   \
+iptables ---> nftables <---> <backend> <--- firewalld
+  \                           /
+   `-------------------------'
+      [kernel parameter]
+        # sysctl -a | grep forward
+        # sysctl -w net.ipv4.ip_forward=1
+        
+modprobe br_netfilter
+kubeadm init
+
 ```
 
 # 참고자료
