@@ -222,7 +222,7 @@ dracut -f                ## 램-디스크 강제 재생성
 ```bash
 cd /etc/yum.repos.d/
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24%201.24.4.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
 dnf search cri-o 
 dnf install cri-o
 kubeadm init 
@@ -245,6 +245,61 @@ systemctl is-active containerd
 kubeadm init
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
+```
+
+## node1 구성
+
+```bash
+hostnamectl set-hostname node1.example.com
+vi /etc/hosts
+172.29.220.234 master1.example.com
+172.29.210.238 node1.example.com
+
+cd /etc/yum.repos.d/
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+EOF
+
+swapon -s
+swapoff -a
+vi /etc/fstab
+#/dev/mapper/cs-swap     none                    swap    defaults        0 0
+
+systemctl stop firewalld && systemctl disable firewalld
+
+setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes 
+systemctl enable --now kubelet 
+
+
+sysctl -a | grep forward
+sysctl -w net.ipv4.ip_forward=1 
+cat <<EOF> /etc/sysctl.d/k8s_forward.conf    ## 영구적인 설정(kernel parameter)
+net.ipv4.ip_forward=1 
+EOF
+
+sysctl -p -f
+modprobe br_netfilter     ## 일시적으로 메모리 상주
+
+cat <<EOF> /etc/modules-load.d/k8s_modules.conf   ## 영구적으로 부팅시 자동 상주
+br_netfilter
+EOF
+
+systemctl daemon-reload  ## dracut 정보갱신
+dracut -f                ## 램-디스크 강제 재생성
+
+dnf search cri-o 
+dnf install cri-o
+
 ```
 
 # 참고자료
