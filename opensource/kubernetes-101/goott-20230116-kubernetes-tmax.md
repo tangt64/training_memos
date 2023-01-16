@@ -249,6 +249,16 @@ kubectl get nodes
 
 ```
 
+### CRIO
+
+```
+cd /etc/yum.repos.d/
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.18_1.18.3.repo
+dnf search cri-o 
+dnf install cri-o
+```
+
 # 참고자료
 
 [한국어 에코 설명](https://blog.siner.io/2021/10/23/container-ecosystem/)
