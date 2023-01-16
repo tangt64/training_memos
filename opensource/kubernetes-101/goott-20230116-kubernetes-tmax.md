@@ -9,11 +9,14 @@
 ## 랩을 위한 필요한 도구
 
 ### 리눅스 배포판
+https://github.com/tangt64/training_memos/
+                                          opensource/  
+                                                     kubernetes-101/
+                                                                    goott-20230116-kubernetes-tmax.md
+__레드햇 계열__            
 
-__레드햇 계열__
-
-
-centos-stream: https://www.centos.org/centos-stream/
+__centos-stream:__ https://www.centos.org/centos-stream/
+__rocky linux:__ https://rockylinux.org/ko/download
 
 ``` bash
 Fedora Core(upstream(rolling)) --- CentOS(upstream) --- RHEL(downsteam)
