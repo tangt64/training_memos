@@ -225,6 +225,7 @@ wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/ku
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
 dnf search cri-o 
 dnf install cri-o
+systemctl enable --now crio
 kubeadm init 
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
@@ -389,6 +390,15 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/m
 kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/mysql-wordpress-pd/mysql-deployment.yaml
 kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/mysql-wordpress-pd/wordpress-deployment.yaml
 ```
+
+
+### 멀티 마스터 구성(rocky linux)
+
+```bash
+kubeadm init --control-plane-endpoint 192.168.90.100 --upload-certs --apiserver-advertise-address 192.168.90.100 --pod-network-cidr=192.168.0.0/16
+
+```
+
 
 # 참고자료
 
