@@ -303,13 +303,92 @@ kubeadm join 172.29.220.234:6443 --token ja57hx.4n6g9cbnmcqxjrxk --discovery-tok
 
 # day 2
 
-- 추가적으로 "node2"를 확장
-  * 30분 정도 시간 
-- kubectl get nodes
-- 아키텍처 설명
-  * kubelet
-    + crictl ps, pods
+## 단순설치(master + two nodes, one node)
+- kubeadm init, join
+  * master(init), node(join)
+- @master]# kubectl get nodes 
+- cluster=control+worker 
 
+
+1. runtime
+
+kubectl ---> crictl 
+
+```bash
+dnf install cri-o
+            -----
+            \
+             `---> /etc/containers/
+
+
+  crictl ps               .---> crictl pods ls
+    ^                    /
+    |                +---+
++-----------+        | P |                                      
+| APP + LIB |  ----  | O |   <--- [CRIO] ---> |  kubelet  |    <---    [kubeadm init] 
+| container |  ----  | D |                      <systemd>                image pull
++-----------+        +---+                          
+
+                    | kubeproxy |   <--- | kubelet |  <--- <kubectl>
+                    +-----------+
+                          \
+                           '---> netfilter(linux bridge, namespace)
+                                 runtime interactive 
+```
+
+coredns: 쿠버네티스 내부의 pod끼리 서로 통신을 할수가 없음. 서비스 통신시에 매우 중요.
+
+런타임은 컨테이너 라이프 사이클를 관리하는 도구
+- cri-o(recommend)
+  * client tool: crictl 
+  * pod, container
+
+- containerd
+- cri-docker
+
+### bash 자동완성
+```bash
+kubectl completion bash > k8sbash
+source k8sbash
+```
+
+### fish 자동완성
+```bash
+dnf install fish -y
+fish 
+chsh 
+kubectl completion fish > k8sfish
+source k8sfish
+```
+
+
+기본 노드들 구성이 완료가 되면, 아래 명령어로 네트워크 생성 및 구성
+
+### calico
+calico기반으로 pod네트워크 구성
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
+```
+
+### flannled 
+
+docker.io를 사용하기 때문에 사용하지 않을 예정
+```bash
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/v0.20.2/Documentation/kube-flannel.yml
+```
+
+'flanned' 경우에는 버그가 있음. 아래 내용대로 수정이 필요함
+```bash
+https://github.com/flannel-io/flannel/issues/728
+```
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/mysql-wordpress-pd/local-volumes.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/mysql-wordpress-pd/mysql-deployment.yaml
+kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/mysql-wordpress-pd/wordpress-deployment.yaml
+```
 
 # 참고자료
 
