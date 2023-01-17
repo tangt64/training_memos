@@ -251,9 +251,11 @@ kubectl get nodes
 
 ```bash
 hostnamectl set-hostname node1.example.com
+
 vi /etc/hosts
-172.29.220.234 master1.example.com
+172.29.220.234 master1.example.com   ## eth0, ip addr show eth0
 172.29.210.238 node1.example.com
+               node2.example.com
 
 cd /etc/yum.repos.d/
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
@@ -288,16 +290,26 @@ EOF
 systemctl daemon-reload  ## dracut 정보갱신
 dracut -f                ## 램-디스크 강제 재생성
 
-systemctl enable --now crio
-
 dnf search cri-o 
 dnf install cri-o
+systemctl enable --now crio
+
 
 @master]# kubeadm token create --print-join-command
 kubeadm join 172.29.220.234:6443 --token ja57hx.4n6g9cbnmcqxjrxk --discovery-token-ca-cert-hash sha256:fa772f99cd9b5385ae3bd9f2fbb3f7f85ec75ed9faf6ddf35540a93e1e3f2c7c
 @node]# kubeadm join 172.29.220.234:6443 --token ja57hx.4n6g9cbnmcqxjrxk --discovery-token-ca-cert-hash sha256:fa772f99cd9b5385ae3bd9f2fbb3f7f85ec75ed9faf6ddf35540a93e1e3f2c7c
 
 ```
+
+# day 2
+
+- 추가적으로 "node2"를 확장
+  * 30분 정도 시간 
+- kubectl get nodes
+- 아키텍처 설명
+  * kubelet
+    + crictl ps, pods
+
 
 # 참고자료
 
