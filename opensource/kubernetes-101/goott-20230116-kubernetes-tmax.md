@@ -372,7 +372,7 @@ kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
 ```
 
-### flannled 
+### flannel
 
 docker.io를 사용하기 때문에 사용하지 않을 예정
 ```bash
