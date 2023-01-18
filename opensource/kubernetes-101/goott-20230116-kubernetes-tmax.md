@@ -392,11 +392,27 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/m
 ```
 
 
+# day 3
+
+
 ### 멀티 마스터 구성(rocky linux)
 
-```bash
-kubeadm init --control-plane-endpoint 192.168.90.100 --upload-certs --apiserver-advertise-address 192.168.90.100 --pod-network-cidr=192.168.0.0/16
 
+__master1(24시간 안에는 유효, bootstrap node)__
+```bash
+@master1]# kubeadm init --control-plane-endpoint 192.168.90.100 --upload-certs --apiserver-advertise-address 192.168.90.100 --pod-network-cidr=192.168.0.0/16
+
+```
+
+__24시간 이후__
+```bash
+@master1]# kubeadm certs certificate-key   ## 마스터 노드에서 사용할 cluster TLS
+@master1]# kubeadm init phase upload-certs --upload-certs ## 인증서를 etcd에 저장. 다른 마스터 노드가 연결시 내려받기 함
+@master1]# kubeadm token create --print-join-command
+kubeadm join 192.168.90.100:6443 --token hhjg3n.nmfs94gop1aeom0n --discovery-token-ca-cert-hash sha256:01e7f7dee3594c99fa1cb50ad20f3b0b6e1f74d2afaf5f5dc1892bc1b6f247b1 "--control-plane --certificate-key 8dc065689de5eb04b57f5538d46bcda977df33b586bcbf4b922fd676eeb0d41e"
+@master2]# kubeadm join 192.168.90.100:6443 --token hhjg3n.nmfs94gop1aeom0n --discovery-token-ca-cert-hash sha256:01e7f7dee3594c99fa1cb50ad20f3b0b6e1f74d2afaf5f5dc1892bc1b6f247b1 \ 
+  --control-plane \ 
+  --certificate-key 8dc065689de5eb04b57f5538d46bcda977df33b586bcbf4b922fd676eeb0d41e
 ```
 
 
@@ -425,10 +441,8 @@ spec:
 
 ```bash
 kubectl create -f nginx.yaml
-kubectl expose deploy nginx-deployment --type LoadBalancer --external-ip 172.29.220.234
+kubectl expose deploy nginx-deployment --type loadbalancer --external-ip 172.29.220.234
 ```
-
-# day 3
 
 ```bash
 cat << EOF | kubectl apply -f -
