@@ -400,7 +400,49 @@ kubeadm init --control-plane-endpoint 192.168.90.100 --upload-certs --apiserver-
 ```
 
 
+__nginx.yaml__
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+
+```bash
+kubectl create -f nginx.yaml
+kubectl expose deploy nginx-deployment --type loadbalancer --external-ip 172.29.220.234
+```
+
+# day 3
+
+```bash
+cat << EOF | kubectl apply -f -
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: local-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+EOF
+```
+
 # 참고자료
+[명령어 가이드](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)
 
 [한국어 에코 설명](https://blog.siner.io/2021/10/23/container-ecosystem/)
 
