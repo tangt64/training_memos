@@ -425,7 +425,7 @@ spec:
 
 ```bash
 kubectl create -f nginx.yaml
-kubectl expose deploy nginx-deployment --type loadbalancer --external-ip 172.29.220.234
+kubectl expose deploy nginx-deployment --type LoadBalancer --external-ip 172.29.220.234
 ```
 
 # day 3
