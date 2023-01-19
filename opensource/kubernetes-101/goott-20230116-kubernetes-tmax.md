@@ -399,8 +399,23 @@ kubectl create -f https://raw.githubusercontent.com/kubernetes/examples/master/m
 
 
 __master1(24시간 안에는 유효, bootstrap node)__
+
+- control-plane-endpoint
+'master끼리 서로 정보를 주고 받을때 사용하는 아이피 주소'. 아이피 주소는 보통은 'Loadbalancer(l4/l7)'
+ex: --control-plane-endpoint 192.168.90.250(192.168.10.0.1/2/3/4/5)
+
+- upload-certs
+공개 인증서 etcd서버에 업로드. master설치시 인증서 전달 및 제공.
+
+- apiserver-advertise-address
+'master, worker'가 API를 전달 받는 인터페이스.
+
+**nic카드는 최소 2장**
+
 ```bash
-@master1]# kubeadm init --control-plane-endpoint 192.168.90.100 --upload-certs --apiserver-advertise-address 192.168.90.100 --pod-network-cidr=192.168.0.0/16
+@master1]# kubeadm init --control-plane-endpoint 192.168.90.100 --upload-certs --apiserver-advertise-address 192.168.90.100 --pod-network-cidr=192.168.0.0/16 --service-dns-domain=tmax.project --image-repository=192.168.90.250/
+
+@master1]# kubeadm init --apiserver-advertise-address 192.168.90.100 --pod-network-cidr=192.168.0.0/16 --upload-certs 
 
 ```
 
@@ -455,7 +470,264 @@ volumeBindingMode: WaitForFirstConsumer
 EOF
 ```
 
+bash completion(minial installation)
+```bash
+dnf install bash-completion -y && complete -r -p && source k8sbash
+bash
+complete -r -p && source k8sbash
+
+```
+
+### ifconfig vs ip, netstat vs ss
+
+ifconfig: namespace 장치 지원 안함.
+ip: namespace 장치
+
+netstat: namespace (x)
+route ---> ip r(oute)
+
+# day 4
+
+
+## metric service
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/metrics.yaml
+kubectl get pods
+kubectl top pods
+kubectl top nodes
+```
+
+.vimrc(yamllint + ale)
+```bash
+dnf install yamllint vim -y 
+yum install epel-release -y
+yum install neovim fish -y 
+yum install yamllint tmux -y 
+alias vim="nvim"
+alias vi="nvim"
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+mkdir ~/.config/nvim/
+
+
+```
+
+~/.config/nvim/init.nvim
+```
+"Plug list
+call plug#begin()
+" fzf
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" airline
+Plug 'vim-airline/vim-airline'     " vim status bar
+" git
+Plug 'airblade/vim-gitgutter'      " git change status
+Plug 'tpope/vim-fugitive'          " vim git wrapper
+" tree
+Plug 'scrooloose/nerdtree'         " tree plugin for vim
+Plug 'Xuyuanp/nerdtree-git-plugin' " nerd tree git plugin
+" search
+Plug 'ctrlpvim/ctrlp.vim'          " ctrl p search
+" auto pair
+Plug 'jiangmiao/auto-pairs'        " pairs quotes or braket
+" dev icon
+Plug 'ryanoasis/vim-devicons'      " dev icons for vim
+" tagbar
+Plug 'majutsushi/tagbar'           " browse tag plugin
+" ale linter
+Plug 'w0rp/ale'
+
+" javascript
+Plug 'pangloss/vim-javascript'
+
+" typescript
+Plug 'leafgarland/typescript-vim'
+Plug 'maxmellon/vim-jsx-pretty'
+
+" indent
+Plug 'Yggdroot/indentLine'
+
+" smooth scroll
+Plug 'terryma/vim-smooth-scroll'
+
+" multi cursor
+Plug 'terryma/vim-multiple-cursors'
+
+" coc.nvim
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
+
+" vim surround
+Plug 'tpope/vim-surround'
+
+" vim theme
+Plug 'mhartington/oceanic-next'
+
+Plug 'dense-analysis/ale'
+Plug 'Yggdroot/indentLine'
+Plug 'pedrohdz/vim-yaml-folds'
+
+call plug#end()
+
+" Vim Config
+set number
+set ai
+set si
+set shiftwidth=2
+set tabstop=2
+set ignorecase
+set hlsearch
+set expandtab
+
+"" NERD Tree Config
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+"" Ctrl+n NERD Tree Toggle
+map <C-t> :NERDTreeToggle<CR>
+
+" hidden file show tree
+let NERDTreeShowHidden=1
+
+"" Ctrl p ignore list
+let g:ctrlp_custom_ignore = {
+\ 'dir':  '\.git$\|public$\|log$\|tmp$\|vendor$\|node_modules$',
+\ 'file': '\v\.(exe|so|dll)$'
+\ }
+
+
+set encoding=UTF-8
+
+"" easir window navigation
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+"" Indentation rules
+augroup vimrc-javascript
+  autocmd!
+  autocmd FileType javascript set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType vue set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType jsx set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType tsx set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType typescript set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType less set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType scss set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType html set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+  autocmd FileType css set tabstop=2|set shiftwidth=2|set expandtab softtabstop=2 smartindent
+augroup END
+
+"" Git
+noremap <Leader>gs :Gstatus<CR>
+noremap <Leader>ga :Gwrite<CR>
+noremap <Leader>gc :Gcommit<CR>
+noremap <Leader>gsh :Gpush<CR>
+noremap <Leader>gb :Gblame<CR>
+noremap <Leader>gr :Gremove<CR>
+noremap <Leader>gll :Gpull<CR>
+noremap <Leader>gd :Gvdiff<CR>
+
+"" ale linters
+let b:ale_linters = {
+ \ 'javascript': ['eslint'],
+ \ 'typescript': ['eslint']
+ \}
+
+let g:ale_javascript_eslint_use_global = 1
+let g:ale_javascript_eslint_executable = 'eslint_d'
+
+"" ale fixers
+let b:ale_fixers = {
+\ '*': ['remove_trailing_lines', 'trim_whitespace'],
+\ 'javascript': ['eslint'],
+\ 'tsx': ['eslint'],
+\ 'typescript': ['eslint']
+\}
+
+let g:ale_fix_on_save = 1
+
+autocmd BufWritePost *.ts,*.tsx,*.js,*.jsx,*.scss ALEFix eslint
+
+" indent line
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+" Or if you have Neovim >= 0.1.5
+if (has("termguicolors"))
+ set termguicolors
+endif
+
+
+" For Neovim 0.1.3 and 0.1.4
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+" Theme
+syntax enable
+colorscheme OceanicNext
+
+let g:airline_theme='oceanicnext'
+
+
+set foldlevelstart=20
+
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_on_text_changed = 'never'
+```
+
+
+.nanorc
+```bash
+
+# Supports `YAML` files
+syntax "YAML" "\.ya?ml$"
+header "^(---|===)" "%YAML"
+
+## Keys
+color magenta "^\s*[\$A-Za-z0-9_-]+\:"
+color brightmagenta "^\s*@[\$A-Za-z0-9_-]+\:"
+
+## Values
+color white ":\s.+$"
+## Booleans
+icolor brightcyan " (y|yes|n|no|true|false|on|off)$"
+## Numbers
+color brightred " [[:digit:]]+(\.[[:digit:]]+)?"
+## Arrays
+color red "\[" "\]" ":\s+[|>]" "^\s*- "
+## Reserved
+color green "(^| )!!(binary|bool|float|int|map|null|omap|seq|set|str) "
+
+## Comments
+color brightwhite "#.*$"
+
+## Errors
+color ,red ":\w.+$"
+color ,red ":'.+$"
+color ,red ":".+$"
+color ,red "\s+$"
+
+## Non closed quote
+color ,red "['\"][^['\"]]*$"
+
+## Closed quotes
+color yellow "['\"].*['\"]"
+
+## Equal sign
+color brightgreen ":( |$)"
+
+
+set tabstospaces
+set autoindent
+set linenumbers
+set tabsize 2
+
+
+```
 # 참고자료
+[오퍼레이터 가이드, 쿠버네티스](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/#writing-operator)
+[오퍼레이터 SDK](https://sdk.operatorframework.io/docs/overview/)
 [명령어 가이드](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)
 
 [한국어 에코 설명](https://blog.siner.io/2021/10/23/container-ecosystem/)
