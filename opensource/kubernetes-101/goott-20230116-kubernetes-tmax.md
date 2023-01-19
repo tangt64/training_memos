@@ -721,10 +721,46 @@ color brightgreen ":( |$)"
 set tabstospaces
 set autoindent
 set linenumbers
-set tabsize 2
-
+set tabsize 
 
 ```
+
+## replicaset
+
+```            
+                           .-------------.
+                          /               \
+                   +------------+      +-----+
+   | deploy | ---> | replicaset | ---> | POD |
+              <--  +------------+      +-----+
+                         |
+                         v
+                       <HPA>  ---> POD자원이 한계치에 다다르면 수평적인 생성을 시작
+                       <VPA>  ---> POD자원이 한계치에 다다르면 수직으로 확장을 시작
+```
+
+1. label/selector 기반
+2. deployment서로 상호관계
+3. replicaset만 사용도 가능은 함
+
+quay.io/centos7/httpd-24-centos7:latest
+quay.io/redhattraining/hello-world-nginx:latest
+
+                      RBAC
+
+                                    <ingress>
+                                       /
+                                    role
+                                     /
+                                  [SA]
+                                   |
+                  namespace <--- role ---> user(testuser)
+                  (project)
+                     |
+                     |
+                     v
+                   [POD]
+
 # 참고자료
 [오퍼레이터 가이드, 쿠버네티스](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/#writing-operator)
 [오퍼레이터 SDK](https://sdk.operatorframework.io/docs/overview/)
