@@ -154,5 +154,6 @@ systemctl is-active libvirtd
 dnf install guestfs-tools virt-install -y
 virt-builder --list
 virt-builder --format=qcow2 --size=1 --output=/var/lib/libvirt/images/cirros.qcow2 cirros-0.3.5
-virt-install --vcpus=1 --memory=100 --disk=path=/var/lib/libvirt/images/cirros.qcow2 --network=default --import --noautoconsole --virt-type=qemu --osinfo detect=on,require=off
+virt-install --vcpus=1 --memory=100 --disk=path=/var/lib/libvirt/images/cirros.qcow2 --network=default --import --noautoconsole --virt-type=qemu --osinfo detect=on,require=off --name cirros
+virsh console cirros
 ```
