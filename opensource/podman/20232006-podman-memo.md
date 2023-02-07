@@ -4,14 +4,14 @@
 
 메일: tang@linux.com
 
-**GITHUB:**  http://github.com/tangt64/training_memos/opensource/podman
+[GITHUB](http://github.com/tangt64/training_memos/opensource/podman)
 
 ## PPT 및 교재 
 [PPT](https://github.com/tangt64/training_memos/blob/main/opensource/podman/OPENSOURCE%20CONTAINER.pdf)
 [PDF BOOK](https://github.com/tangt64/training_memos/blob/main/opensource/podman/Podman-in-Action-ebook-MEAP-Red-Hat-Developer-All-Chapters.pdf)
 
 
-**ISO파일 내려받기:** http://172.16.8.31/
+[ISO파일 내려받기](http://172.16.8.31/)
 
 ## 설치(빠르게)
 
