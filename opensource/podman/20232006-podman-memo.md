@@ -160,9 +160,89 @@ virsh list
 virsh console cirros
 ```
 
-
-
+```
  docker ---> search  ---> skopeo
         ---> image   ---> buildah
-        ---> build   
+        ---> build   ---> buildah
         ---> lifecycle 
+```
+
+# day 2
+
+**pause:** application(pause.c). 응용프로그램 중 하나. 
+       - 신호처리
+```c
+static void sigreap(int signo) {
+  while (waitpid(-1, NULL, WNOHANG) > 0)
+    ;
+}
+
+```   
+       - 무한대기
+```c
+  for (;;)
+    pause();
+  fprintf(stderr, "Error: infinite loop terminated\n");
+  return 42;
+```       
+       - 네임스페이스를 직접 관리하지 않음
+
+**pod:** 쿠버네티스에서 추상적으로 격리하는 부분을 'Pod'라고 부름.
+       - 실제로는 pause에서 구현
+       - 네임스페이스도 같이 필요함
+       - cgroup POD자원 제어를 함(cpu, memory)
+
+**infra container:** infra_container{container(POD_APP)}
+       - 시스템 엔지니어나 혹은 런타임 영역에서 "pod"라는 단어 대신, "infra container"라고함. 
+       - 'puase' 격리 애플리케이션 중 하나.
+
+```bash
+   .---> APP
+  /
+pause == POD == infra container(shared namespace)
+          |                    (shared network)
+          |
+      container
+       (equal)
+```       
+
+
+podman run -d --name apache -v /root/htdocs:/var/www/html/ 
+                               ---------------------------
+                              # mount --bind /root/namespaces /root/namespaces
+                              > # mount --bind /root/htdocs /var/lib/containers/overlay-container/??
+                              > stat
+                              # mount --make-private /root/namespaces
+                              > flag
+                              # touch /root/namespaces/mnt
+                              # unshare --mount=/root/namespaces/mnt
+                              > into namespace 
+## podman command
+
+```bash
+dnf install epel-release
+dnf install podman-docker podman-compose
+podman build     # Dockerfile, Containerfile
+docker build
+
+```
+
+### used case
+
+docker: Nvidia Data/AI
+       ---> podman Nvidia/AMD => local(x)
+                                 nfs ---> data
+                                 HBA ---> data
+
+### podman volume
+
+**podman -v:** 'unshare', binding + private = namespace
+           -> mount --bind --private  ## high level
+**podman volume:** 'backingFsBlockDev', overlayFS 
+           -> mount -t overlay        ## low level
+              /var/lib/containers/storage/volumes/, 'local'로 사용시, '-v'하고 별반 차이 없음.
+                                                    'local'
+
+# 추가 정보
+
+https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/
