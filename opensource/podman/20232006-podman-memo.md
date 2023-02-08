@@ -277,9 +277,14 @@ docker: Nvidia Data/AI
   - 컨테이너에서 연결이 되어있는 mnt가 올바르게 unshare, private상태로 구성이 되어 있는지 확인한다.
   - kata, crun을 통해서 올바르게 pod, container가 구성이 되어 있는지 확인한다.
 
+5. 네트워크 조회 및 확인
+  - iptables(nftables)를 통해서 POD하고 Container데이터 경로 확인.
+  - CNI네트워크 플러그인 확인. 
+
 힌트: 
 * crun --root=/var/run/crun/  
 * POD(kata), df
+* iptables-save, iptables, nft 
 
 # 추가 정보
 
