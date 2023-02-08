@@ -243,6 +243,44 @@ docker: Nvidia Data/AI
               /var/lib/containers/storage/volumes/, 'local'로 사용시, '-v'하고 별반 차이 없음.
                                                     'local'
 
+# day 3
+
+
+### 연습문제 
+
+0. 기존에 생성이 되어 있는 컨테이너 및 POD모두 제거.
+
+1. 컨테이너 centos, apache, nginx를 총 3개를 구성한다.
+  - apache, nginx는 이미지나 혹은 quay.io에서 명시된 포트로 포워딩한다.
+  - 포워딩 포는 apache, 8088/tcp, nginx, 8099/tcp로 구성한다.
+  - centos의 이름은 debug-container
+  - apache의 이름은 httpd-container
+  - nginx의 이름은 nginx-container
+  - apache, nginx는 중지가 되면 반드시 자동으로 제거가 되어야 한다.
+  - curl명령어로 올바르게 동작하는지 확인.
+
+2. POD가 구성된 apache서비스를 구성한다.
+  - pod의 이름은 apache-pod라고 명시한다.
+  - container의 이름은 apache-pod-container라고 명시한다.
+  - 포트는 8085로 접근이 가능해야 한다.
+
+3. 변경된 메인 페이지를 제공한다.
+  - 기존에 생성된 컨테이너 및 POD는 전부 제거한다.
+  - /var/www/html/에 /root/apache-htdocs를 연결한다.
+  - /usr/share/nginx/htdocs/에 /root/ngninx-htdocs를 연결한다.
+  - 이 두개의 컨테이너는 POD와 연결이 되어야 한다.
+  - nginx는 포트는 8081, apache는 8082로 접근이 되어야 한다.
+  - apache "welcome apache", nginx "welcome nginx"메세지가 출력이 되어야 한다.
+  
+4. 네임스페이스 확인
+  - 컨테이너가 올바르게 POD 네임스페이스 연결이 되어 있는지 확인한다. 
+  - 컨테이너에서 연결이 되어있는 mnt가 올바르게 unshare, private상태로 구성이 되어 있는지 확인한다.
+  - kata, crun을 통해서 올바르게 pod, container가 구성이 되어 있는지 확인한다.
+
+힌트: 
+* crun --root=/var/run/crun/  
+* POD(kata), df
+
 # 추가 정보
 
 https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/
