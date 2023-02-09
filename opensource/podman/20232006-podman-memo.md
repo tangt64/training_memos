@@ -299,15 +299,23 @@ JBOSS(Wildfly) ---> init ---> ubi-init ---> dumb-init(openstack, wildfly)
 
 master, node1, node2
 
+1. 내부네트워크 추가
+2. 호스트 이름 설정
+
 ```bash
 cat <<EOF>> /etc/hosts
 192.168.90.100 master.example.com
 192.168.90.101 node1.example.com
 192.168.90.102 node1.example.com
-
 EOF
 swapoff -a
 sed -i '/\/dev\/mapper\/rl-swap/d' /etc/fstab
+dnf install wget -y
+
+cd /etc/yum.repos.d/
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
+
 
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
