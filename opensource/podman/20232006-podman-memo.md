@@ -286,6 +286,83 @@ docker: Nvidia Data/AI
 * POD(kata), df
 * iptables-save, iptables, nft 
 
+
+vCPU: 2
+vMEM: 4
+
+
+JBOSS(Wildfly) ---> init ---> ubi-init ---> dumb-init(openstack, wildfly)
+                                            ---------
+                                            + SECCOMP(추가가 몇게 필요함)
+
+# day 4
+
+master, node1, node2
+
+```bash
+cat <<EOF>> /etc/hosts
+192.168.90.100 master.example.com
+192.168.90.101 node1.example.com
+192.168.90.102 node1.example.com
+
+EOF
+swapoff -a
+sed -i '/\/dev\/mapper\/rl-swap/d' /etc/fstab
+
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+EOF
+
+setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes -y 
+systemctl enable --now kubelet ## 'activing..'
+systemctl stop firewalld
+
+sysctl -a | grep forward
+sysctl -w net.ipv4.ip_forward=1 
+cat <<EOF> /etc/sysctl.d/k8s_forward.conf    ## 영구적인 설정(kernel parameter)
+net.ipv4.ip_forward=1 
+EOF
+
+sysctl -p -f
+modprobe br_netfilter     ## 일시적으로 메모리 상주
+
+cat <<EOF> /etc/modules-load.d/k8s_modules.conf   ## 영구적으로 부팅시 자동 상주
+br_netfilter
+EOF
+
+systemctl daemon-reload
+
+cd /etc/yum.repos.d/
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
+dnf search cri-o -y
+dnf install cri-o -y
+systemctl enable --now crio
+```
+
+
+
+```bash
+skopeo sync --src docker --dest dir --scoped k8s.gcr.io/ /tmp/
+
+
+registry.k8s.io/kube-apiserver:v1.26.1
+registry.k8s.io/kube-controller-manager:v1.26.1
+registry.k8s.io/kube-scheduler:v1.26.1
+registry.k8s.io/kube-proxy:v1.26.1
+registry.k8s.io/pause:3.9
+registry.k8s.io/etcd:3.5.6-0
+registry.k8s.io/coredns/coredns:v1.9.3
+```
+
 # 추가 정보
 
 https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/
