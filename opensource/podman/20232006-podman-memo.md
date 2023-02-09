@@ -403,6 +403,14 @@ kubectl get pods/svc
 kubectl create
 KUBECONFIG=/etc/kubernetes/admin.conf
 ```
+
+- POD 1개, Container 3개
+- 쿠버네티스 YAML 전환
+- 쿠버네티스 POD, SVC로 등록
+- podman만 서비스는 중지(제거가 아님)
+
+** 이미지 빌드가 어려운 경우, 빌드는 제외하고 서비스 두개(ftp, www)만 올리세요.
+
 1. 웹 서비스 아파치로 구성한다. 포트는 이미지에서 명시한 기본포트 8080를 사용한다.
 2. ftp서비스를 구성한다. 포트는 이미지에서 명시한 기본포트 21100를 사용한다.
 3. pod의 이름은 www_svc으로 구성한다.
@@ -414,6 +422,7 @@ from quay.io/centos/centos
 run yum install <PACKAGE> -y && yum clean all
 expose 3306
 cmd mysqld_safe
+entrypoint    ## 동작이 안되면 이걸로 변경
 ```
 8. 구성된 서비스를 쿠버네티스로 전환한다.
 9. 쿠버네티스로 서비스가 전환이 완료가 되면, yaml파일으로 모든 서비스를 동시에 중지한다.
