@@ -33,7 +33,7 @@ $ oc create -f -n <PROJECT_NAME>
   * oc create route
   * oc expose <DEPLOY>
               <SVC>
-                      <POD>
+              <POD>
 
 스케일링(수동 및 자동)(412)
 - 수동으로 특정 애플리케이션 수동 실행(갯수, edit, scale)
