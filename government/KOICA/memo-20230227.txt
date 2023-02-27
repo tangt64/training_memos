@@ -1,0 +1,57 @@
+
+
+  tang 
+
+   Overcommit
+   
+   tang@linux.com
+   bluehelix@gmail.com
+
+   video and any questions welcome!! :))
+
+
+   https://github.com/tangt64/
+                      training_memos/government/KOICA/
+ 
+  
+
+  Verify to QEMU/KVM for virtualization
+
+```bash
+
+@HOST]# systemctl status libvirtd
+        systemctl is-active libvirtd
+
+@HOST]# systemctl enable --now libvirtd 
+        ## start and enable for boot up
+@HOST]# systemctl is-active libvirtd
+        active
+@HOST]# dnf install virt-manager -y 
+@HOST]# dnf install libguestfs-tools-c -y
+@HOST]# virt-builder --list
+@HOST]# virt-builder --format qcow2 --size 10G --root-password password:centos -o /var/lib/libvirt/images/node1.qcow2 centosstream-8
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
