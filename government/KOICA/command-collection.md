@@ -167,7 +167,7 @@ node1# for i in {1..3} ; do sshpass -p centos ssh root@node${i} 'firewall-cmd --
 Chanage hacluster user password and enable/start pcsd.service
 
 ```bash
-node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster' && systemctl enable --now pcsd.service ; done
+node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster && systemctl enable --now pcsd.service' ; done
 ```
 the eth1 check to each node
 
