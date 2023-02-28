@@ -153,7 +153,7 @@ node1# pcs <TAB><TAB>
 ```
 
 ```bash
-node1# pcs host auth -u haclster -p centos node1.example.com node2.example.com node3.example.com
+node1# pcs host auth -u hacluster -p centos node1.example.com node2.example.com node3.example.com
 node1# pcs cluster setup [CLUSTER_NAME] node1.example.com node2.example.com node3.example.com
 
 node1# pcs cluster start --all
