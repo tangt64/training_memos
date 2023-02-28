@@ -16,11 +16,10 @@ bare# dnf install libguestfs-tools-c -y
 bare# virt-builder --list
 
 bare# virsh net-list
-bare# cat <<EOF> internal-network.xml
+bare# nano internal-network.xml
 <network>
   <name>internal</name>
   <bridge name='virbr10' stp='on' delay='0'/>
-  <mac address='52:54:00:91:24:b8'/>
   <domain name='internal'/>
   <ip address="192.168.90.1" netmask="255.255.255.0">
     <dhcp>
@@ -28,8 +27,19 @@ bare# cat <<EOF> internal-network.xml
     </dhcp>
   </ip>
 </network>
-EOF
-bare# virsh define --file
+bare# nano external-network.xml
+<network>
+  <name>internal</name>
+  <bridge name='virbr11' stp='on' delay='0'/>
+  <domain name='internal'/>
+  <ip address="192.168.100.1" netmask="255.255.255.0">
+    <dhcp>
+      <range start="192.168.100.2" end="192.168.100.254"/>
+    </dhcp>
+  </ip>
+</network>
+bare# virsh define --file internal-network.xml
+bare# virsh define --file external-network.xml
 bare# virsh net-list
 bare# virt-builder --size 10G --format qcow2 -o --root-password password:centos /var/lib/libvirtd/images/node1.qcow2 centosstream-8
 
@@ -182,7 +192,6 @@ node1# complete -r -p
 node1# pcs <TAB><TAB>
 ```
 ## make the Pacemaker Cluster
-
 
 Authenticate to each cluster node with hacluster user.
 
