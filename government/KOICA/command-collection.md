@@ -110,6 +110,12 @@ node1# ssh-keygen -t rsa -N'' -f ~/.ssh/id_rsa
 node1# dnf install sshpass -y
 ```
 
+# verify to the public ssh key
+
+```bash
+node2# cat /root/.ssh/authorized_keys
+node3# cat /root/.ssh/authorized_keys
+```
 
 ```bash
 node1# cat <<EOF> ~/.ssh/config
@@ -126,9 +132,15 @@ node1# for i in {1..3} ; do sshpass -p centos ssh root@node${i} 'firewall-cmd --
 
 node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster' && systemctl enable --now pcs.service ; done
 
+## eth1 nic check each node
 node1# ping node1 -c3
 node1# ping node2 -c3
 node1# ping node3 -c3
+
+## access to the nodes without password
+node1# ssh node1 hostname
+node2# ssh node2 hostname
+node3# ssh node3 hostname
 ```
 
 ```bash
