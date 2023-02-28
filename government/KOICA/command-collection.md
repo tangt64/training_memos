@@ -112,40 +112,63 @@ node1# dnf install sshpass -y
 
 # verify to the public ssh key
 
+The node1 public key will in the authorized_keys file
+
 ```bash
 node2# cat /root/.ssh/authorized_keys
 node3# cat /root/.ssh/authorized_keys
 ```
+
+Install the nano editor for skip to fingerprint checking.
 
 ```bash
 node1# dnf install nano -y
 node1# nano /.ssh/config
 StrictHostKeyChecking=no
 EOF
+```
 
-## If the package sshpass not install or cant use it, run this command
+If the package sshpass not install or cant use it, run this command
+
+```bash
 node1# dnf install sshpass -y
+```
 
-## updated whole of node packages
+updated whole of node packages
+
+```bash
 node1# for i in node{1..3} ; do sshpass -pcentos ssh root@$i 'dnf update -y' ; done
 node1# for i in node{1..3} ; do sshpass -pcentos scp /etc/hosts root@$i.example.com:/etc/hosts ; done
+```
 
+install pacemaker package
 
-## install pacemaker package
+```bash
 node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf --enablerepo=ha -y install pacemaker pcsd' ; done
 node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf install firewalld && systemctl enable --now firewalld' ; done
+```
 
-## open the pacemaker port in the Firewalld service
+open the pacemaker port in the Firewalld service
+
+```bash
 node1# for i in {1..3} ; do sshpass -p centos ssh root@node${i} 'firewall-cmd --add-service=high-availability && firewall-cmd --runtime-to-permanent' ; done
-## chanage hacluster user password and enable/start pcsd.service
-node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster' && systemctl enable --now pcsd.service ; done
+```
 
-## eth1 nic check each node
+chanage hacluster user password and enable/start pcsd.service
+
+```bash
+node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster' && systemctl enable --now pcsd.service ; done
+```
+eth1 nic check each node
+
+```bash
 node1# ping node1 -c3
 node1# ping node2 -c3
 node1# ping node3 -c3
+```
+access to the nodes without password
 
-## access to the nodes without password
+```bash
 node1# ssh node1 hostname
 node2# ssh node2 hostname
 node3# ssh node3 hostname
