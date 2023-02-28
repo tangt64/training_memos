@@ -144,7 +144,7 @@ node1# for i in node{1..3} ; do sshpass -pcentos scp /etc/hosts root@$i.example.
 install pacemaker package
 
 ```bash
-node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf --enablerepo=ha -y install pacemaker pcsd' ; done
+node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf --enablerepo=ha -y install pacemaker pcs' ; done
 node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf install firewalld && systemctl enable --now firewalld' ; done
 ```
 
