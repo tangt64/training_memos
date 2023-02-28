@@ -126,12 +126,12 @@ EOF
 node1# for i in node{1..3} ; do sshpass -pcentos ssh root@$i 'dnf update -y' ; done
 node1# for i in node{1..3} ; do sshpass -pcentos scp /etc/hosts root@$i.example.com:/etc/hosts ; done
 
-node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf --enablerepo=ha -y install pacemaker pcs' ; done
+node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf --enablerepo=ha -y install pacemaker pcsd' ; done
 node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf install firewalld && systemctl enable --now firewalld' ; done
 
 node1# for i in {1..3} ; do sshpass -p centos ssh root@node${i} 'firewall-cmd --add-service=high-availability && firewall-cmd --runtime-to-permanent' ; done
 
-node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster' && systemctl enable --now pcs.service ; done
+node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster' && systemctl enable --now pcsd.service ; done
 
 ## eth1 nic check each node
 node1# ping node1 -c3
@@ -144,8 +144,16 @@ node2# ssh node2 hostname
 node3# ssh node3 hostname
 ```
 
+## makes useful for bash
+
 ```bash
-node1# pcs host auth -u ha_cluster_lab -p centos node1.example.com node2.example.com node3.example.com
+node1# dnf install bash-completion -y
+node1# complete -r -p
+node1# pcs <TAB><TAB>
+```
+
+```bash
+node1# pcs host auth -u [CLUSTER_NAME] -p centos node1.example.com node2.example.com node3.example.com
 node1# pcs cluster setup ha_cluster_lab node1.example.com node2.example.com node3.example.com
 
 node1# pcs cluster start --all
