@@ -123,6 +123,8 @@ node1# nano /.ssh/config
 StrictHostKeyChecking=no
 EOF
 
+
+node1# dnf install sshpass -y
 node1# for i in node{1..3} ; do sshpass -pcentos ssh root@$i 'dnf update -y' ; done
 node1# for i in node{1..3} ; do sshpass -pcentos scp /etc/hosts root@$i.example.com:/etc/hosts ; done
 
@@ -151,6 +153,7 @@ node1# dnf install bash-completion -y
 node1# complete -r -p
 node1# pcs <TAB><TAB>
 ```
+## make the Pacemaker Cluster
 
 ```bash
 node1# pcs host auth -u hacluster -p centos node1.example.com node2.example.com node3.example.com
