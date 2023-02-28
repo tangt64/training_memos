@@ -118,7 +118,8 @@ node3# cat /root/.ssh/authorized_keys
 ```
 
 ```bash
-node1# cat <<EOF> ~/.ssh/config
+node1# dnf install nano -y
+node1# nano /.ssh/config
 StrictHostKeyChecking=no
 EOF
 
