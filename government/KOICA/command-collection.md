@@ -123,7 +123,7 @@ node1# nano /.ssh/config
 StrictHostKeyChecking=no
 EOF
 
-
+## If the package sshpass not install, run this command
 node1# dnf install sshpass -y
 node1# for i in node{1..3} ; do sshpass -pcentos ssh root@$i 'dnf update -y' ; done
 node1# for i in node{1..3} ; do sshpass -pcentos scp /etc/hosts root@$i.example.com:/etc/hosts ; done
