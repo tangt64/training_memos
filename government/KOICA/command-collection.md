@@ -154,12 +154,12 @@ open the pacemaker port in the Firewalld service
 node1# for i in {1..3} ; do sshpass -p centos ssh root@node${i} 'firewall-cmd --add-service=high-availability && firewall-cmd --runtime-to-permanent' ; done
 ```
 
-chanage hacluster user password and enable/start pcsd.service
+Chanage hacluster user password and enable/start pcsd.service
 
 ```bash
 node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster' && systemctl enable --now pcsd.service ; done
 ```
-eth1 nic check each node
+the eth1 check to each node
 
 ```bash
 node1# ping node1 -c3
@@ -183,14 +183,25 @@ node1# pcs <TAB><TAB>
 ```
 ## make the Pacemaker Cluster
 
+
+Authenticate to each cluster node with hacluster user.
+
 ```bash
 node1# pcs host auth -u hacluster -p centos node1.example.com node2.example.com node3.example.com
 node1# pcs cluster setup [CLUSTER_NAME] node1.example.com node2.example.com node3.example.com
+```
 
+Start and Enabled to pcsd and pacemaker service. 
+
+```bash
 node1# pcs cluster start --all
 node1# pcs cluster enable --all 
 node1# pcs cluster status
+```
 
+Checking and Verifying the corosync status in the cluster.
+
+```bash
 node1# pcs status corosync
 node1# pcs cluster stop --all
 node1# pcs cluster destroy --all 
