@@ -18,7 +18,7 @@ for install cockpit packages-
 start and enabled the cockpit service
 ```bash
 systemctl enable --now cockpit.service 
-systemctl enable --now cockpit.socket"
+systemctl enable --now cockpit.socket
 ```
 
 copy the ssh public key to each node
