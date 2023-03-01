@@ -257,7 +257,11 @@ node1# targetcli iscsi/iqn.2023-02.com.example:blocks/tpg1/acls/iqn.2023-02.com.
 # scanning and login into targetd service
 
 ```bash
-node2/3# iscsadm -m discoverydb -t sendtargets -p 192.168.100.130
+node2/3# iscsadm -m discoverydb -t sendtargets -p 192.168.90.110
+```
+
+Do not run this command today!!
+```bash
 node2/3# iscsadm -m node --login
 node2/3# iscsadm -m session --debug 3
 node2/3# iscsadm -m session --rescan 
