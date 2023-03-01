@@ -257,6 +257,7 @@ node1# targetcli iscsi/iqn.2023-02.com.example:blocks/tpg1/acls/iqn.2023-02.com.
 # scanning and login into targetd service
 
 ```bash
+node2/3# dnf install iscsi-initiator-utils -y
 node2/3# iscsadm -m discoverydb -t sendtargets -p 192.168.90.110
 ```
 
