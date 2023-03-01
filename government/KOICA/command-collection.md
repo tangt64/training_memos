@@ -1,3 +1,6 @@
+
+![LAB DESIGN](images/LAB-DESIGN.png "lab design image")
+
 # virtualmbc installation
 
 ```bash
