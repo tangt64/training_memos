@@ -13,6 +13,7 @@ node1# vbmc list
 
 # create virtual network and machine
 
+![LAB NETWORK](images/lab-network.png)
 ```bash
 bare# dnf groupinstall "Virtualization Host" -y
 bare# dnf install libguestfs-tools-c -y
