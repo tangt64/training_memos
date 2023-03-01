@@ -225,7 +225,8 @@ node1# ss -npltu | grep -i corosync
 # target server config
 
 ```bash
-node1# dnf install targetd
+node1# dnf install epel-release -y
+node1# dnf install targetd -y
 node1# systemctl enable --now target
 node1# firewall-cmd --add-service=iscsi-target
 
@@ -261,15 +262,52 @@ node1# targetcli iscsi/iqn.2023-02.com.example:blocks/tpg1/acls/iqn.2023-02.com.
 # scanning and login into targetd service
 
 ```bash
-node2/3# dnf install iscsi-initiator-utils -y
-node2/3# iscsiadm -m discoverydb -t sendtargets -p 192.168.90.110
+node1# nano /etc/iscsi/initiatorname.iscsi
+InitiatorName=iqn.2023-02.com.example:node1.init
+node1# nano /etc/iscs/iscsid.conf
+node.session.auth.authmethod = CHAP
+node.session.auth.username = username
+node.session.auth.password = password
+
+node1# systemctl restart iscsi iscsid
+
+node2# nano /etc/iscsi/initiatorname.iscsi
+InitiatorName=iqn.2023-02.com.example:node2.init
+node2# nano /etc/iscs/iscsid.conf
+node.session.auth.authmethod = CHAP
+node.session.auth.username = username
+node.session.auth.password = password
+node2# systemctl restart iscsi
+
+node3# nano /etc/iscsi/initiatorname.iscsi
+InitiatorName=iqn.2023-02.com.example:node3.init
+node3# nano /etc/iscs/iscsid.conf
+node.session.auth.authmethod = CHAP
+node.session.auth.username = username
+node.session.auth.password = password
+node3# systemctl restart iscsi
 ```
 
-Do not run this command today!!
+Check to a block devices list from each node by lsblk command
+
 ```bash
-node2/3# iscsadm -m node --login
-node2/3# iscsadm -m session --debug 3
-node2/3# iscsadm -m session --rescan 
+node1/2/3# lsblk
+```
+
+
+First only run the command on the node1
+
+```bash
+node1/2/3# dnf install iscsi-initiator-utils -y
+node1/2/3# iscsiadm -m discoverydb -t sendtargets -p 192.168.90.110
+node/12/3# iscsiadm -m discovery -t sendtargets -p 192.168.90.110
+```
+
+Do not run this command today!! And, First time only run the command on the node1.
+```bash
+node1/2/3# iscsiadm -m node --login
+node1/2/3# iscsiadm -m session --debug 3
+node1/2/3# iscsiadm -m session --rescan 
 ```
 
 
@@ -298,12 +336,16 @@ node2# pcs status corosync
 node2/3# vi /etc/lvm/lvm.conf
 system_id_source = "uname"
 
-node2# parted --script /dev/sda "mklabel msdos"
-node2# parted --script /dev/sda "mkpart primary 0% 100%"
-node2# parted --script /dev/sda "set 1 lvm on"
+node2# parted --script /dev/sdb "mklabel msdos"
+node2# parted --script /dev/sdb "mkpart primary 0% 100%"
+node2# parted --script /dev/sdb "set 1 lvm on"
 
-node2# pvcreate /dev/sda1
-node2# vgcreate vg_ha_iscsi /dev/sda1
+node2/3# dnf install dlm lvm2-lockd -y
+
+node2# systemctl enable --now lvmlockd lvmlocks
+
+node2# pvcreate /dev/sdb1
+node2# vgcreate vg_ha_iscsi /dev/sdb1
 node2# vgs -o+systemid
 node2# lvcreate -l 100%FREE -n lv_ha_iscsi vg_ha_iscsi
 
