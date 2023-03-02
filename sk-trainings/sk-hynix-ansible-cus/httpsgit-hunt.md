@@ -28,7 +28,7 @@ $ oc create -f -n <PROJECT_NAME>
 
 애플리케이션 구성(115,337)
 - 애플리케이션을 특정 URL(route)로 접근 가능
-   * oc new-app 
+  * oc new-app 
   * oc expose 
   * oc create route
   * oc expose <DEPLOY>
