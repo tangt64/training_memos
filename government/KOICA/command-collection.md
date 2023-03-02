@@ -225,10 +225,11 @@ node1# ss -npltu | grep -i corosync
 # target server config
 
 ```bash
+node1# firewall-cmd --add-service=iscsi-target
+node1# firewall-cmd --runtume-to-permanent
 node1# dnf install epel-release -y
 node1# dnf install targetd -y
 node1# systemctl enable --now target
-node1# firewall-cmd --add-service=iscsi-target
 
 node1# dnf install iscsi-initiator-utils -y
 
@@ -262,6 +263,7 @@ node1# targetcli iscsi/iqn.2023-02.com.example:blocks/tpg1/acls/iqn.2023-02.com.
 # scanning and login into targetd service
 
 ```bash
+node1# dnf install nano -y
 node1# nano /etc/iscsi/initiatorname.iscsi
 InitiatorName=iqn.2023-02.com.example:node1.init
 node1# nano /etc/iscs/iscsid.conf
@@ -271,14 +273,17 @@ node.session.auth.password = password
 
 node1# systemctl restart iscsi iscsid
 
+node2# dnf install nano -y
 node2# nano /etc/iscsi/initiatorname.iscsi
 InitiatorName=iqn.2023-02.com.example:node2.init
-node2# nano /etc/iscs/iscsid.conf
+node2# nano /etc/iscsi/iscsid.conf
 node.session.auth.authmethod = CHAP
 node.session.auth.username = username
 node.session.auth.password = password
 node2# systemctl restart iscsi
 
+
+node3# dnf install nano -y
 node3# nano /etc/iscsi/initiatorname.iscsi
 InitiatorName=iqn.2023-02.com.example:node3.init
 node3# nano /etc/iscs/iscsid.conf
@@ -301,14 +306,20 @@ First only run the command on the node1
 node1/2/3# dnf install iscsi-initiator-utils -y
 node1/2/3# iscsiadm -m discoverydb -t sendtargets -p 192.168.90.110
 node1/2/3# iscsiadm -m discovery -t sendtargets -p 192.168.90.110
+```
+
+save the target server config in /etc/target/saveconfig.json
+
+```bash
 node1# targetcli saveconfg
 ```
 
 Do not run this command today!! And, First time only run the command on the node1.
+
 ```bash
-node1/2/3# iscsiadm -m node --login
-node1/2/3# iscsiadm -m session --debug 3
-node1/2/3# iscsiadm -m session --rescan 
+node1/2/3# iscsiadm -m node --login       ## loging commnad
+node1/2/3# iscsiadm -m session --debug 3  ## debug command
+node1/2/3# iscsiadm -m session --rescan   ## rescanning of disks from target luns
 ```
 
 
