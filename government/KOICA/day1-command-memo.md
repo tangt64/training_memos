@@ -1,6 +1,6 @@
+# day1
 
-
-Preapre virtualization
+## Preapre virtualization
 
 
 ```bash  
@@ -38,35 +38,21 @@ virsh console <ID or NAME>
 virsh domifaddr <ID or NAME> 
 ```
 
-## node 1/2/3
-
+## node 
 ```bash
 ## recommend to access via external network. because, internal network will up and down 
 ssh root@192.168.100.XX  
 
-## Node1 network and hostname configure
-node1# hostnamectl set-hostname node1.example.com
-
-## create a network profile for eth1
-node1# nmcli con add con-name eth1 ipv4.addresses 192.168.90.110/24 ipv4.never-default yes method manual autoconnect yes type ethernet ifname eth1 
-## the eth1 profile link up
-node1# nmcli con up eth1
-
-## Node2 network and hostname configure
-node2# hostnamectl set-hostname node2.example.com
-
-## create a network profile for eth1
-node2# nmcli con add con-name eth1 ipv4.addresses 192.168.90.120/24 ipv4.never-default yes method manual autoconnect yes type ethernet ifname eth1 
-
-## the eth1 profile link up
-node2# nmcli con up eth1
-
-## Node3 network and hostname configure
-node3# hostnamectl set-hostname node3.example.com
-
-## create a network profile for eth1
-node3# nmcli con add con-name eth1 ipv4.addresses 192.168.90.130/24 ipv4.never-default yes method manual autoconnect yes type ethernet ifname eth1 
-
-## the eth1 profile link up
-node3# nmcli con up eth1
+hostnamectl set-hostname node1.example.com
+nmcli con sh add con-name eth1 method=manual ipv47
 ```
+
+
+
+before we are using "System-V" == LSB == systemD
+
+(now)systemctl == service(past) 
+
+node1: 192.168.90.110
+node2: 192.168.90.120
+node3: 192.168.90.130
