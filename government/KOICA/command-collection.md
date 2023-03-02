@@ -300,7 +300,8 @@ First only run the command on the node1
 ```bash
 node1/2/3# dnf install iscsi-initiator-utils -y
 node1/2/3# iscsiadm -m discoverydb -t sendtargets -p 192.168.90.110
-node/12/3# iscsiadm -m discovery -t sendtargets -p 192.168.90.110
+node1/2/3# iscsiadm -m discovery -t sendtargets -p 192.168.90.110
+node1# targetcli saveconfg
 ```
 
 Do not run this command today!! And, First time only run the command on the node1.
