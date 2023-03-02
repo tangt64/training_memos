@@ -1,8 +1,13 @@
-# pacemaker dashboard
+# day3
 
+## pacemaker dashboard
 
+```bash
+node1# ss -antp | grep 2224
+bare# firefox https://192.168.90.110:2224
 
-# storage
+```
+## storage
 
 install the targetd server for iSCSI service
 
@@ -83,6 +88,3 @@ https://www.alteeve.com/w/RHCS_v2_cluster.conf#two_node
 >
 >    Default is 0 (disabled)
 >    Must be set to 0 or 1 
-
-
-
