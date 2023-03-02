@@ -49,3 +49,46 @@ service rgmanager status
 yum groupinstall "High Availability"
 
 ```
+
+
+
+## iscsi
+
+before
+```bash
+iscsiadm -m discoverydb -t sendtargets -p 192.168.90.110 
+```
+
+after
+
+```bash
+iscsiadm -m discoverydb -t sendtargets -p 192.168.90.110 --discover
+```
+
+
+```bash
+
+node1# parted --script /dev/sda "mklabel msdos"
+node1# parted --script /dev/sda "mkpart primary 0% 100%"
+node1# parted --script /dev/sda "set 1 lba on"
+node1# mkfs.xfs /dev/sda1
+node1# mkdir -p /mnt/iscsi
+node1# mount /dev/sda1 /mnt/iscsi
+node1# echo "This is from node1 shared" > /mnt/iscsi/README.md
+node3# partprobe ## kpartx later explain
+node3# mkdir -p /mnt/iscsi
+node3# mount -oro /dev/sda1 /mnt/iscsi
+node3# cat /mnt/iscs/README.md
+node2# dd if=/dev/zero of=/mnt/iscsi/data.raw bs=1M count=10
+node2# touch helloworld.md
+```
+
+
+
+
+
+
+
+
+
+
