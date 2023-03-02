@@ -49,4 +49,3 @@ service rgmanager status
 yum groupinstall "High Availability"
 
 ```
-
