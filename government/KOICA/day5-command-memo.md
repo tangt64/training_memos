@@ -83,10 +83,11 @@ node3# ls -l
 
 
 ```bash
-node1# pcs cluster sync
 node1# systemctl enable --now pcsd
 node1# echo centos | passwd --stdout hacluster
 node2# cat /etc/corosync/corosync.conf
+node2# pcs host auth -u hacluster -p centos node1.example.com
+node2# corosync-quorumtool | grep Flags  ## two_node is gone
 node2# pcs cluster node add node1.example.com
 node2# pcs cluster node remove node1.example.com
 
@@ -97,8 +98,10 @@ the option "wait_for_all" the master node, will fence to the second node when th
 
 ```bash
 node2# man 5 votequorum
-node2# pcs quorum update auto_tie_breaker=1 auto_tie_breaker=1 last_man_standing=1 last_man_standing_window=10000(10sec) wait_for_all=1
 
+node2# pcs cluster stop --all
+node2# pcs quorum update auto_tie_breaker=1 auto_tie_breaker=1 last_man_standing=1 last_man_standing_window=10000(10sec) wait_for_all=1
+node2# pcs cluster start --all
 node2# nano /etc/corosync/corosync.conf
 quorum {
     provider: corosync_votequorum
