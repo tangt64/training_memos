@@ -394,7 +394,7 @@ node2# mkfs.xfs /dev/vg_ha_iscsi/lv_ha_iscsi
 node2# vgchange vg_ha _iscsi -an
 
 node2# lvm pvscan --cache --activate ay
-node2# pcs resource create lvm_ha_iscsi ocf:hearbeat:LVM-activate vg_name=vg_ha_iscsi vg_access_mode=system_id --group ha_iscsi_group
+node2# pcs resource create lvm_ha_iscsi ocf:heartbeat:LVM-activate vgname=testvg vg_access_mode=uname --group ha_iscsi_group
 
 node2# pcs status
 ```
