@@ -383,7 +383,7 @@ node2# parted --script /dev/sdb "set 1 lvm on"
 
 node2/3# dnf install --enablerepo=ha,resilientstorage dlm lvm2-lockd -y
 
-node2# systemctl enable --now lvmlockd lvmlocks
+node2# systemctl enable --now lvmlockd lvmlocks dlm
 
 node2# pvcreate /dev/sdb1
 node2# vgcreate vg_ha_iscsi /dev/sdb1
@@ -391,7 +391,7 @@ node2# vgs -o+systemid
 node2# lvcreate -l 100%FREE -n lv_ha_iscsi vg_ha_iscsi
 
 node2# mkfs.xfs /dev/vg_ha_iscsi/lv_ha_iscsi
-node2# vgchange vg_ha _iscsi -an
+node2# vgchange vg_ha_iscsi -an
 
 node2# lvm pvscan --cache --activate ay
 node2# pcs resource create lvm_ha_iscsi ocf:heartbeat:LVM-activate vgname=testvg vg_access_mode=uname --group ha_iscsi_group
