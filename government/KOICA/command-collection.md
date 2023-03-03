@@ -381,7 +381,7 @@ node2# parted --script /dev/sdb "mklabel msdos"
 node2# parted --script /dev/sdb "mkpart primary 0% 100%"
 node2# parted --script /dev/sdb "set 1 lvm on"
 
-node2/3# dnf install dlm lvm2-lockd -y
+node2/3# dnf install --enablerepo=ha,resilientstorage dlm lvm2-lockd -y
 
 node2# systemctl enable --now lvmlockd lvmlocks
 
