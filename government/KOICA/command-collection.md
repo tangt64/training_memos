@@ -120,7 +120,7 @@ EOF
 # make a ssh private and public key
 
 ```bash
-node1# ssh-keygen -t rsa -N'' -f ~/.ssh/id_rsa
+node1# ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
 node1# dnf install sshpass -y
 ```
 
@@ -137,7 +137,7 @@ Install the nano editor for skip to fingerprint checking.
 
 ```bash
 node1# dnf install nano -y
-node1# nano /.ssh/config
+node1# nano ~/.ssh/config
 StrictHostKeyChecking=no
 EOF
 ```
@@ -226,9 +226,9 @@ node1# ss -npltu | grep -i corosync
 
 ```bash
 node1# firewall-cmd --add-service=iscsi-target
-node1# firewall-cmd --runtume-to-permanent
+node1# firewall-cmd --runtime-to-permanent
 node1# dnf install epel-release -y
-node1# dnf install targetd -y
+node1# dnf install targetd targetcli -y
 node1# systemctl enable --now target
 
 node1# dnf install iscsi-initiator-utils -y
@@ -274,23 +274,25 @@ node.session.auth.password = password
 node1# systemctl restart iscsi iscsid
 
 node2# dnf install nano -y
+node2# dnf install iscsi-initiator-utils -y
 node2# nano /etc/iscsi/initiatorname.iscsi
 InitiatorName=iqn.2023-02.com.example:node2.init
 node2# nano /etc/iscsi/iscsid.conf
 node.session.auth.authmethod = CHAP
 node.session.auth.username = username
 node.session.auth.password = password
-node2# systemctl restart iscsi
+node2# systemctl restart iscsi iscsid
 
 
 node3# dnf install nano -y
+node3# dnf install iscsi-initiator-utils -y
 node3# nano /etc/iscsi/initiatorname.iscsi
 InitiatorName=iqn.2023-02.com.example:node3.init
-node3# nano /etc/iscs/iscsid.conf
+node3# nano /etc/iscsi/iscsid.conf
 node.session.auth.authmethod = CHAP
 node.session.auth.username = username
 node.session.auth.password = password
-node3# systemctl restart iscsi
+node3# systemctl restart iscsi iscsid
 ```
 
 Check to a block devices list from each node by lsblk command
@@ -340,6 +342,33 @@ node2# pcs cluster enable --all
 node2# pcs cluster status
 node2# pcs status corosync
 ```
+
+# xfs to gfs2
+
+```bash
+node1# parted --script /dev/sda "mklabel msdos"
+node1# parted --script /dev/sda "mkpart primary 0% 100%"
+node1# parted --script /dev/sda "set 1 lba on"
+node1# mkfs.xfs /dev/sda1
+node1# mkdir -p /mnt/iscsi
+node1/2/3# kpartx -a /dev/sda
+node1# mount /dev/sda1 /mnt/iscsi
+node1# echo "This is from node1 shared" > /mnt/iscsi/README.md
+node3# partprobe ## kpartx later explain
+node3# mkdir -p /mnt/iscsi
+node3# mount -oro /dev/sda1 /mnt/iscsi
+node3# cat /mnt/iscs/README.md
+node2# dd if=/dev/zero of=/mnt/iscsi/data.raw bs=1M count=10
+node2# touch helloworld.md
+```
+
+```bash
+node1# umount /mnt/iscsi
+node2# umount /mnt/iscsi
+node3# umount /mnt/iscsi
+```
+
+
 
 
 # lvm
