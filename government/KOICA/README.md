@@ -38,8 +38,7 @@ __ceph storage insallation instruction__ --> "extra-lab-ceph.pdf"
   2. virt-install
   3. libvirt command
 
-2. centos 7 based for rgmanager
+3. centos 7 based for rgmanager
   1. virt-builder
   2. virt-install
   3. libvirt command
-
