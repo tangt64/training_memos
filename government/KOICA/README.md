@@ -24,9 +24,9 @@ __ceph storage insallation instruction__ --> "extra-lab-ceph.pdf"
 1. Pacemaker install echo node
 2. Two node configure
 3. Create resource 
-  1. iscsi
-  2. nfs
-  3. gfs2
+  * iscsi
+  * nfs
+  * gfs2
 4. Apache web server test
 5. FailOver test in the Two node cluster
 
