@@ -24,22 +24,22 @@ __ceph storage insallation instruction__ --> "extra-lab-ceph.pdf"
 1. Pacemaker install echo node
 2. Two node configure
 3. Create resource 
-  3-1. iscsi
-  3-2. nfs
-  3-3. gfs2
+  1. iscsi
+  2. nfs
+  3. gfs2
 4. Apache web server test
 5. FailOver test in the Two node cluster
 
 ## build virtual machine on linux system
 
 1. lab design 
-1. centos 8 based for pacemaker
-  * virt-builder
-  * virt-install
-  * libvirt command
+2. centos 8 based for pacemaker
+  1. virt-builder
+  2. virt-install
+  3. libvirt command
 
 2. centos 7 based for rgmanager
-  * virt-builder
-  * virt-install
-  * libvirt command
+  1. virt-builder
+  2. virt-install
+  3. libvirt command
 
