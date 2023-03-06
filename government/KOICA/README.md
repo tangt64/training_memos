@@ -20,24 +20,34 @@ __ceph storage insallation instruction__ --> "extra-lab-ceph.pdf"
 [day5 command](day5-command-memo.md)
 
 
-## Pacemaker install and resource configure
+
+## Pacemaker install and resource configure for CentOS 8
+
 1. Pacemaker install echo node
 2. Two node configure
 3. Create resource 
-  * iscsi
-  * nfs
-  * gfs2
 4. Apache web server test
 5. FailOver test in the Two node cluster
+
+
+## Pacemaker install and resource configure for CentOS 7
+
+1. RGManager install echo node
+2. Two node configure
+3. Create resource 
+4. Apache web server test
+5. FailOver test in the Two node cluster
+
+## Setup Storage Server
+
+1. targetd
+2. iscsiadm for attach LUN Device via iscsi protocol
+
 
 ## build virtual machine on linux system
 
 1. lab design 
 2. centos 8 based for pacemaker
-  1. virt-builder
-  2. virt-install
-  3. libvirt command
-
 3. centos 7 based for rgmanager
   1. virt-builder
   2. virt-install
