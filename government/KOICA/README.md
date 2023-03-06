@@ -1,22 +1,26 @@
-# install pacemaker
+# Install pacemaker on Linux or HyperV
 
 If you have any question, send a email to bluehelix@gmail.com.
 
-glusterfs installation instruction "extra-lab-glusterfs.pdf"
+__glusterfs installation instruction__ --> "extra-lab-glusterfs.pdf"
 
-ceph storage insallation instruction "extra-lab-ceph.pdf"
+__ceph storage insallation instruction__ --> "extra-lab-ceph.pdf"
 
 [All command collection](command-collection.md)
 
 
 [day1 command](day1-command-memo.md)
+
 [day2 command](day2-command-memo.md)
+
 [day3 command](day3-command-memo.md)
+
 [day4 command](day4-command-memo.md)
+
 [day5 command](day5-command-memo.md)
 
-## Pacemaker install and resource configure
 
+## Pacemaker install and resource configure
 1. Pacemaker install echo node
 2. Two node configure
 3. Create resource 
