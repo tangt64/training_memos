@@ -13,10 +13,32 @@ node1# vbmc list
 
 # create virtual network and machine
 
+
+vmem: 8GiB      vmem: 16GiB
+vcpu: 2         vcpu: 8
+               +--------+
+               | ORACLE |
++-------+      +--------+      +-------+
+| NODE1 |      | NODE2  |      | NODE3 |
++-------+      +--------+      +-------+
+    \           /                 /
+     \         /                 /
+      .       .                 /
+      |       |                /
+   +-----------+              /
+   | LIBVIRTD  | ------------'
++--------------+
+| LINUX        |
++--------------+
+| HP DL380/360 | CPU: over 4 cores, MEM: over 16 GIB
++--------------+           8 cores            32 GIB
+   BAREMETAL              (Intel Xeon Silver)
+
 ![LAB NETWORK](images/lab-network.png)
 ```bash
 bare# dnf groupinstall "Virtualization Host" -y
 bare# dnf install libguestfs-tools-c -y
+bare# dnf install nano -y
 bare# virt-builder --list
 
 bare# virsh net-list
@@ -35,7 +57,7 @@ bare# nano external-network.xml
 <network>
   <name>internal</name>
   <bridge name='virbr11' stp='on' delay='0'/>
-  <domain name='internal'/>
+  <domain name='external'/>
   <ip address="192.168.100.1" netmask="255.255.255.0">
     <dhcp>
       <range start="192.168.100.2" end="192.168.100.254"/>
@@ -106,11 +128,24 @@ node3# nmcli con up eth1
 node1# hostnamectl set-hostname node1.example.com
 node2# hostnamectl set-hostname node2.example.com
 node3# hostnamectl set-hostname node3.example.com
+
+node1# cat /etc/hosts && hostnamectl
+node2# cat /etc/hosts && hostnamectl
+node3# cat /etc/hosts && hostnamectl 
 ```
 
+
+
 # Set A recode in /etc/hosts
+
+pacemaker resovle to hosts via DNS(hostname) or IP ADDRESS
+- DNS with hostname + domain name
+  * node1.example.com
+  * install "bind" and configure
+- /etc/hosts for instead BIND "A recode"
+
 ```bash
-node1/2/3# cat <<EOF>> /etc/hosts
+node1# cat <<EOF>> /etc/hosts
 192.168.90.110 node1.example.com node1
 192.168.90.120 node2.example.com node2
 192.168.90.130 node3.example.com node3 storage
@@ -118,6 +153,8 @@ EOF
 ```
 
 # make a ssh private and public key
+
+This session is not mandatory. 
 
 ```bash
 node1# ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
@@ -129,34 +166,37 @@ node1# dnf install sshpass -y
 The node1 public key will in the authorized_keys file
 
 ```bash
-node2# cat /root/.ssh/authorized_keys
-node3# cat /root/.ssh/authorized_keys
+node2# cat /root/.ssh/authorized_keys  ## NOT HAVE
+node3# cat /root/.ssh/authorized_keys  ## NOT HAVE 
 ```
 
 Install the nano editor for skip to fingerprint checking.
 
 ```bash
 node1# dnf install nano -y
-node1# nano ~/.ssh/config
+node1# cat <<EOF> ~/.ssh/config
 StrictHostKeyChecking=no
 EOF
 ```
 
-If the package sshpass not install or cant use it, run this command
+
 
 ```bash
-node1# dnf install sshpass -y
+node1# ssh-copy-id root@node2.example.com
+node1# ssh-copy-id root@node3.example.com
+
 ```
 
 updated whole of node packages
 
 ```bash
 node1# for i in node{1..3} ; do sshpass -pcentos ssh root@$i 'dnf update -y' ; done
-node1# for i in node{1..3} ; do sshpass -pcentos scp /etc/hosts root@$i.example.com:/etc/hosts ; done
+node1# for i in node{2..3} ; do sshpass -pcentos scp /etc/hosts root@$i.example.com:/etc/hosts ; done
 ```
 
-install pacemaker package
+## install pacemaker package
 
+if you don't want to do install firewalld package, Do not run it. 
 ```bash
 node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf --enablerepo=ha -y install pacemaker pcs' ; done
 node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf install firewalld && systemctl enable --now firewalld' ; done
@@ -165,13 +205,13 @@ node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'dnf install firew
 open the pacemaker port in the Firewalld service
 
 ```bash
-node1# for i in {1..3} ; do sshpass -p centos ssh root@node${i} 'firewall-cmd --add-service=high-availability && firewall-cmd --runtime-to-permanent' ; done
+node1# for i in node{1..3} ; do sshpass -p centos ssh root@${i} 'firewall-cmd --add-service=high-availability && firewall-cmd --runtime-to-permanent' ; done
 ```
 
 Chanage hacluster user password and enable/start pcsd.service
 
 ```bash
-node1# for i in {1..3} ; do sshpass -p centos ssh root@node$i 'echo centos | passwd --stdin hacluster && systemctl enable --now pcsd.service' ; done
+node1# for i in node{1..3} ; do sshpass -p centos ssh root@$i 'echo centos | passwd --stdin hacluster && systemctl enable --now pcsd.service' ; done
 ```
 the eth1 check to each node
 
