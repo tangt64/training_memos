@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+ kind: ReplicaSet
+ metadata:
+   name: rc-nginx-app
+ spec:
+   replicas: 3
+   selector:
+     matchLabels:
+       app: rc-nginx-app
+   template:
+     metadata:
+       labels:
+         app: rc-nginx-app
+         environment: dev
+     spec:
+       containers:
+       - name: rc-nginx-app
+         image: gcr.io/nginx:latest
+         ports:
+         - containerPort: 80

@@ -1,5 +1,5 @@
-[devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4]
-name=devel:kubic:libcontainers:stable:cri-o:1.24:1.24.4 (CentOS_8)
+[stable_crio]
+name=stable cri-o (CentOS_8)
 type=rpm-md
 baseurl=https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24:/1.24.4/CentOS_8/
 gpgcheck=1
