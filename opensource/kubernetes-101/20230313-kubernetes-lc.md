@@ -76,17 +76,21 @@ Windows 10/11 Pro(HyperV)
 - Virtulbox(VCPU(AMD)), VMware Workstation(license)
 - VMware Player(personal free)
 
-VM OS
-- CentOS-8-Stream(UpStream)
-  * Rocky-8
-  * RHEL-8
-  * Oracle-8
+### 하이퍼브이 가상머신 설정
+- ISO: CentOS-8-Stream
+  * Rocky-8/9
+  * RHEL-8/9
+  * Oracle-8/9
 - 3대 설치(1 마스터, 2 워커)
-- 네트워크 2개(1외부(nat), 2내부(internal))
-- 가상CPU 2개, 가상 메모리 4096메가
-- CentOS-8-Stream
-- root암호는 centos
+- 네트워크 2개
+  * Default
+  * internal(없으면, "가상 스위치 관리자"에서 생성 )
+- 가상CPU 2개, 가상 메모리 4096MiB
 
+### 가상머신 설정
+
+- 루트 암호
+  * centos
 - 네트워크 시간 꼭 활성화(Time & Date)
   * Seoul, Korea
   * NTP활성화
@@ -98,8 +102,12 @@ VM OS
     * master: 192.168.90.110/24, GW(x)
     * node1: 192.168.90.120/24, GW(x)
     * node2: 192.168.90.130/24, GW(x)
-
-
+- eth1 ---> configure ---> IPv4
+  * method: manual
+  * IP: 192.168.90.X
+  * NETMASK: /24, 255.255.255.0
+  * GATEWAY: NONE
+  * OFF ---> ON
 
 
 
