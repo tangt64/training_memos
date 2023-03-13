@@ -284,3 +284,13 @@ systemctl enable --now crio
 dnf module list
 kubeadm init 
 ```
+
+
+### modules
+
+```bash
+modprobe br_netfilter    ## bridge for iptables or nftables
+modprobe overlay         ## cotainer image for UFS(overlay2)
+
+KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes
+```
