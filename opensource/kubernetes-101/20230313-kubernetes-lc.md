@@ -168,6 +168,8 @@ Container
 
 ```bash
 dnf install nano -y
+```
+```bash
 cat <<EOF> ~/.nanorc
 color ,red ":\w.+$"
 color ,red ":'.+$"
@@ -182,6 +184,8 @@ color brightgreen ":( |$)"
 set tabsize 2
 set tabtospaces
 EOF
+```
+```bash
 nano test.yaml
 ---
 - hosts: all
