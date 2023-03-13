@@ -261,11 +261,27 @@ systemctl status kubelet
 systemctl enable --now kubelet
 ```
 
+### containerd
+
+```bash
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf search containerd
+dnf remove podman -y
+dnf install containerd -y   ## docker repository (subsystem for dockerd)
+containerd config default > /etc/containerd/config.toml
+systemctl enable --now containerd
+kubeadm init
+
+```
+
 ### crio install
 
 ```bash
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+dnf install cri-o -y
+systemctl enable --now cri-o
+kubeadm init 
 ```
 
 
