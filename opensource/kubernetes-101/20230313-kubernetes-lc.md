@@ -284,13 +284,27 @@ systemctl enable --now crio
 dnf module list
 kubeadm init 
 ```
-
-
 ### modules
 
 ```bash
 modprobe br_netfilter    ## bridge for iptables or nftables
 modprobe overlay         ## cotainer image for UFS(overlay2)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+```
 
+### kenrel parameter
+```bash
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+> net.bridge.bridge-nf-call-iptables=1
+> net.ipv4.ip_forward=1
+> net.bridge.bridge-nf-call-ip6tables=1
+> EOF
+```
+
+```
+dracut -f    ## ramdisk update
 KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes
 ```
