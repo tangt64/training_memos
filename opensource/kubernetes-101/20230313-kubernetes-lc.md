@@ -170,7 +170,26 @@ Container
 dnf install nano -y
 ```
 ```bash
-cat <<EOF> ~/.nanorc
+nano ~/.nanorc
+# Supports `YAML` files
+syntax "YAML" "\.ya?ml$"
+header "^(---|===)" "%YAML"
+## Keys
+color magenta "^\s*[\$A-Za-z0-9_-]+\:"
+color brightmagenta "^\s*@[\$A-Za-z0-9_-]+\:"
+## Values
+color white ":\s.+$"
+## Booleans
+icolor brightcyan " (y|yes|n|no|true|false|on|off)$"
+## Numbers
+color brightred " [[:digit:]]+(\.[[:digit:]]+)?"
+## Arrays
+color red "\[" "\]" ":\s+[|>]" "^\s*- "
+## Reserved
+color green "(^| )!!(binary|bool|float|int|map|null|omap|seq|set|str) "
+## Comments
+color brightwhite "#.*$"
+## Errors
 color ,red ":\w.+$"
 color ,red ":'.+$"
 color ,red ":".+$"
@@ -182,8 +201,8 @@ color yellow "['\"].*['\"]"
 ## Equal sign
 color brightgreen ":( |$)"
 set tabsize 2
-set tabstospaces
-EOF
+set tabtospaces
+
 ```
 ```bash
 nano test.yaml
