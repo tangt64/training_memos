@@ -215,6 +215,9 @@ nano test.yaml
        args2:
 ```
 
+## 마스터 및 노드 공통 설정
+
+
 ```bash
 cat kubernetes.repo
 [kubernetes]
