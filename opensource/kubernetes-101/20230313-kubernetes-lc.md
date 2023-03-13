@@ -112,5 +112,82 @@ Windows 10/11 Pro(HyperV)
 [파워쉘 다운로드](https://learn.microsoft.com/ko-kr/windows/terminal/install)
 
 
+## 런타임???
+
+1. docker
+2. podman
+```bash
+dnf search docker
+dnf search podman
+dnf install podman -y
+systemctl is-active podman
+podman images
+podman pod ls
+podman container ls
+```
+### docker
+
+docker ---> dockered ---> containerd ---> 
+
+### POD
+1. Pod 격리목적(애플리케이션 컨테이너를 격리)
+2. Infra Container(mount, network, IPC, uts)
+3. Pod에서 사용하는 pause application, 각각 다름
+4. Pod == Container
+5. 추상적인 개념은 같지만, 애플리케이션(POD Application)은 다름
+
+```bash
+podman pod create
+podman pod ls
+podman pod start <ID>
+ps -ef | grep conmon
+podman save f6e7446e6d3d -o pause.tar
+mkdir images
+tar xf pause.tar -C images/
+cd images/
+tar xf fbffd51150c91376e3716bb1703583b76f7207a6910883dd75c259075947a6e5.tar
+```
+### POD의 공통 부분
+
+1. 네임스페이스(linux kernel namespace)
+2. 자원 관리자(cgroup)
+
+```bash
+cd /proc/self/ns
+lsns   ## namespace 자원 확인
+
+```
+
+Container
+
+3. containerd
+4. cri-o
 
 
+### 나노 에디터 설정
+
+```bash
+dnf install nano -y
+cat <<EOF> ~/.nanorc
+color ,red ":\w.+$"
+color ,red ":'.+$"
+color ,red ":".+$"
+color ,red "\s+$"
+## Non closed quote
+color ,red "['\"][^['\"]]*$"
+## Closed quotes
+color yellow "['\"].*['\"]"
+## Equal sign
+color brightgreen ":( |$)"
+set tabsize 2
+set tabtospaces
+EOF
+nano test.yaml
+---
+- hosts: all
+  tasks:
+  - name: hello
+    module:
+       args1:
+       args2:
+```
