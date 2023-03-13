@@ -305,6 +305,7 @@ cat <<EOF> /etc/sysctl.d/k8s-mod.conf
 > net.ipv4.ip_forward=1                   ## pod <---> svc
 > net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
 > EOF
+sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 ```
 systemctl status kubelet   ---> start
 systemctl status firewalld ---> stop
@@ -320,7 +321,7 @@ kubeadm init
 ### kubeadm join
 
 ```bash
-@master]# kubeadm token create --print-join-command
+@master]# KUBECONFIG=/etc/kubernetes/admin.conf kubeadm token create --print-join-command
 ```
 - 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
 - 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
