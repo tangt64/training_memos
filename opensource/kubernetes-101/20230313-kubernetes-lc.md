@@ -219,7 +219,7 @@ nano test.yaml
 cat kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
 enabled=1
 gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
@@ -230,3 +230,47 @@ dnf search --disableexcludes=kubernetes kube
 dnf list --disableexcludes=kubernetes kubeadm
 dnf install --disableexcludes=kubernetes kubeadm -y
 ```
+
+```bash
+kubeadm init
+
+systemctl stop firewalld
+swapon -s
+swapoff -a
+nano /etc/fstab
+dnf install tc -y
+
+kubeadm init
+```
+
+### bind
+
+1. bind(dns) 구성(primary)
+2. /etc/hosts A(ipv4),AAAA(ipv6) recode를 구성(backup)
+
+```bash
+cat <<EOF>> /etc/hosts
+192.168.90.110 master.example.com master
+EOF
+kubeadm init
+```
+### kubelet service
+
+```bash
+systemctl status kubelet
+systemctl enable --now kubelet
+```
+
+### crio install
+
+```bash
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+```
+
+
+
+
+
+
+
