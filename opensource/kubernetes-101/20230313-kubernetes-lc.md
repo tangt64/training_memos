@@ -219,10 +219,10 @@ nano test.yaml
 
 
 ```bash
-cat kubernetes.repo
+vi /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
 enabled=1
 gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
@@ -264,7 +264,7 @@ systemctl status kubelet
 systemctl enable --now kubelet
 ```
 
-### containerd
+### containerd(x)
 
 ```bash
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -277,7 +277,7 @@ kubeadm init
 
 ```
 
-### crio install
+### crio install(o)
 
 ```bash
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
