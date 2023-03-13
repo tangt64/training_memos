@@ -4,7 +4,10 @@
 
 * **강사 이름:** 최국현
 * **메일 주소:** bluehelix@gmail.com, tang@linux.com
-* **문서 및 자료 주소**
+
+https://github.com/tangt64/training_memos/blob/main/opensource/kubernetes-101/20230313-kubernetes-lc.md
+
+## 문서 및 자료 주소
 1. https://github.com/tangt64/training_memos/tree/main/opensource/kubernetes-101
 2. https://github.com/tangt64/training_memos
 3. https://github.com/tangt64/duststack-k8s-auto
