@@ -109,7 +109,7 @@ Windows 10/11 Pro(HyperV)
   * GATEWAY: NONE
   * OFF ---> ON
 
-
+[파워쉘 다운로드](https://learn.microsoft.com/ko-kr/windows/terminal/install)
 
 
 
