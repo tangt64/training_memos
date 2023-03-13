@@ -280,13 +280,7 @@ kubeadm init
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
 dnf install cri-o -y
-systemctl enable --now cri-o
+systemctl enable --now crio
+dnf module list
 kubeadm init 
 ```
-
-
-
-
-
-
-
