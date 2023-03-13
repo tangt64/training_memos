@@ -182,7 +182,7 @@ color yellow "['\"].*['\"]"
 ## Equal sign
 color brightgreen ":( |$)"
 set tabsize 2
-set tabstospaces
+set tabtospaces
 EOF
 ```
 ```bash
@@ -194,4 +194,20 @@ nano test.yaml
     module:
        args1:
        args2:
+```
+
+```bash
+cat kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+
+
+dnf search --disableexcludes=kubernetes kube
+dnf list --disableexcludes=kubernetes kubeadm
+dnf install --disableexcludes=kubernetes kubeadm -y
 ```
