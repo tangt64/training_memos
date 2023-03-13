@@ -287,8 +287,8 @@ kubeadm init
 ### modules
 
 ```bash
-modprobe br_netfilter    ## bridge for iptables or nftables
-modprobe overlay         ## cotainer image for UFS(overlay2)
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
 cat <<EOF> /etc/modules-load.d/k8s-modules.conf
 br_netfilter
 overlay
@@ -298,13 +298,16 @@ EOF
 ### kenrel parameter
 ```bash
 cat <<EOF> /etc/sysctl.d/k8s-mod.conf
-> net.bridge.bridge-nf-call-iptables=1
-> net.ipv4.ip_forward=1
-> net.bridge.bridge-nf-call-ip6tables=1
+> net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+> net.ipv4.ip_forward=1                   ## pod <---> svc
+> net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
 > EOF
 ```
 
-```
+```bash
 dracut -f    ## ramdisk update
+kubeadm init
+KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes
+reboot
 KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes
 ```
