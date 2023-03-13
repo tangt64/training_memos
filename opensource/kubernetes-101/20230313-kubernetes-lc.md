@@ -182,7 +182,7 @@ color yellow "['\"].*['\"]"
 ## Equal sign
 color brightgreen ":( |$)"
 set tabsize 2
-set tabtospaces
+set tabstospaces
 EOF
 ```
 ```bash
