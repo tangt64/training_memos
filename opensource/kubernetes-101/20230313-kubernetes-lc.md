@@ -348,12 +348,12 @@ __kubeadm__: bootstrap(ing)명령어. 마스터 + 노드 구성
 
 ## init 사용자 설정
 
---apiserver-advertise-address: eth1로 설정 m <---> n 서로 API통신시 사용.
---cri-socket: 현재 사용하는 런타임의 소켓 위치(조만간 사라질 옵션)
---pod-network-cidr: POD가 사용할 POD네트워크 정보(터널링 대역)
---service-dns-domain: cluster.local ---> devops.project
---upload-certs[x]: preflight과정에 TLS키 생성 후, etcd서버에 업로드(마스터 TLS키). 
---control-plane-endpoint[x]:   
+* --apiserver-advertise-address: eth1로 설정 m <---> n 서로 API통신시 사용.
+* --cri-socket: 현재 사용하는 런타임의 소켓 위치(조만간 사라질 옵션)
+* --pod-network-cidr: POD가 사용할 POD네트워크 정보(터널링 대역)
+* --service-dns-domain: cluster.local ---> devops.project
+* --upload-certs[x]: preflight과정에 TLS키 생성 후, etcd서버에 업로드(마스터 TLS키). 
+* --control-plane-endpoint[x]:   
 
 
 master2: 192.168.90.200
@@ -381,3 +381,26 @@ node join
 kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
         --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27
 ```
+
+## 터널링 네트워크 구성
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
+
+```
+
+
+### 저는용...
+    master0
+ +-----------+
+ | bootstrap |    | master 1/2/3 |  | node 1~N |
+
+
+
+
+ bridge fdb
+
+ | container | --- namespace ---> | tap | ----> Linux Bridge ----> nftable ----> | veth | ----> | external |
+                                  +-----+       +-----------+      +------+      +------+       +----------+
+                                 userspace       [SWITCH]          [ROUTE]       KERNELSPACE        [NIC]
