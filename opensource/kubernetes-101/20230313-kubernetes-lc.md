@@ -302,10 +302,10 @@ EOF
 ### kenrel parameter
 ```bash
 cat <<EOF> /etc/sysctl.d/k8s-mod.conf
-> net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
-> net.ipv4.ip_forward=1                   ## pod <---> svc
-> net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
-> EOF
+net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+net.ipv4.ip_forward=1                   ## pod <---> svc
+net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
+EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 ```
 systemctl status kubelet   ---> start
@@ -346,3 +346,16 @@ __kubeadm__: bootstrap(ing)명령어. 마스터 + 노드 구성
   - 앤서블이나 혹은 테라폼으로 자동화 하는 경우
   - kubernetes-202에서 참고
 
+## init 사용자 설정
+
+--apiserver-advertise-address: eth1로 설정 m <---> n 서로 API통신시 사용.
+--cri-socket: 현재 사용하는 런타임의 소켓 위치(조만간 사라질 옵션)
+--pod-network-cidr: POD가 사용할 POD네트워크 정보(터널링 대역)
+--service-dns-domain: cluster.local ---> devops.project
+
+```bash
+kubeadm init --apiserver-advertise-address=192.168.90.110 \
+ --cri-socket=/var/run/crio/crio.sock \
+ --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 \
+ --service-dns-domain=devops.project
+```
