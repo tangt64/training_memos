@@ -284,6 +284,7 @@ wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/ku
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
 dnf install cri-o -y
 systemctl enable --now crio
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
 dnf module list
 kubeadm init 
 ```
@@ -330,3 +331,18 @@ kubeadm init
 ```bash
 KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes
 ```
+
+
+# day 2
+
+
+실무에서 쿠버네티스 설치 방법
+
+__kubeadm__: bootstrap(ing)명령어. 마스터 + 노드 구성
+
+1. kubeadm 기반: 이 명령어 기반으로 옵션 설정 및 클러스터 구성 [x]
+  - 쉘 스크립트 기반으로 구성하는 경우
+2. kubeadm + YAML Configuration: kubeadm                   [x]
+  - 앤서블이나 혹은 테라폼으로 자동화 하는 경우
+  - kubernetes-202에서 참고
+
