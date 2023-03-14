@@ -222,12 +222,11 @@ nano test.yaml
 vi /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
 enabled=1
 gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
-
 
 dnf search --disableexcludes=kubernetes kube
 dnf list --disableexcludes=kubernetes kubeadm
@@ -280,6 +279,7 @@ kubeadm init
 ### crio install(o)
 
 ```bash
+dnf install wget -y
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
 dnf install cri-o -y
@@ -353,9 +353,13 @@ __kubeadm__: bootstrap(ing)명령어. 마스터 + 노드 구성
 --pod-network-cidr: POD가 사용할 POD네트워크 정보(터널링 대역)
 --service-dns-domain: cluster.local ---> devops.project
 
+master2: 192.168.90.200
+master3: 192.168.90.210
+
 ```bash
 kubeadm init --apiserver-advertise-address=192.168.90.110 \
  --cri-socket=/var/run/crio/crio.sock \
+ --upload-certs \
  --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 \
  --service-dns-domain=devops.project
 ```
