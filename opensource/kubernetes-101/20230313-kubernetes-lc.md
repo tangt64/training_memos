@@ -438,6 +438,15 @@ kubectl run --image quay.io/redhattraining/hello-world-nginx debug-nginx
 kubectl debug -it debug-nginx  --image=quay.io/quay/busybox:latest --target=debug-nginx
 ```
 
+## 멀티 마스터 노드 추가 
+먼저 "phase upload-certs"실행 후 출력되는 "아이디를" --certificate-key에 명시.
+
+```
+kubeadm init phase upload-certs --upload-certs
+kubeadm token create --certificate-key f4927994a4dc603c5bc6ee6b2cb73ef35cd89aba7b1fc5470695265add067bba --print-join-command
+```
+
+
 
 ## 메트릭/역할(임시)
 ```bash
@@ -476,7 +485,7 @@ complete -rpf
 
 ```bash
 kubectl create namespace basic
-kuebctl config set-context --current --namespace basic
+kubectl config set-context --current --namespace basic
 kubectl run --image quay.io/redhattraining/hello-world-nginx debug-nginx
 kubectl get pods
 kubectl expose pod debug-nginx --port=8080 --protocol=TCP --name=debug-nginx --type=LoadBalancer
