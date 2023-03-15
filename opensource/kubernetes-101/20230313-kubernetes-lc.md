@@ -472,6 +472,18 @@ complete -rpf
 
 ```
 
+## 연습문제
+
+```bash
+kubectl create namespace basic
+kuebctl config set-context --current --namespace basic
+kubectl run --image quay.io/redhattraining/hello-world-nginx debug-nginx
+kubectl get pods
+kubectl expose pod debug-nginx --port=8080 --protocol=TCP --name=debug-nginx --type=LoadBalancer
+
+```
+
+
 
 ## 좀더 편하게 작업하기
 
