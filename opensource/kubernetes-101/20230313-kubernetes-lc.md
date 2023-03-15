@@ -219,7 +219,7 @@ nano test.yaml
 
 
 ```bash
-vi /etc/yum.repos.d/kubernetes.repo
+cat <<EOF> /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
@@ -231,12 +231,13 @@ exclude=kubelet kubeadm kubectl
 dnf search --disableexcludes=kubernetes kube
 dnf list --disableexcludes=kubernetes kubeadm
 dnf install --disableexcludes=kubernetes kubeadm -y
+EOF
 ```
 
 ```bash
 kubeadm init
 
-systemctl stop firewalld
+systemctl stop firewalld && systemctl disable firewalld
 swapon -s
 swapoff -a
 nano /etc/fstab
@@ -272,8 +273,6 @@ dnf remove podman -y
 dnf install containerd -y   ## docker repository (subsystem for dockerd)
 containerd config default > /etc/containerd/config.toml
 systemctl enable --now containerd
-kubeadm init
-
 ```
 
 ### crio install(o)
@@ -285,8 +284,6 @@ wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/ku
 dnf install cri-o -y
 systemctl enable --now crio
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
-dnf module list
-kubeadm init 
 ```
 ### modules
 
@@ -440,4 +437,11 @@ kubectl debug -it nginx --image=quay.io/quay/busybox:latest --target=nginx
 ```bash
 kubectl run --image quay.io/redhattraining/hello-world-nginx debug-nginx 
 kubectl debug -it debug-nginx  --image=quay.io/quay/busybox:latest --target=debug-nginx
+```
+
+
+## 메트릭/역할(임시)
+```bash
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
+kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
 ```
