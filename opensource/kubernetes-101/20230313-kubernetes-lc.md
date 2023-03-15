@@ -422,9 +422,9 @@ spec:
   shareProcessNamespace: true
   containers:
   - name: nginx
-    image: nginx
+    image: quay.io/redhattraining/hello-world-nginx
   - name: shell
-    image: busybox:1.28
+    image: quay.io/quay/busybox:latest
     securityContext:
       capabilities:
         add:
@@ -438,6 +438,6 @@ kubectl debug -it nginx --image=busybox --target=nginx
 ## 디버그
 
 ```bash
-kubectl run --image nginx debug-nginx 
+kubectl run --image quay.io/redhattraining/hello-world-nginx debug-nginx 
 kubectl debug -it debug-nginx  --image=busybox --target=debug-nginx
 ```
