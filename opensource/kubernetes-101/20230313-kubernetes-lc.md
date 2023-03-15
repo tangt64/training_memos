@@ -390,6 +390,24 @@ kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/
 kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
 ```
 
+## UFS/Overlay
+
+```bash
+podman run -d quay.io/centos/centos:stream8 sleep 1000
+podman container ls
+podman exec -ti <ID NAME> /bin/bash
+```
+
+## merger 디렉터리
+```bash
+podman run -d quay.io/centos/centos:stream8 sleep 1000
+podman exec -it <ID> tocuh babo.txt
+podman inspect <ID>   ## merged
+ls -al <MERGED_DIR>/babo.txt
+```
+
+
+
 
 ### 저는용...
     master0
