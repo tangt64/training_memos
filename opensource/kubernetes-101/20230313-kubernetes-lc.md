@@ -444,4 +444,5 @@ kubectl debug -it debug-nginx  --image=quay.io/quay/busybox:latest --target=debu
 ```bash
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
 kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
+kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
 ```
