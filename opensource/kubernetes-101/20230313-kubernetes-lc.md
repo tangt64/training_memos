@@ -407,18 +407,36 @@ ls -al <MERGED_DIR>/babo.txt
 ```
 
 
+# day 3
 
 
-### 저는용...
-    master0
- +-----------+
- | bootstrap |    | master 1/2/3 |  | node 1~N |
+## 프로세스 공유(in namespace)
 
+```bash
+cat <<EOF> namespaceshare.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  shareProcessNamespace: true
+  containers:
+  - name: nginx
+    image: nginx
+  - name: shell
+    image: busybox:1.28
+    securityContext:
+      capabilities:
+        add:
+        - SYS_PTRACE
+    stdin: true
+    tty: true
+EOF
+kubectl create -f namespaceshare.yaml
+```
+## 디버그
 
-
-
- bridge fdb
-
- | container | --- namespace ---> | tap | ----> Linux Bridge ----> nftable ----> | veth | ----> | external |
-                                  +-----+       +-----------+      +------+      +------+       +----------+
-                                 userspace       [SWITCH]          [ROUTE]       KERNELSPACE        [NIC]
+```bash
+kubectl run --image nginx debug-nginx 
+kubectl debug -it debug-console --image=busybox --target=debug-nginx
+```
