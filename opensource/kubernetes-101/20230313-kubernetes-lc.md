@@ -433,11 +433,11 @@ spec:
     tty: true
 EOF
 kubectl create -f namespaceshare.yaml
-kubectl debug -it nginx --image=busybox --target=nginx
+kubectl debug -it nginx --image=quay.io/quay/busybox:latest --target=nginx
 ```
 ## 디버그
 
 ```bash
 kubectl run --image quay.io/redhattraining/hello-world-nginx debug-nginx 
-kubectl debug -it debug-nginx  --image=busybox --target=debug-nginx
+kubectl debug -it debug-nginx  --image=quay.io/quay/busybox:latest --target=debug-nginx
 ```
