@@ -473,7 +473,15 @@ complete -rpf
 ```
 
 
+## 좀더 편하게 작업하기
 
+
+https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/?extIdCarryOver=true&sc_cid=701f2000001Css5AAC
+
+```bash
+
+
+```
 
 
 
