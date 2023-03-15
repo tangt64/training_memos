@@ -398,7 +398,7 @@ podman container ls
 podman exec -ti <ID NAME> /bin/bash
 ```
 
-## merger 디렉터리
+## merge 디렉터리
 ```bash
 podman run -d quay.io/centos/centos:stream8 sleep 1000
 podman exec -it <ID> tocuh babo.txt
