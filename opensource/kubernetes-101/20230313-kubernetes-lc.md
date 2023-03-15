@@ -416,7 +416,6 @@ kind: Pod
 metadata:
   name: nginx
 spec:
-  shareProcessNamespace: true
   containers:
   - name: nginx
     image: quay.io/redhattraining/hello-world-nginx
@@ -448,3 +447,43 @@ kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
 kubectl top nodes
 kubectl get nodes
 ```
+
+## 자동완성
+
+1. kubeadm
+2. kubectl
+
+```bash
+dnf install epel-release -y
+dnf install bash-completion -y
+dnf install fish -y
+kubeadm completion bash > kubeadmrc
+kubectl completion bash > kubectlrc
+bash
+source kubeadmrc
+source kubectlrc
+complete -rpf
+```
+
+```fish
+kubectl completion fish > kubectlrc
+source kubectlrc
+complete -rpf
+
+```
+
+
+
+
+
+
+
+
+
+kubectl expose pod debug-nginx --name=debug-nginx --port 8080
+
+        expose  
+POD     ----->   SVC   -----> NAT
+         8080           8080     
+IP: 10.40.23.2/32
+PORT: 8080
