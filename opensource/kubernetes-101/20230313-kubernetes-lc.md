@@ -496,6 +496,7 @@ kubectl expose pod debug-nginx --port=8080 --protocol=TCP --name=debug-nginx --t
 ```bash
 kubectl run --image quay.io/redhattraining/hello-world-nginx --port=8080 --labels=app=nginx,owner=dev debug-nginx-3 -oyaml --dry-run=client > nginx3.yaml
 kubectl create -f nginx3.yaml
+kubectl create deployment my-nginx --image=nginx --port=8080 --dry-run=client -oyaml > my-nginx.yaml
 ```
 
 
