@@ -366,7 +366,7 @@ kubectl get nodes
 export KUBECONFIG=/etc/kubernetes/admin.conf 
 kubectl get nodes
 ```
-
+ru
 # day 2
 
 
@@ -571,10 +571,9 @@ object-"kube-system"/"kube-root-ca.crt": Failed to watch *v1.ConfigMap: failed t
 etcd(강제로 맴버 제거)
 ```bash
 /etc/kubernetes/pki/etcd
-kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/peer.crt --key /etc/kubernet
-es/pki/etcd/peer.key member list
-kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/peer.crt --key /etc/kubernet
-es/pki/etcd/peer.key member remove <ID>
+kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/peer.crt --key /etc/kubernetes/pki/etcd/peer.key member list
+kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/peer.crt --key /etc/kubernetes/pki/etcd/peer.key member remove <ID>
+kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/peer.crt --key /etc/kubernetes/pki/etcd/peer.key get --keys-only --prefix=true "/"
 ```
 
 
