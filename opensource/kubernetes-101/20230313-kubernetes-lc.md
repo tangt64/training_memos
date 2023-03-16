@@ -441,12 +441,18 @@ kubectl debug -it debug-nginx  --image=quay.io/quay/busybox:latest --target=debu
 ## 멀티 마스터 노드 추가 
 먼저 "phase upload-certs"실행 후 출력되는 "아이디를" --certificate-key에 명시.
 
-```
-kubeadm init phase upload-certs --upload-certs
-kubeadm token create --certificate-key f4927994a4dc603c5bc6ee6b2cb73ef35cd89aba7b1fc5470695265add067bba --print-join-command
+마스터 노드 추가
+```bash
+kubeadm init phase upload-certs --upload-certs   ## kube-system configmap에 저장
+kubeadm token create --certificate-key <KEY_ID> --print-join-command
+kubeadm join --control-plane --certificate-key
 ```
 
-
+워커 노드 추가
+```bash
+kubeadm token create --print-join-command
+@node]# kubeadm join 
+```
 
 ## 메트릭/역할(임시)
 ```bash
@@ -499,6 +505,21 @@ kubectl create -f nginx3.yaml
 kubectl create deployment my-nginx --image=nginx --port=8080 --dry-run=client -oyaml > my-nginx.yaml
 ```
 
+## 노드 빼기
+
+taint
+
+cordon
+```bash
+kubectl cordon node2.example.com 
+kubectl drain node2.example.com --force --ignore-daemonsets
+kubectl uncordon node2.example.com
+```
+drain
+```bash
+kubectl drain node2.example.com --force --ignore-daemonsets
+kubectl uncordon node2.example.com
+```
 
 crio: "컨테이너 엔진", 관리 및 쿠버네티스와 연결
  \
