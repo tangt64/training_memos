@@ -507,6 +507,16 @@ kubectl create deployment my-nginx --image=nginx --port=8080 --dry-run=client -o
 
 ## 노드 빼기
 
+etcd(강제로 맴버 제거)
+```bash
+/etc/kubernetes/pki/etcd
+kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/peer.crt --key /etc/kubernet
+es/pki/etcd/peer.key member list
+kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/peer.crt --key /etc/kubernet
+es/pki/etcd/peer.key member remove <ID>
+```
+
+
 taint
 
 cordon
