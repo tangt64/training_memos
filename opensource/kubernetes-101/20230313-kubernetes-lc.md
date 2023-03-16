@@ -227,35 +227,32 @@ enabled=1
 gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
-
+EOF
 dnf search --disableexcludes=kubernetes kube
 dnf list --disableexcludes=kubernetes kubeadm
 dnf install --disableexcludes=kubernetes kubeadm -y
-EOF
+
 ```
 
 ```bash
-kubeadm init
-
 systemctl stop firewalld && systemctl disable firewalld
 swapon -s
 swapoff -a
-nano /etc/fstab
 dnf install tc -y
-
-kubeadm init
 ```
 
-### bind
-
+### hosts A Recode(insted bind)
 1. bind(dns) 구성(primary)
 2. /etc/hosts A(ipv4),AAAA(ipv6) recode를 구성(backup)
 
 ```bash
 cat <<EOF>> /etc/hosts
 192.168.90.110 master.example.com master
+192.168.90.240 master2.example.com master2
+192.168.90.250 master3.example.com master3
+192.168.90.120 node1.example.com node1
+192.168.90.130 node2.example.com node2
 EOF
-kubeadm init
 ```
 ### kubelet service
 
@@ -264,7 +261,7 @@ systemctl status kubelet
 systemctl enable --now kubelet
 ```
 
-### containerd(x)
+### containerd(선택사항)
 
 ```bash
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -305,30 +302,70 @@ net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
 EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 ```
-systemctl status kubelet   ---> start
-systemctl status firewalld ---> stop
-kubeadm reset --force  ---> 초기화
 
+### 초기화 순서 및 방법
 
+노드에서 마스터 순서로 리셋.
 ```bash
-dracut -f    ## ramdisk update
-kubeadm init
+@node]# kubeadm reset --force
+@master]# kubeadm reset --force 
 ```
 
-
-### kubeadm join
+### kubeadm join(single)
 
 ```bash
 @master]# KUBECONFIG=/etc/kubernetes/admin.conf kubeadm token create --print-join-command
 ```
+
+### kubeadm init/join(multi)
+
+```bash
+kubeadm init --apiserver-advertise-address=192.168.90.110 \
+ --control-plane-endpoint 192.168.90.110 \
+ --cri-socket=/var/run/crio/crio.sock \
+ --upload-certs \
+ --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 \
+ --service-dns-domain=devops.project
+```
+
+#### master join
+```bash
+kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
+        --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27 \
+        --control-plane --certificate-key f45f54f44bb08318926005b5619a6af5523acb30f132da31f2172555efbfb2b8
+```
+
+#### node join
+```bash
+
+kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
+        --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27
+```
+#### 터널링 네트워크 구성
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
+kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
+```
+
+#### 메트릭/역할(임시)
+```bash
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
+kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
+kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
+kubectl top nodes
+kubectl get nodes
+```
+
 - 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
 - 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
 
-### 확인하기(마스터)
+#### 확인하기(마스터)
 ```bash
-KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes
+export KUBECONFIG=/etc/kubernetes/admin.conf 
+kubectl get nodes
 ```
-
 
 # day 2
 
@@ -337,9 +374,9 @@ KUBECONFIG=/etc/kubernetes/admin.conf kubectl get nodes
 
 __kubeadm__: bootstrap(ing)명령어. 마스터 + 노드 구성
 
-1. kubeadm 기반: 이 명령어 기반으로 옵션 설정 및 클러스터 구성 [x]
+1. kubeadm 기반: 이 명령어 기반으로 옵션 설정 및 클러스터 구성 
   - 쉘 스크립트 기반으로 구성하는 경우
-2. kubeadm + YAML Configuration: kubeadm                   [x]
+2. kubeadm + YAML Configuration: kubeadm                  
   - 앤서블이나 혹은 테라폼으로 자동화 하는 경우
   - kubernetes-202에서 참고
 
