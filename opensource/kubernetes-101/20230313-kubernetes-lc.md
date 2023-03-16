@@ -492,27 +492,23 @@ kubectl expose pod debug-nginx --port=8080 --protocol=TCP --name=debug-nginx --t
 
 ```
 
-
-
-## 좀더 편하게 작업하기
-
-
-https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/?extIdCarryOver=true&sc_cid=701f2000001Css5AAC
-
+# day 4
 ```bash
-
-
+kubectl run --image quay.io/redhattraining/hello-world-nginx --port=8080 --labels=app=nginx,owner=dev debug-nginx-3 -oyaml --dry-run=client > nginx3.yaml
+kubectl create -f nginx3.yaml
 ```
 
 
-
-
-
-
-kubectl expose pod debug-nginx --name=debug-nginx --port 8080
-
-        expose  
-POD     ----->   SVC   -----> NAT
-         8080           8080     
-IP: 10.40.23.2/32
-PORT: 8080
+crio: "컨테이너 엔진", 관리 및 쿠버네티스와 연결
+ \
+  `---> conmon(container monitor)
+         \
+          `---> -b: bundle, 컨테이너 이미지 위치
+                -c: 컨테이너 아이디
+                -r: 런타임(컨테이너 생성), runc(go lang), crun(c lang)
+                     \
+                      `---> runc
+                              \
+                               `---> process(pid)
+                                       \
+                                        `---> lsns, nsenter
