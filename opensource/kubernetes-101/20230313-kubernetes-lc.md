@@ -507,6 +507,30 @@ kubectl create deployment my-nginx --image=nginx --port=8080 --dry-run=client -o
 
 ## 노드 빼기
 
+리셋후 kubeadm init ::ipv6, calico ---> ipv6 ---> reboot ---> init
+
+master1.example.com not found, can not registerd
+- /etc/hosts ---> /etc/resolve.conf
+- /etc/hosts의 레코드가 올바르게..???
+=> umount -a
+=> rm -rf /var/lib/kubelet /etc/kubernetes/
+=> rm -rf /var/lib/containers/storages/overlay-* (물리문제)
+
+k8s_metrics경우, 크게 문제 없으면 동작이 되어야 됨.
+- api not found 
+- metrics api sever can not start 
+- selinux, firewalld, reboot
+- init --> metrics --> calico --> 물리문제 
+           <creating>
+corosync(multi nodes for etcd)
+
+master3: cordon
+master2: cordon(x), member remove <ID>
+
+```
+object-"kube-system"/"kube-root-ca.crt": Failed to watch *v1.ConfigMap: failed to list *v1.ConfigMap: configmaps "kube-root-ca.crt" is forbidden: User "system:node:master.example.com" cannot list resource "configmaps" in API group "" in the namespace "kube-system": no relationship found between node 'master.example.com' and this object
+```
+
 etcd(강제로 맴버 제거)
 ```bash
 /etc/kubernetes/pki/etcd
