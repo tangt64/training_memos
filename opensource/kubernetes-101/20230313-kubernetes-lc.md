@@ -589,7 +589,7 @@ drain
 kubectl drain node2.example.com --force --ignore-daemonsets
 kubectl uncordon node2.example.com
 ```
-
+```
 crio: "컨테이너 엔진", 관리 및 쿠버네티스와 연결
  \
   `---> conmon(container monitor)
@@ -603,3 +603,4 @@ crio: "컨테이너 엔진", 관리 및 쿠버네티스와 연결
                                `---> process(pid)
                                        \
                                         `---> lsns, nsenter
+```
