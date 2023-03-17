@@ -7,3 +7,4 @@ kubernetes 101에서 사용하는 예제 파일을 여기에서 공유하고 있
 마스터 노드 제거 방법 영상
 [링크](https://www.youtube.com/watch?v=8PaCZ1FiZoo)
 [설명](files/master_remove_step.md)
+[![영상]({image-url})]({https://www.youtube.com/watch?v=8PaCZ1FiZoo} "MASTER NODE REMOVE")
