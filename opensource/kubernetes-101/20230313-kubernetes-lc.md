@@ -1,9 +1,11 @@
 # day 1
 
-**강의 주제:** 쿠버네티스 기초
+## 강의 주제: 쿠버네티스 기초
 
-* **강사 이름:** 최국현
-* **메일 주소:** bluehelix@gmail.com, tang@linux.com
+강사 이름: 최국현
+메일 주소: 
+- bluehelix@gmail.com
+- tang@linux.com
 
 https://github.com/tangt64/training_memos/blob/main/opensource/kubernetes-101/20230313-kubernetes-lc.md
 
@@ -60,27 +62,19 @@ kubernetes docker based
     - skopeo
     - buildah    
 
-```bash
-
-kubernetes
----------
-docker(rootless)
----------
-linux
-
-```
-
 ## 랩 환경
 
 Windows 10/11 Pro(HyperV)
-- Virtulbox(VCPU(AMD)), VMware Workstation(license)
+- Virtulbox(VCPU(AMD))
+- VMware Workstation(license)
 - VMware Player(personal free)
 
 ### 하이퍼브이 가상머신 설정
-- ISO: CentOS-8-Stream
-  * Rocky-8/9
-  * RHEL-8/9
-  * Oracle-8/9
+- ISO 
+  * CentOS-8-Stream
+  * Rocky 8/9
+  * RHEL 8/9
+  * Oracle 8/9
 - 3대 설치(1 마스터, 2 워커)
 - 네트워크 2개
   * Default
@@ -102,7 +96,6 @@ Windows 10/11 Pro(HyperV)
     * master: 192.168.90.110/24, GW(x)
     * node1: 192.168.90.120/24, GW(x)
     * node2: 192.168.90.130/24, GW(x)
-- eth1 ---> configure ---> IPv4
   * method: manual
   * IP: 192.168.90.X
   * NETMASK: /24, 255.255.255.0
@@ -125,9 +118,6 @@ podman images
 podman pod ls
 podman container ls
 ```
-### docker
-
-docker ---> dockered ---> containerd ---> 
 
 ### POD
 1. Pod 격리목적(애플리케이션 컨테이너를 격리)
@@ -158,10 +148,10 @@ lsns   ## namespace 자원 확인
 
 ```
 
-Container
+### Container
 
-3. containerd
-4. cri-o
+1. containerd
+2. cri-o
 
 
 ### 나노 에디터 설정
@@ -366,7 +356,7 @@ kubectl get nodes
 export KUBECONFIG=/etc/kubernetes/admin.conf 
 kubectl get nodes
 ```
-ru
+
 # day 2
 
 
@@ -578,6 +568,9 @@ kubectl exec -n kube-system etcd-master.example.com -- etcdctl  --cacert /etc/ku
 
 
 taint
+```bash
+
+```
 
 cordon
 ```bash
