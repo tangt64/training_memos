@@ -294,6 +294,11 @@ EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 ```
 
+### firewalld stop and disabled
+```bash
+systemctl stop firewalld && systemctl disable firewalld
+```
+
 ### 초기화 순서 및 방법
 
 노드에서 마스터 순서로 리셋.
