@@ -146,9 +146,9 @@ pacemaker resovle to hosts via DNS(hostname) or IP ADDRESS
 
 ```bash
 node1# cat <<EOF>> /etc/hosts
-192.168.90.110 node1.example.com node1
+192.168.90.110 node1.example.com node1 storage
 192.168.90.120 node2.example.com node2
-192.168.90.130 node3.example.com node3 storage
+192.168.90.130 node3.example.com node3 
 EOF
 ```
 
@@ -182,8 +182,8 @@ EOF
 
 
 ```bash
-node1# ssh-copy-id root@node2.example.com
-node1# ssh-copy-id root@node3.example.com
+node1# sshpass -pcentos ssh-copy-id root@node2.example.com
+node1# sshpass -pcentos ssh-copy-id root@node3.example.com
 
 ```
 
@@ -241,7 +241,7 @@ Authenticate to each cluster node with hacluster user.
 
 ```bash
 node1# pcs host auth -u hacluster -p centos node1.example.com node2.example.com node3.example.com
-node1# pcs cluster setup [CLUSTER_NAME] node1.example.com node2.example.com node3.example.com
+node1# pcs cluster setup cluster_lab node1.example.com node2.example.com node3.example.com
 ```
 
 Start and Enabled to pcsd and pacemaker service. 
@@ -304,18 +304,17 @@ node1# targetcli iscsi/iqn.2023-02.com.example:blocks/tpg1/acls/iqn.2023-02.com.
 
 ```bash
 node1# dnf install nano -y
-node1# nano /etc/iscsi/initiatorname.iscsi
+node1# cat<<EOF> /etc/iscsi/initiatorname.iscsi
 InitiatorName=iqn.2023-02.com.example:node1.init
 node1# nano /etc/iscs/iscsid.conf
 node.session.auth.authmethod = CHAP
 node.session.auth.username = username
 node.session.auth.password = password
-
+EOF
 node1# systemctl restart iscsi iscsid
 
-node2# dnf install nano -y
-node2# dnf install iscsi-initiator-utils -y
-node2# nano /etc/iscsi/initiatorname.iscsi
+node1# ssh root@node2 "dnf install iscsi-initiator-utils -y"
+node1# ssh root@node2 cat /etc/iscsi/initiatorname.iscsi
 InitiatorName=iqn.2023-02.com.example:node2.init
 node2# nano /etc/iscsi/iscsid.conf
 node.session.auth.authmethod = CHAP
