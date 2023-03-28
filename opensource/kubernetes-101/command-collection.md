@@ -23,6 +23,7 @@ systemctl stop firewalld && systemctl disable firewalld
 swapon -s
 swapoff -a
 dnf install tc -y
+dnf install iproute-tc -y ## centos-9-stream
 ```
 
 ### hosts A Recode(insted bind)
