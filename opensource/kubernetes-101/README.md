@@ -12,4 +12,4 @@ kubernetes 101에서 사용하는 예제 파일을 여기에서 공유하고 있
 
 ## kubeadm 명령어 기반 싱글 마스터 클러스터
 
-- [명령어](command-colllection.md)
+- [명령어 모음](command-colllection.md)
