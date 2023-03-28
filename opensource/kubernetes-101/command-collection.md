@@ -15,6 +15,9 @@ EOF
 dnf search --disableexcludes=kubernetes kube
 dnf list --disableexcludes=kubernetes kubeadm
 dnf install --disableexcludes=kubernetes kubeadm -y
+setenforce 0
+systemctl stop firewalld
+systemctl disable firewalld
 
 ```
 
