@@ -151,3 +151,35 @@ dnf install podman-docker -y  ## docker command
 dnf install podman-tui -y     ## rhel9이후에 추가된 사용자 도구
 dnf install podman-catatonit  ## POD 이미지 혹은 애플리케이션 
 ```
+
+```bash
+podman-tui        ## API 혹은 소켓 서버를 찾지 못함
+systemctl enable --now podman
+podman-tui
+```
+
+## 잠깐 교양 시간 :)
+
+```bash
+podman pod create
+podman pod ls
+                                                               *                *
+POD ID        NAME               STATUS      CREATED        INFRA ID      # OF CONTAINERS
+0b5b6be932c6  strange_goldstine  Created     7 seconds ago  0db5c2d7c918  1
+                                                            ------------  ---------------
+                                                            POD: K8S      POD CONTAINER: 1 RUNNING
+                                                                          APP CONTAINER: 2 RUNNING
+                                                                == INFRA CONTAINER
+                                                                == CONTAINER
+
+COMMAND <OBJECT> <VERB> <OPTION> <RESOURCE> <ARGS>
+podman stop --all
+podman rm --all
+podman container run -d --name test-centos centos /bin/sleep 100000   ## 위치명령어, 옵션 위치에 따라서 동작이 안될 수도 있음
+                                           ------
+                                           hub.docker.io 
+podman container ls                                           
+podman pod create
+podman pod start --all
+podman pod ls                                           
+```
