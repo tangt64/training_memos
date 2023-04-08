@@ -233,8 +233,13 @@ crun(CONTAINER(container_environment(PODMAN)))
  `---> OCI 사양
 ```
 
-DOC
+### 컨테이너 이미지
 
+```bash
+cd /var/lib/containers/storage
+
+
+```
 
 
 ### 자동완성 기능
@@ -244,3 +249,123 @@ dnf install bash-completion -y
 complet -rp
 exit | bash
 ```
+
+## 격리기능
+
+container: namespace(USERSPACE(격리(PROCE/SYSCALL)))
+- 콜제한 및 환경 분리
+
+virtualization: OS(ring_strcuture(bytecode(hypervisor(cpu_emulate))))
+- 재구성
+- 실제 물리장비와 똑같이 구현이 가능
+
+
+namespace: 가상화하고 다르게 호스트의 자원을 공유하는게 주요 목적(격리 통해서)
+
+## 잠깐 역사
+
+
+격리:
+컨테이너는: 호스트에서 동작하는 프로세스를 볼수 없음. +root권한 조절(rootless)
+호스트는: 컨테이너에서 동작하는 프로세스를 볼수 있음.
+
+가상:
+가상머신은: 호스트의  프로세스를 볼수 없음.
+호스트는: 가상머신의 내부 프로세스를 볼수 없음.
+
+
+# podman
+   ---> container ---> root 권한 ---> 가지치기
+
+
+kernel(v4)
+--------
+- namespace
+- cgroup
+- seccomp
+
+
+1999~00년도에 리눅스 가상화 프로젝트. vServer project
+
+chroot기반으로 컨테이너 혹은 가상화 시스템 구성
+당시 리눅스 커널에는 격리 기능이 없었음. 구글에서 리눅스 기반의 컨테이너 프로젝트 그리고 가상화 프로젝트 시작. 
+- xen, kvm ---> 가상화 
+- namespace ---> redhat, google, ibm 
+  --------
+  격리
+- cgroup    ---> linux container ---> lxc(runtime,rootful(booting))   
+  -----                                   ---> docker(runtime,rootless(none-boot, none-root))
+  추적
+
+
+## 포드만 런타임
+
+URI
+docker://
+oci://
+
+podman명령어로 제어(OCI)
+
+/etc/containers/: 컨테이너 설정파일 위치
+/var/lib/containers/: 컨테이너 이미지 파일 위치
+/run/containers
+/etc/cni/: 컨테이너 런타임이 사용하는 네트워크 설정 디렉터리
+
+
+
+
+# 포드만 랩
+
+컨테이너 둘러보기
+
+```bash
+podman run -ti --rm registry.access.redhat.com/ubi8/httpd-24 bash
+        -t: tty, pesudo device
+        -i: interactive, stdout/in, console(/dev/console)
+        --rm: 컨테이너가 중지가 되면, 즉시 삭제
+
+bash-4.4$ ps -ef
+UID          PID    PPID  C STIME TTY          TIME CMD
+default        1       0  0 05:38 pts/0    00:00:00 bash
+default        3       1  0 05:41 pts/0    00:00:00 ps -ef
+
+container(bash) ---> container(ps) ---> [syscall] ---> [seccomp] ---> <HOST> ---> namespace                                
+```
+
+
+```bash
+     registry.access.redhat.com/ubi8/httpd-24
+     ----
+     서브스크립션이 필요
+podman run -d -p  80:8080 --name my-httpd-app centos
+                  /    \
+                 /      \
+          <---컨테이너  <---사용자
+    -p: port 컨테이너 및 호스트 포트 매핑
+--name: 컨테이너가 사용할 이름
+
+podman stop --all
+podman rm --all
+podman run -it --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 bash
+                    ---
+                    \
+                     `---> 1. iptables(nft)
+                           2. veth(tap)
+                           3. bridge(switch)
+                           4. namespace
+
+ip netns 
+ip netns exec <ID> ip a 
+                   ip r 
+iptables-save | grep 8080 
+bridge link
+bridge fdb                   
+```
+
+## 컨테이너 생성 문제
+
+1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
+2. 8080포트는 호스트 9090으로 접근이 가능
+3. 웹 페이지 내용을 변경
+  - hello nginx
+  - /usr/share/nginx/html/index.html
