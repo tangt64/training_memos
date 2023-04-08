@@ -367,7 +367,7 @@ bridge fdb
 
 ## 컨테이너 생성 문제
 
-podman run -it --rm -p --name     bash 
+podman run -it --rm -p 컨테이너:호스트 --name     bash 
 
 1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
   - 컨테이너 이름은 hello-nginx
@@ -375,3 +375,6 @@ podman run -it --rm -p --name     bash
 3. 웹 페이지 내용을 변경
   - hello nginx
   - /usr/share/nginx/html/index.html
+4. find으로 파일 위치 확인(index.html)
+5. iptables-save, podman port로 아이피 및 포트 번호 일치 확인
+6. ip netns exec, bridge로 아이피 및 장치 조회
