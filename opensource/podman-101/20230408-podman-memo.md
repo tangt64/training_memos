@@ -365,10 +365,14 @@ bridge link
 bridge fdb                   
 ```
 
+# 연습문제 
+
 ## 컨테이너 생성 문제
 
 podman run -it --rm -p 호스트:컨테이너 --name     bash 
 podman run -it --rm -p 9090:8080 --name hello-nginx quay.io/redhattraining/hello-world-nginx bash
+podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
+
 
 1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
   - 컨테이너 이름은 hello-nginx
@@ -379,3 +383,27 @@ podman run -it --rm -p 9090:8080 --name hello-nginx quay.io/redhattraining/hello
 4. find으로 파일 위치 확인(index.html)
 5. iptables-save, podman port로 아이피 및 포트 번호 일치 확인
 6. ip netns exec, bridge로 아이피 및 장치 조회
+
+
+podman run -d --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 sleep 100000
+
+
+## 컨테이너 커밋
+컨테이너 생성 후 커밋을 한다.
+
+- 컨테이너는 데비안 컨테이너를 생성한다. 
+  - quay.io/official-images/debian
+  - 이미지가 없는 경우 이미지를 런타임에 내려받기 한다.
+- 생성된 데비안 컨테이너의 이름은 fresh-debian-server로 지정한다.
+  - 생성 후 바로 이미지를 커밋한다.
+  - 커밋 이름은 before-install-package-debian으로 한다.
+- 데비안에 다음과 같은 패키지를 설치한다.
+  - apache2
+  - vsftpd
+  - 설치시 사용하는 명령어는 apt install이다.
+  - 올바르게 동작하지 않으면 apt update를 먼저 수행한다.
+  - 설치가 완료가 되면 이미지를 커밋한다. 
+  - 커밋 이름은 after-install-package-debian으로 한다.
+- 설치가 완료가 되면 diff으로 before, after에 어떠한 차이가 있는지 확인한다.
+  - 확인이 완료가 되면 before, after이미지를 제거한다.
+  - 동작중인 컨테이너 fresh-debian-server는 중지한다.
