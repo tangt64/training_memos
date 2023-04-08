@@ -384,8 +384,14 @@ podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-wor
 5. iptables-save, podman port로 아이피 및 포트 번호 일치 확인
 6. ip netns exec, bridge로 아이피 및 장치 조회
 
+	podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
+curl localhost:9090
+podman container port hello-world-ngninx
+iptables-save | grep 9090
+
 
 podman run -d --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 sleep 100000
+
 
 
 ## 컨테이너 커밋
