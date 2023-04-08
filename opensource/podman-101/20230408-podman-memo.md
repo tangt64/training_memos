@@ -206,7 +206,21 @@ ps -ef | grep conmon    ## container monitor process, mandb, man -k conmon
 mandb
 man -k conmon
 man 8 conmon
+   
+   [stop]     
+   docker ---> dockerd ---> containerd == all stop
+                            ----------
+                            OpenStack Kolla(containerd)
+                                |
+                                v
+                            detached(daemon less,OCI)
+                                         \
+                                          `--->fork() ---> conmon ---> exec(container)
 
+   podman ---> container create ---> detached(daemon less,OCI)
+                                         \
+                                          `--->fork() ---> conmon ---> exec(container)
+                                         
 
 conmon(CONTAINER_IMAGE) == Image Loader == /var/lib/containers/storages  ## 컨테이너 이미지 및 레이어 파일 저장
 ------
@@ -218,6 +232,8 @@ crun(CONTAINER(container_environment(PODMAN)))
 \
  `---> OCI 사양
 ```
+
+DOC
 
 
 
