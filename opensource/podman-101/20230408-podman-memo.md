@@ -108,7 +108,46 @@ kubernetes runtimes list
 - 도커에서 사용하는 이미지가 산업표준
 - 도커에서 사용하는 명령어 방식이 산업표준
 
+## rocky vs rhel vs centos(HPC, CERN)
 
+centos: release ---> rolling update  ---> RHEL(stream)
+          v9.1          (stream)          Phase 1/2/3/4
+          v9.2        3 years(EOL)              1: centos/rhel(os update + hardware)       
+                                                2/3/4: subscription update only 
+RHEL7 RPM REPOS
+----------------
+baseos
+os
+
+RHEL8(9) RPM REPOS
+----------------
+baseos
+appstream + module(PPA)
+            SCL(Software Collection)
+
+rocky: clone even bugs
+       + module package
+
+ 
 ## 강사 소개
 
 최국현, bluehelix@gmail.com, tang@linux.com
+
+## 설치 시작
+
+```bash
+dnf install podman -y
+systemctl status podman
+podman images
+podman container ls
+podman pod ls
+```
+
+```bash
+dnf install epel-release -y ## 엔터프라이즈 패키지 저장소
+dnf search podman
+dnf install podman-compose -y ## docker compose
+dnf install podman-docker -y  ## docker command 
+dnf install podman-tui -y     ## rhel9이후에 추가된 사용자 도구
+dnf install podman-catatonit  ## POD 이미지 혹은 애플리케이션 
+```
