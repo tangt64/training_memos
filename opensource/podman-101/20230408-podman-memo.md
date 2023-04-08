@@ -337,17 +337,17 @@ container(bash) ---> container(ps) ---> [syscall] ---> [seccomp] ---> <HOST> ---
      registry.access.redhat.com/ubi8/httpd-24
      ----
      서브스크립션이 필요
-podman run -d -p  80:8080 --name my-httpd-app centos
+podman run -d -p  80:8080 --name my-httpd-app registry.access.redhat.com/ubi8/httpd-24
                   /    \
                  /      \
-          <---컨테이너  <---사용자
+          <---사용자  <---컨테이너
     -p: port 컨테이너 및 호스트 포트 매핑
 --name: 컨테이너가 사용할 이름
 
 podman stop --all
 podman rm --all
-                          .----> 컨테이너
-                         /   .---> 호스트
+                          .----> 호스트
+                         /   .---> 컨테이너
                         /   /
 podman run -it --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 bash
                     ---
@@ -367,7 +367,8 @@ bridge fdb
 
 ## 컨테이너 생성 문제
 
-podman run -it --rm -p 컨테이너:호스트 --name     bash 
+podman run -it --rm -p 호스트:컨테이너 --name     bash 
+podman run -it --rm -p 9090:8080 --name hello-nginx quay.io/redhattraining/hello-world-nginx bash
 
 1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
   - 컨테이너 이름은 hello-nginx
