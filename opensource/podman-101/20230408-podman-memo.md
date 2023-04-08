@@ -346,6 +346,9 @@ podman run -d -p  80:8080 --name my-httpd-app centos
 
 podman stop --all
 podman rm --all
+                          .----> 컨테이너
+                         /   .---> 호스트
+                        /   /
 podman run -it --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 bash
                     ---
                     \
@@ -364,7 +367,10 @@ bridge fdb
 
 ## 컨테이너 생성 문제
 
+podman run -it --rm -p --name     bash 
+
 1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
+  - 컨테이너 이름은 hello-nginx
 2. 8080포트는 호스트 9090으로 접근이 가능
 3. 웹 페이지 내용을 변경
   - hello nginx
