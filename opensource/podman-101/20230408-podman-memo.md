@@ -389,6 +389,7 @@ podman run -d --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 
 
 
 ## 컨테이너 커밋
+
 컨테이너 생성 후 커밋을 한다.
 
 - 컨테이너는 데비안 컨테이너를 생성한다. 
@@ -400,10 +401,21 @@ podman run -d --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 
 - 데비안에 다음과 같은 패키지를 설치한다.
   - apache2
   - vsftpd
-  - 설치시 사용하는 명령어는 apt install이다.
+  - 설치시 사용하는 명령어는 apt install이다. apt install apache2 -y 
   - 올바르게 동작하지 않으면 apt update를 먼저 수행한다.
   - 설치가 완료가 되면 이미지를 커밋한다. 
   - 커밋 이름은 after-install-package-debian으로 한다.
 - 설치가 완료가 되면 diff으로 before, after에 어떠한 차이가 있는지 확인한다.
   - 확인이 완료가 되면 before, after이미지를 제거한다.
   - 동작중인 컨테이너 fresh-debian-server는 중지한다.
+
+```bash
+podman commit fresh-debian-server before-install-package-debian
+podman images
+podman exec -it fresh-debian-server /bin/bash
+podman commit fresh-debian-server after-install-package-debian
+podman diff before-install-package-debian:latest after-install-package-debian:latest
+```
+
+  1. iptables, bridge부분 
+  2. echo, permission 
