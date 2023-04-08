@@ -2,6 +2,52 @@
 
 ## lab plan
 
+```bash
+
+
+  POD =|    |= Container
+
+      wildfly
+   +------------+
+   | kubernetes |  <--- MIDDLE WARE(API, MASTER/NODE ROLES, ORCHESTRATION)
+   +------------+                                           -------------
+                                                              통합 시스템
+
+
+-----------------------------------------------------------
+container runtime layer
+        EJB
+    +---------+
+    | runtime |
+    +---------+
+
+
+
+-----------------------------------------------------------
+container create layer
+
+
+     jdk(java)
+    +---------+
+    |  runc   |
+    +---------+
+
+        jvm
+    +--------+
+    | kernel | - namespace
+    +--------+ - cgroup
+               - seccomp
+
+
+```
+### 가상머신 사양
+
+vcpu: 2개
+vmem: 4기가
+vdisk: 최소 8기가
+os: centos-9-stream
+
+
 ### 1~3일
 
 runtime, 가상머신 1대만 필요. 
@@ -9,7 +55,7 @@ ubuntu,debian,rocky,centos-stream
 가급적이면 centos-9-stream
 podman만 기반으로 런타임 학습.
 
-### 4~5
+### 4~5일
 
 runtime + kubernetes 조합 구조에 대해서 이야기
 
@@ -61,3 +107,8 @@ kubernetes runtimes list
 
 - 도커에서 사용하는 이미지가 산업표준
 - 도커에서 사용하는 명령어 방식이 산업표준
+
+
+## 강사 소개
+
+최국현, bluehelix@gmail.com, tang@linux.com
