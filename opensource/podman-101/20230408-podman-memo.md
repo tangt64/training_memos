@@ -20,8 +20,8 @@ container runtime layer
     +---------+
     | runtime |
     +---------+
-
-
+ # ps -ef | grep docker ---> docker(dockerd(containerd))
+ # ps -ef | grep podman ---> conmon(OCI)
 
 -----------------------------------------------------------
 container create layer
@@ -182,4 +182,49 @@ podman container ls
 podman pod create
 podman pod start --all
 podman pod ls                                           
+```
+
+pod, container는 같은 컨테이너 자원 및 개념
+
+POD라는 애플리케이션이 각기 다른걸 사용하기 때문에, POD개념이 소프트웨어 별로 조금씩 다를수 있음. 
+
+```
+kubernetes: pause(pod(pause))
+podman: pause(pod(catatonit))
+OCP: pause(pod(catatonit))
+Rancher: pause(pod(catatonit))
+
+pause ---> pod ---> infra container
+ \         \        \
+  \         \        `---> 자원 호칭
+   \         `---> 추상적인 개념
+    `---> 애플리케이션 이름
+```
+```bash
+ps -ef | grep podman    ## ??
+ps -ef | grep conmon    ## container monitor process, mandb, man -k conmon
+mandb
+man -k conmon
+man 8 conmon
+
+
+conmon(CONTAINER_IMAGE) == Image Loader == /var/lib/containers/storages  ## 컨테이너 이미지 및 레이어 파일 저장
+------
+\
+ `---> OCI 사양
+
+crun(CONTAINER(container_environment(PODMAN)))
+----
+\
+ `---> OCI 사양
+```
+
+
+
+### 자동완성 기능
+```bash
+dnf search bash-completion
+dnf install bash-completion -y
+complet -rp
+exit | bash
 ```
