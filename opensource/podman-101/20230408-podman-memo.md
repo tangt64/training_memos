@@ -460,3 +460,12 @@ dnf install skopeo -y
 skopeo list-tags docker://quay.io/centos/centos | less ## tag목록이 자세하게 출력
 podman pull centos/centos:stream9
 ```
+
+```bash
+podman run -it --rm --name test-centos-stream-9 centos:stream9 /bin/bash
+-> dnf search httpd
+-> dnf install httpd -y
+podman commit test-centos-stream-9 commit-test-centos-stream-9
+podman save quay.io/centos/centos:stream9 -o stream9.tar
+podman save localhost/commit-test-centos-stream-9 -o modified-stream9.tar
+```
