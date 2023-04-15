@@ -447,11 +447,16 @@ podman diff before-install-package-debian:latest after-install-package-debian:la
 
 ## 레지스트리 주소 추가 및 변경
 ```bash
-[root@podman containers]# pwd
+pwd
 /etc/containers
-[root@podman containers]# nano registries.conf ^C
-[root@podman containers]# grep -Ev '^#|^$' registries.conf
-unqualified-search-registries = ["quay.io", "registry.access.redhat.com", "registry.redhat.io", "docker.io"]
+nano registries.conf
+grep -Ev '^#|^$' registries.conf
+unqualified-search-registries = ["quay.io"]
 short-name-mode = "enforcing"
-[root@podman containers]#
+podman search centos
+podman pull centos
+podman search --list-tags centos/centos          ## tag목록이 출력이 되나, 자세하지는 않음
+dnf install skopeo -y
+skopeo list-tags docker://quay.io/centos/centos | less ## tag목록이 자세하게 출력
+podman pull centos/centos:stream9
 ```
