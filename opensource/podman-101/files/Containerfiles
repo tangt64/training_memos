@@ -1,0 +1,4 @@
+FROM localhost/tang/microservice
+RUN microdnf -y install httpd ; microdnf -y clean all
+EXPOSE 80
+CMD ["/usr/sbin/httpd", "-DFOREGROUND"]
