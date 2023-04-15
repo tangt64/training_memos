@@ -13,13 +13,14 @@ docker runtime(==PODMAN) -->                                  --> KUBERNETES
 </pre>
 * podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
 * docker는 docker-ee(swam)서버를 가지고 있음.
-
+<pre>
 docker-ee: RestAPI
 -> 확장성은 매우 낮음
 podman: podman.server, RestAPI
 -> 확장성은 낮음
 kubernetes: kubelet, kube-apiserver, RestAPI
 -> 확장성이 큼
+</pre>
 
 Low Level Runtime Engine
 -------
@@ -382,10 +383,11 @@ bridge fdb
 
 ## 컨테이너 생성 문제
 
+```
 podman run -it --rm -p 호스트:컨테이너 --name     bash 
 podman run -it --rm -p 9090:8080 --name hello-nginx quay.io/redhattraining/hello-world-nginx bash
 podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
-
+```
 
 1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
   - 컨테이너 이름은 hello-nginx
@@ -397,14 +399,13 @@ podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-wor
 5. iptables-save, podman port로 아이피 및 포트 번호 일치 확인
 6. ip netns exec, bridge로 아이피 및 장치 조회
 
-	podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
+```bash
+podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
 curl localhost:9090
 podman container port hello-world-ngninx
 iptables-save | grep 9090
-
-
 podman run -d --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 sleep 100000
-
+```
 
 
 ## 컨테이너 커밋
@@ -497,9 +498,41 @@ FROM ubi-init
 본래 컨테이너에서 System V init, systemD사용이 불가능.
 
 
+```bash
+cd
+nano Container-httpd
+FROM ubi8-init
+RUN dnf -y install httpd; dnf -y clean all
+RUN systemctl enable httpd.service
+ln -s Container-httpd Dockerfile
+podman build .
+rm -f Dockfile
+ln -s Container-httpd Containerfile
+podman build .
+dnf install buildah -y
+buildah images                ## /var/lib/containers/storage/
+buildah bud -f Container-httpd
+```
+
+
 ```Containerfile
 FROM ubi8-init
 RUN dnf -y install httpd; dnf -y clean all
 RUN systemctl enable httpd.service
 _EOF
 ```
+
+## Low/High level image build tool
+
+### Podman
+고수주 이미지 빌드 도구
+
+
+### Buildah
+저수준 이미지 빌드 도구
+
+
+식사 후, 이미지 빌드
+-----
+
+https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch
