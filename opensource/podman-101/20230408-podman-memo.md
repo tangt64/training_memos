@@ -538,14 +538,27 @@ _EOF
 https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch
 
 ```bash
-newcontainer=$(buildah from scratch)
+newcontainer=$(buildah from scratch) x 3
+echo $newcontainer     # scratch-3
 buildah containers
 buildah images
-buildah run $newcontainer bash
-scratchmnt=$(buildah mount $newcontainer)
+buildah run $newcontainer bash                ## 일부로 확인하기 위해서
+scratchmnt=$(buildah mount $newcontainer)  
+echo $scratchmnt
 dnf install --installroot $scratchmnt --release 9 --setopt install_weak_deps=false -y bash 
 buildah run $newcontainer /bin/bash
 ->exit
+dnf provides ls
+-> coreutils-signle 
 dnf install --setopt install_weak_deps=false -y --releasever=9 --installroot $scratchmnt coreutils-single
+# dnf install --setopt install_weak_deps=false -y --releasever=9 --installroot $scratchmnt httpd -y
+buildah run $newcontainer /bin/bash
+-> ls
+-> exit
+
+# buildah config --cmd  /usr/bin/runecho.sh      ## 컨테이너 메타정보 생성, podman inspect, docker inspect 
+buildah config --created-by "Tang"  $newcontainer
+buildah config --author "CHOIGOOKHYUN at linux.com @tang" --label name=centos-9-stream $newcontainer
+buildah inspect $newcontainer
 
 ```
