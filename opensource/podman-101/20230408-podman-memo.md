@@ -465,7 +465,15 @@ podman pull centos/centos:stream9
 podman run -it --rm --name test-centos-stream-9 centos:stream9 /bin/bash
 -> dnf search httpd
 -> dnf install httpd -y
-podman commit test-centos-stream-9 commit-test-centos-stream-9
-podman save quay.io/centos/centos:stream9 -o stream9.tar
-podman save localhost/commit-test-centos-stream-9 -o modified-stream9.tar
+podman commit test-centos-stream-9 commit-test-centos-stream-9    ## 실행중인 컨테이너를 이미지화
+podman save quay.io/centos/centos:stream9 -o stream9.tar          ## 컨테이너 이미지를 파일로 저장
+podman save localhost/commit-test-centos-stream-9 -o modified-stream9.tar  ## 컨테이너 이미지를 파일로 저장
+ls
+anaconda-ks.cfg  modified-stream9.tar  stream9.tar
+mkdir original
+mkdir modified
+tar xf modified-stream9.tar -C modified/
+tar xf stream9.tar -C original/
+ls -l modified/
+ls -l original/
 ```
