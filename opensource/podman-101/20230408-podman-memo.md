@@ -536,3 +536,16 @@ _EOF
 -----
 
 https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch
+
+```bash
+newcontainer=$(buildah from scratch)
+buildah containers
+buildah images
+buildah run $newcontainer bash
+scratchmnt=$(buildah mount $newcontainer)
+dnf install --installroot $scratchmnt --release 9 --setopt install_weak_deps=false -y bash 
+buildah run $newcontainer /bin/bash
+->exit
+dnf install --setopt install_weak_deps=false -y --releasever=9 --installroot $scratchmnt coreutils-single
+
+```
