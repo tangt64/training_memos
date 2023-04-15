@@ -551,11 +551,8 @@ scratchmnt=$(buildah mount $newcontainer)
 echo $scratchmnt
 ls /var/lib/containers/storage/overlay/1cf801765945a490af5316a7c77b47f87ebdb3184260692cce6f6328fe5d88cb/merged  ## 현재 컨테이너는 비어 있음. 그래서 bash가 실행이 안됨
 
-microdnf install --installroot $scratchmnt --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 --setopt install_weak_deps=false -y --releasever=9 bash 
-buildah run $newcontainer /bin/bash           ## bash가 동작
-microddnf install --installroot $scratchmnt --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 --setopt install_weak_deps=false -y --releasever=9  coreutils-single                  ## ls명령어 설치
-microdnf install --installroot $scratchmnt --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 --setopt install_weak_deps=false -y --releasever=9  microdnf   ## dnf 패키지 설치
-# dnf install --setopt install_weak_deps=false -y --releasever=9 --installroot $scratchmnt httpd -y
+dnf install --installroot $scratchmnt --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 --setopt install_weak_deps=false -y --releasever=9 bash 
+buildah run $newcontainer /bin/bash microdnf coreutils-single          ## bash가 동작
 buildah run $newcontainer /bin/bash
 -> ls
 -> exit
