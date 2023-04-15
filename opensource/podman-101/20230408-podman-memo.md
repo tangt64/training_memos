@@ -1,38 +1,61 @@
 # day1
 
-## lab plan
+## lab plan(5번)
+
+1,2: podman, crio
+3,4: crio+kubernetes
+  5: kubernetes
+
+docker runtime(==PODMAN) -->                                  --> KUBERNETES
+   [PODMAN]                   [CRIO]
+                              [CONTAINERD[EPEL]]
+                              [DOCKER(==CRI-DOCKER(COMPIEL))]
+
+* podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
+* docker는 docker-ee(swam)서버를 가지고 있음.
+
+docker-ee: RestAPI
+-> 확장성은 매우 낮음
+podman: podman.server, RestAPI
+-> 확장성은 낮음
+kubernetes: kubelet, kube-apiserver, RestAPI
+-> 확장성이 큼
+
+Low Level Runtime Engine
+-------
+cri-docker: socket, cri기반의 명령어 처리
+cri-o: socket, cri기반의 명령어 처리
+containerd: socket, cri adaptor, cri기반의 명령어 처리
+
 
 ```bash
 
+  POD == CONTAINER == INFRA CONTAINER
 
-  POD =|    |= Container
-
-      wildfly
    +------------+
-   | kubernetes |  <--- MIDDLE WARE(API, MASTER/NODE ROLES, ORCHESTRATION)
-   +------------+                                           -------------
-                                                              통합 시스템
-
-
+   | kubernetes |  <--- MIDDLE WARE(API, MASTER/NODE ROLES, ORCHESTRATION, RESETAPI)
+   +------------+                                          
 -----------------------------------------------------------
-container runtime layer
-        EJB
+container runtime engine layer
+--> LOW
+--> HIGH
+    [EXEC]
     +---------+
     | runtime |
+    |         | ---> SOCKET
+    |  [LOW]  |
     +---------+
  # ps -ef | grep docker ---> docker(dockerd(containerd))
  # ps -ef | grep podman ---> conmon(OCI)
 
 -----------------------------------------------------------
 container create layer
-
-
-     jdk(java)
-    +---------+
-    |  runc   |
-    +---------+
-
-        jvm
+       [FORK]
+         |
+       conmon
+         |
+        runc    ---> [container]
+         |
     +--------+
     | kernel | - namespace
     +--------+ - cgroup
@@ -46,18 +69,6 @@ vcpu: 2개
 vmem: 4기가
 vdisk: 최소 8기가
 os: centos-9-stream
-
-
-### 1~3일
-
-runtime, 가상머신 1대만 필요. 
-ubuntu,debian,rocky,centos-stream
-가급적이면 centos-9-stream
-podman만 기반으로 런타임 학습.
-
-### 4~5일
-
-runtime + kubernetes 조합 구조에 대해서 이야기
 
 ## 하이퍼바이저
 - HyperV
@@ -75,6 +86,18 @@ runtime + kubernetes 조합 구조에 대해서 이야기
 
 ## docker vs podman(stand-alone-container-server)
 
+OCI: Open Container Initiative
+-> The Container(image, specs)
+CNI: Container Network Interface
+CSI: Container Storage Interface
+
+podman: https://podman.io/, Pod Manager tool (podman)
+buildah: https://buildah.io/, OCI container images.
+-> https://github.com/mairin/coloringbook-container-commandos
+-> https://github.com/containers/buildah/tree/main/docs/tutorials
+skopeo: performs various operations on container images and image repositories.
+-> https://github.com/containers/skopeo 
+
 ```bash
 docker: search, build, container init
         ------  -----  ---------
@@ -89,10 +112,6 @@ runtime: runtime engine or container runtime engine
           `---> container, image, volume....(meta)
 
 ```
-docker, podman: API서버를 가지고 있음. 
-
-* podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
-* docker는 docker-ee(swam)서버를 가지고 있음.
 
 docker(더 이상 개발이 되지 않음): OCI/CRI표준 컨테이너 이미지 및 런타임 사양
   - containerd: OCI/CRI 표준 컨테이너로 선언
@@ -110,13 +129,15 @@ kubernetes runtimes list
 
 ## rocky vs rhel vs centos(HPC, CERN)
 
+```
 centos: release ---> rolling update  ---> RHEL(stream)
           v9.1          (stream)          Phase 1/2/3/4
           v9.2        3 years(EOL)              1: centos/rhel(os update + hardware)       
                                                 2/3/4: subscription update only 
+```                                                
 RHEL7 RPM REPOS
 ----------------
-baseos
+base
 os
 
 RHEL8(9) RPM REPOS
@@ -124,14 +145,6 @@ RHEL8(9) RPM REPOS
 baseos
 appstream + module(PPA)
             SCL(Software Collection)
-
-rocky: clone even bugs
-       + module package
-
- 
-## 강사 소개
-
-최국현, bluehelix@gmail.com, tang@linux.com
 
 ## 설치 시작
 
@@ -425,3 +438,20 @@ podman diff before-install-package-debian:latest after-install-package-debian:la
 
   1. iptables, bridge부분 
   2. echo, permission 
+
+# day 2
+
+- podman 명령어 계속
+- 컨테이너 이미지 부분
+- 컨테이너 구조 및 구성
+
+## 레지스트리 주소 추가 및 변경
+```bash
+[root@podman containers]# pwd
+/etc/containers
+[root@podman containers]# nano registries.conf ^C
+[root@podman containers]# grep -Ev '^#|^$' registries.conf
+unqualified-search-registries = ["quay.io", "registry.access.redhat.com", "registry.redhat.io", "docker.io"]
+short-name-mode = "enforcing"
+[root@podman containers]#
+```
