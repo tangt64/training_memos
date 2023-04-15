@@ -455,7 +455,7 @@ unqualified-search-registries = ["quay.io"]
 short-name-mode = "enforcing"
 podman search centos
 podman pull centos
-podman search --list-tags centos/centos          ## tag목록이 출력이 되나, 자세하지는 않음
+podman search --list-tags centos/centos                ## tag목록이 출력이 되나, 자세하지는 않음
 dnf install skopeo -y
 skopeo list-tags docker://quay.io/centos/centos | less ## tag목록이 자세하게 출력
 podman pull centos/centos:stream9
@@ -476,4 +476,30 @@ tar xf modified-stream9.tar -C modified/
 tar xf stream9.tar -C original/
 ls -l modified/
 ls -l original/
+
+podman diff test-centos-stream-9 quay.io/centos/centos:stream9    ## 런타임이 이미지 diff 디렉터리를 확인 함.
+```
+
+OSTree: https://ostree.readthedocs.io/en/stable/
+
+RedHat Podman Ebook: 141page
+
+__Dockerfile:__ Docker 이미지 빌드를 도와주는 명령어(instruction) 셋(set) 파일. 구성할 내용들을 쭉 적어둠.
+
+__Containerfile:__: OCI 이미지 빌드 도구 명령어. 앞으로 모든 컨테이너 이미지는 Containerfile기반으로 구성이 됨. 
+
+이미지 빌드 시 사용하는 도구는 __podman build__, __buildah bud__ 명령어 사용이 가능. 이미지 빌드시 권장은 buildah를 사용. 
+
+FROM centos
+FROM ubi-init   
+
+만약, 베이스 이미지에 '-init'라고 표시가 되어 있으면, 컨테이너에서 systemd, init사용이 가능함. 
+본래 컨테이너에서 System V init, systemD사용이 불가능.
+
+
+```Containerfile
+FROM ubi8-init
+RUN dnf -y install httpd; dnf -y clean all
+RUN systemctl enable httpd.service
+_EOF
 ```
