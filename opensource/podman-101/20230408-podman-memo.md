@@ -501,9 +501,9 @@ FROM ubi-init
 ```bash
 cd
 nano Container-httpd
-FROM ubi8-init
-RUN dnf -y install httpd; dnf -y clean all
-RUN systemctl enable httpd.service
+->FROM ubi8-init
+->RUN dnf -y install httpd; dnf -y clean all
+->RUN systemctl enable httpd.service
 ln -s Container-httpd Dockerfile
 podman build .
 rm -f Dockfile
@@ -537,6 +537,10 @@ _EOF
 
 https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch
 
+https://github.com/containers/buildah/issues/532
+
+
+
 ```bash
 newcontainer=$(buildah from scratch) x 3
 echo $newcontainer     # scratch-3
@@ -566,3 +570,41 @@ buildah unmount $newcontainer
 buildah commit $newcontainer choi-centos-9-stream-cus
 buildah images
 ```
+
+
+## share/unshare
+unshare: Run a command inside of a modified user namespace
+         -> 명령어 혹은 프로그램을 사용자 네임스페이스에서 실행
+
+scratch(완벽하게 명령어 구현은 아님)
+
+```bash
+mkdir -p /scratch
+chown 1000.1000 /scratch
+unshare -S 1000 -G 1000 -w /scratch  ## bash 프로세스의 작업 디렉터리가 임의로 "/scratch/"로 변경
+```
+
+          .---> mount --bind /var/lib/containers/storage/overlay/<DIR>    ## USER
+         /       mount --make-private <DIR>                                ## NAMESPACE
+        /      touch /var/lib/containers/storage/overlay/scratch
+       /       unshare --mount=/var/lib/containers/storage/overlay/scratch   ## buildah mount
+--------------------
+buildah from scratch == NAMESPACE(scratch(unshare(MOUNT((/VAR/LIB/CONTAINERS/STORAGE/OVERLAY))))
+                                  ------- -------
+                                  \        \
+                                   \        \
+                                    \        '---> syscall(function)
+                                     '---> function
+```bash
+man -k unshare
+man 1 unshare
+
+adduser test1
+echo centos | passwd --stdin test1
+ssh test1@localhost
+```
+keywords
+---------
+
+1. namespace
+2. unshare
