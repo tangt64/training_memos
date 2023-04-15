@@ -540,17 +540,19 @@ https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a
 ```bash
 newcontainer=$(buildah from scratch) x 3
 echo $newcontainer     # scratch-3
-buildah containers
+buildah ps == buildah containers
+buildah rm <ID>                               ## 필요 없는거 제거
 buildah images
 buildah run $newcontainer bash                ## 일부로 확인하기 위해서
 scratchmnt=$(buildah mount $newcontainer)  
 echo $scratchmnt
+ls /var/lib/containers/storage/overlay/1cf801765945a490af5316a7c77b47f87ebdb3184260692cce6f6328fe5d88cb/merged  ## 현재 컨테이너는 비어 있음. 그래서 bash가 실행이 안됨
 dnf install --installroot $scratchmnt --release 9 --setopt install_weak_deps=false -y bash 
-buildah run $newcontainer /bin/bash
+buildah run $newcontainer /bin/bash           ## bash가 동작
 ->exit
 dnf provides ls
 -> coreutils-signle 
-dnf install --setopt install_weak_deps=false -y --releasever=9 --installroot $scratchmnt coreutils-single
+dnf install --setopt install_weak_deps=false -y --releasever=9 --installroot $scratchmnt coreutils-single                  ## ls명령어 설치
 # dnf install --setopt install_weak_deps=false -y --releasever=9 --installroot $scratchmnt httpd -y
 buildah run $newcontainer /bin/bash
 -> ls
@@ -560,5 +562,7 @@ buildah run $newcontainer /bin/bash
 buildah config --created-by "Tang"  $newcontainer
 buildah config --author "CHOIGOOKHYUN at linux.com @tang" --label name=centos-9-stream $newcontainer
 buildah inspect $newcontainer
-
+buildah unmount $newcontainer
+buildah commit $newcontainer choi-centos-9-stream-cus
+buildah images
 ```
