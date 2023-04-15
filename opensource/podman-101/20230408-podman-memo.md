@@ -5,12 +5,12 @@
 1,2: podman, crio
 3,4: crio+kubernetes
   5: kubernetes
-
+<pre>
 docker runtime(==PODMAN) -->                                  --> KUBERNETES
    [PODMAN]                   [CRIO]
                               [CONTAINERD[EPEL]]
                               [DOCKER(==CRI-DOCKER(COMPIEL))]
-
+</pre>
 * podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
 * docker는 docker-ee(swam)서버를 가지고 있음.
 
