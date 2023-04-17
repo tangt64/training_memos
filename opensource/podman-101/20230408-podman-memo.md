@@ -1,38 +1,62 @@
 # day1
 
-## lab plan
+## lab plan(5번)
+
+1,2: podman, crio
+3,4: crio+kubernetes
+  5: kubernetes
+<pre>
+docker runtime(==PODMAN) -->                                  --> KUBERNETES
+   [PODMAN]                   [CRIO]
+                              [CONTAINERD[EPEL]]
+                              [DOCKER(==CRI-DOCKER(COMPIEL))]
+</pre>
+* podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
+* docker는 docker-ee(swam)서버를 가지고 있음.
+<pre>
+docker-ee: RestAPI
+-> 확장성은 매우 낮음
+podman: podman.server, RestAPI
+-> 확장성은 낮음
+kubernetes: kubelet, kube-apiserver, RestAPI
+-> 확장성이 큼
+</pre>
+
+Low Level Runtime Engine
+-------
+cri-docker: socket, cri기반의 명령어 처리
+cri-o: socket, cri기반의 명령어 처리
+containerd: socket, cri adaptor, cri기반의 명령어 처리
+
 
 ```bash
 
+  POD == CONTAINER == INFRA CONTAINER
 
-  POD =|    |= Container
-
-      wildfly
    +------------+
-   | kubernetes |  <--- MIDDLE WARE(API, MASTER/NODE ROLES, ORCHESTRATION)
-   +------------+                                           -------------
-                                                              통합 시스템
-
-
+   | kubernetes |  <--- MIDDLE WARE(API, MASTER/NODE ROLES, ORCHESTRATION, RESETAPI)
+   +------------+                                          
 -----------------------------------------------------------
-container runtime layer
-        EJB
+container runtime engine layer
+--> LOW
+--> HIGH
+    [EXEC]
     +---------+
     | runtime |
+    |         | ---> SOCKET
+    |  [LOW]  |
     +---------+
  # ps -ef | grep docker ---> docker(dockerd(containerd))
  # ps -ef | grep podman ---> conmon(OCI)
 
 -----------------------------------------------------------
 container create layer
-
-
-     jdk(java)
-    +---------+
-    |  runc   |
-    +---------+
-
-        jvm
+       [FORK]
+         |
+       conmon
+         |
+        runc    ---> [container]
+         |
     +--------+
     | kernel | - namespace
     +--------+ - cgroup
@@ -46,18 +70,6 @@ vcpu: 2개
 vmem: 4기가
 vdisk: 최소 8기가
 os: centos-9-stream
-
-
-### 1~3일
-
-runtime, 가상머신 1대만 필요. 
-ubuntu,debian,rocky,centos-stream
-가급적이면 centos-9-stream
-podman만 기반으로 런타임 학습.
-
-### 4~5일
-
-runtime + kubernetes 조합 구조에 대해서 이야기
 
 ## 하이퍼바이저
 - HyperV
@@ -75,6 +87,18 @@ runtime + kubernetes 조합 구조에 대해서 이야기
 
 ## docker vs podman(stand-alone-container-server)
 
+OCI: Open Container Initiative
+-> The Container(image, specs)
+CNI: Container Network Interface
+CSI: Container Storage Interface
+
+podman: https://podman.io/, Pod Manager tool (podman)
+buildah: https://buildah.io/, OCI container images.
+-> https://github.com/mairin/coloringbook-container-commandos
+-> https://github.com/containers/buildah/tree/main/docs/tutorials
+skopeo: performs various operations on container images and image repositories.
+-> https://github.com/containers/skopeo 
+
 ```bash
 docker: search, build, container init
         ------  -----  ---------
@@ -89,10 +113,6 @@ runtime: runtime engine or container runtime engine
           `---> container, image, volume....(meta)
 
 ```
-docker, podman: API서버를 가지고 있음. 
-
-* podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
-* docker는 docker-ee(swam)서버를 가지고 있음.
 
 docker(더 이상 개발이 되지 않음): OCI/CRI표준 컨테이너 이미지 및 런타임 사양
   - containerd: OCI/CRI 표준 컨테이너로 선언
@@ -110,13 +130,15 @@ kubernetes runtimes list
 
 ## rocky vs rhel vs centos(HPC, CERN)
 
+```
 centos: release ---> rolling update  ---> RHEL(stream)
           v9.1          (stream)          Phase 1/2/3/4
           v9.2        3 years(EOL)              1: centos/rhel(os update + hardware)       
                                                 2/3/4: subscription update only 
+```                                                
 RHEL7 RPM REPOS
 ----------------
-baseos
+base
 os
 
 RHEL8(9) RPM REPOS
@@ -124,14 +146,6 @@ RHEL8(9) RPM REPOS
 baseos
 appstream + module(PPA)
             SCL(Software Collection)
-
-rocky: clone even bugs
-       + module package
-
- 
-## 강사 소개
-
-최국현, bluehelix@gmail.com, tang@linux.com
 
 ## 설치 시작
 
@@ -369,10 +383,11 @@ bridge fdb
 
 ## 컨테이너 생성 문제
 
+```
 podman run -it --rm -p 호스트:컨테이너 --name     bash 
 podman run -it --rm -p 9090:8080 --name hello-nginx quay.io/redhattraining/hello-world-nginx bash
 podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
-
+```
 
 1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
   - 컨테이너 이름은 hello-nginx
@@ -384,14 +399,13 @@ podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-wor
 5. iptables-save, podman port로 아이피 및 포트 번호 일치 확인
 6. ip netns exec, bridge로 아이피 및 장치 조회
 
-	podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
+```bash
+podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
 curl localhost:9090
 podman container port hello-world-ngninx
 iptables-save | grep 9090
-
-
 podman run -d --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 sleep 100000
-
+```
 
 
 ## 컨테이너 커밋
@@ -425,3 +439,167 @@ podman diff before-install-package-debian:latest after-install-package-debian:la
 
   1. iptables, bridge부분 
   2. echo, permission 
+
+# day 2
+
+- podman 명령어 계속
+- 컨테이너 이미지 부분
+- 컨테이너 구조 및 구성
+
+## 레지스트리 주소 추가 및 변경
+```bash
+pwd
+/etc/containers
+nano registries.conf
+grep -Ev '^#|^$' registries.conf
+unqualified-search-registries = ["quay.io"]
+short-name-mode = "enforcing"
+podman search centos
+podman pull centos
+podman search --list-tags centos/centos                ## tag목록이 출력이 되나, 자세하지는 않음
+dnf install skopeo -y
+skopeo list-tags docker://quay.io/centos/centos | less ## tag목록이 자세하게 출력
+podman pull centos/centos:stream9
+```
+
+```bash
+podman run -it --rm --name test-centos-stream-9 centos:stream9 /bin/bash
+-> dnf search httpd
+-> dnf install httpd -y
+podman commit test-centos-stream-9 commit-test-centos-stream-9    ## 실행중인 컨테이너를 이미지화
+podman save quay.io/centos/centos:stream9 -o stream9.tar          ## 컨테이너 이미지를 파일로 저장
+podman save localhost/commit-test-centos-stream-9 -o modified-stream9.tar  ## 컨테이너 이미지를 파일로 저장
+ls
+anaconda-ks.cfg  modified-stream9.tar  stream9.tar
+mkdir original
+mkdir modified
+tar xf modified-stream9.tar -C modified/
+tar xf stream9.tar -C original/
+ls -l modified/
+ls -l original/
+
+podman diff test-centos-stream-9 quay.io/centos/centos:stream9    ## 런타임이 이미지 diff 디렉터리를 확인 함.
+```
+
+OSTree: https://ostree.readthedocs.io/en/stable/
+
+RedHat Podman Ebook: 141page
+
+__Dockerfile:__ Docker 이미지 빌드를 도와주는 명령어(instruction) 셋(set) 파일. 구성할 내용들을 쭉 적어둠.
+
+__Containerfile:__: OCI 이미지 빌드 도구 명령어. 앞으로 모든 컨테이너 이미지는 Containerfile기반으로 구성이 됨. 
+
+이미지 빌드 시 사용하는 도구는 __podman build__, __buildah bud__ 명령어 사용이 가능. 이미지 빌드시 권장은 buildah를 사용. 
+
+FROM centos
+FROM ubi-init   
+
+만약, 베이스 이미지에 '-init'라고 표시가 되어 있으면, 컨테이너에서 systemd, init사용이 가능함. 
+본래 컨테이너에서 System V init, systemD사용이 불가능.
+
+
+```bash
+cd
+nano Container-httpd
+->FROM ubi8-init
+->RUN dnf -y install httpd; dnf -y clean all
+->RUN systemctl enable httpd.service
+ln -s Container-httpd Dockerfile
+podman build .
+rm -f Dockfile
+ln -s Container-httpd Containerfile
+podman build .
+dnf install buildah -y
+buildah images                ## /var/lib/containers/storage/
+buildah bud -f Container-httpd
+```
+
+
+```Containerfile
+FROM ubi8-init
+RUN dnf -y install httpd; dnf -y clean all
+RUN systemctl enable httpd.service
+_EOF
+```
+
+## Low/High level image build tool
+
+### Podman
+고수주 이미지 빌드 도구
+
+
+### Buildah
+저수준 이미지 빌드 도구
+
+
+식사 후, 이미지 빌드
+-----
+
+https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch
+
+https://github.com/containers/buildah/issues/532
+
+
+
+```bash
+newcontainer=$(buildah from scratch)
+echo $newcontainer     # scratch-3
+buildah ps == buildah containers
+buildah rm <ID>                               ## 필요 없는거 제거
+buildah images
+scratchmnt=$(buildah mount $newcontainer)  
+echo $scratchmnt
+ls /var/lib/containers/storage/overlay/1cf801765945a490af5316a7c77b47f87ebdb3184260692cce6f6328fe5d88cb/merged  ## 현재 컨테이너는 비어 있음. 그래서 bash가 실행이 안됨
+
+dnf install --installroot $scratchmnt --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 --setopt install_weak_deps=false -y --releasever=9 bash 
+buildah run $newcontainer /bin/bash microdnf coreutils-single          ## bash가 동작
+buildah run $newcontainer /bin/bash
+-> ls
+-> exit
+
+# buildah config --cmd  /usr/bin/runecho.sh      ## 컨테이너 메타정보 생성, podman inspect, docker inspect 
+buildah config --created-by "Tang"  $newcontainer
+buildah config --author "CHOIGOOKHYUN at linux.com @tang" --label name=centos-9-stream $newcontainer
+buildah inspect $newcontainer
+buildah unmount $newcontainer
+buildah commit $newcontainer choi-centos-9-stream-cus
+buildah images
+```
+
+
+## share/unshare
+unshare: Run a command inside of a modified user namespace
+         -> 명령어 혹은 프로그램을 사용자 네임스페이스에서 실행
+
+scratch(완벽하게 명령어 구현은 아님)
+
+```bash
+mkdir -p /scratch
+chown 1000.1000 /scratch
+unshare -S 1000 -G 1000 -w /scratch  ## bash 프로세스의 작업 디렉터리가 임의로 "/scratch/"로 변경
+```
+
+          .---> mount --bind /var/lib/containers/storage/overlay/<DIR>    ## USER
+         /       mount --make-private <DIR>                                ## NAMESPACE
+        /      touch /var/lib/containers/storage/overlay/scratch
+       /       unshare --mount=/var/lib/containers/storage/overlay/scratch   ## buildah mount
+--------------------
+buildah from scratch == NAMESPACE(scratch(unshare(MOUNT((/VAR/LIB/CONTAINERS/STORAGE/OVERLAY))))
+                                  ------- -------
+                                  \        \
+                                   \        \
+                                    \        '---> syscall(function)
+                                     '---> function
+```bash
+man -k unshare
+man 1 unshare
+
+adduser test1
+echo centos | passwd --stdin test1
+ssh test1@localhost
+```
+keywords
+---------
+
+1. namespace
+2. unshare
