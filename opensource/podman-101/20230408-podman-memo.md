@@ -485,14 +485,16 @@ OSTree: https://ostree.readthedocs.io/en/stable/
 
 RedHat Podman Ebook: 141page
 
-__Dockerfile:__ Docker 이미지 빌드를 도와주는 명령어(instruction) 셋(set) 파일. 구성할 내용들을 쭉 적어둠.
+__Dockerfile:__ Docker 이미지 빌드를 도와주는 명령어(instruction) 셋(set) 파일. 구성할 내용들을 쭉 적어둠. 참고로 Dockerfile은 OCI에서 지원은 하나, 표준은 아님.
 
-__Containerfile:__: OCI 이미지 빌드 도구 명령어. 앞으로 모든 컨테이너 이미지는 Containerfile기반으로 구성이 됨. 
+__Containerfile:__: OCI 이미지 빌드 도구 명령어. 앞으로 모든 컨테이너 이미지는 Containerfile기반으로 구성이 됨. Dockerfile과 서로 호환은 되나, 사용방법이 조금은 다름. 앞으로는 이 이름으로 이미지 빌드 파일 생성.
 
 이미지 빌드 시 사용하는 도구는 __podman build__, __buildah bud__ 명령어 사용이 가능. 이미지 빌드시 권장은 buildah를 사용. 
 
+```yaml
 FROM centos
 FROM ubi-init   
+```
 
 만약, 베이스 이미지에 '-init'라고 표시가 되어 있으면, 컨테이너에서 systemd, init사용이 가능함. 
 본래 컨테이너에서 System V init, systemD사용이 불가능.
@@ -525,19 +527,23 @@ _EOF
 ## Low/High level image build tool
 
 ### Podman
-고수주 이미지 빌드 도구
-
+고수준 이미지 빌드 도구
+- Dockerfile
+- Containerfile
 
 ### Buildah
 저수준 이미지 빌드 도구
+- Dockerfile
+- Containerfile
+- "scratch", 이미지를 처음부터 빌드가 가능.
 
 
-식사 후, 이미지 빌드
+buildah 이미지 빌드 관련 정보
 -----
 
-https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch
+[이미지 처음부터 빌드](https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch)
 
-https://github.com/containers/buildah/issues/532
+[이미지 크기, 왜 이미지가 docker 이미지보다 크게 보이는가?](https://github.com/containers/buildah/issues/532)
 
 
 
@@ -580,9 +586,9 @@ unshare -S 1000 -G 1000 -w /scratch  ## bash 프로세스의 작업 디렉터리
 ```
 
           .---> mount --bind /var/lib/containers/storage/overlay/<DIR>    ## USER
-         /       mount --make-private <DIR>                                ## NAMESPACE
-        /      touch /var/lib/containers/storage/overlay/scratch
-       /       unshare --mount=/var/lib/containers/storage/overlay/scratch   ## buildah mount
+         /      mount --make-private <DIR>                                ## NAMESPACE
+        /       touch /var/lib/containers/storage/overlay/scratch
+       /        unshare --mount=/var/lib/containers/storage/overlay/scratch   ## buildah mount
 --------------------
 buildah from scratch == NAMESPACE(scratch(unshare(MOUNT((/VAR/LIB/CONTAINERS/STORAGE/OVERLAY))))
                                   ------- -------
@@ -603,3 +609,181 @@ keywords
 
 1. namespace
 2. unshare
+
+
+# day 3번째 
+
+## 주제
+- 컨테이너 볼륨 생성 및 바인딩의 차이점 
+- 쿠버네티스 런타임 살펴보기
+  * crio
+  * containerd
+  * 무엇이 다른지??
+- 쿠버네티스 설치
+  * kubeadm init 
+  * https://github.com/tangt64/training_memos/blob/main/opensource/kubernetes-101/command-collection.md
+
+
+## 머여 backingFsBlockDev?!
+
+- containers/storage/overlay
+- volume/<ID>/backingFsBlockDev
+
+컨테이너 내부에 접근을 하면..  
+
+```
+overlay         73364480 6772588  66591892  10% /
+------
+\
+ `---> /var/lib/containers/storage/overlay ---> devicemapper(fuse)
+```
+"backingFSBlockDev", 컨테이너는 원칙상 블록장치를 가져갈수가 없어, backingFSBlockDev를 통해서, 마치 컨테이너가 블록장치를 가지고 있는것 처럼, 예뮬레이팅 함.
+
+
+## 볼륨 및 바인딩 확인
+
+--volumes-from: "podman volumes ls"에서 나오는 블록 장치를 연결. 런타임 엔진에서 가지고 있는 디렉터리는 연결.
+--volume: 호스트 디렉터리를 바로 컨테이너로 마운트. 컨테이너가 시작 시, 런타임(일시적으로)으로 디렉터리 연결
+
+쿠버네티스에서는 "pv(persistent volume)",            "pvc(persistent volume claim)"
+                ----------------------              -----------------------------
+                호스트 쪽에서 제공하는 논리 드라이버   요청 혹은 요구하는(Pod)
+```bash
+podman run -d -v <HOST>:<CONTAINER>
+                 -----  -----------
+                  \         /
+                   `-------'
+                   '
+
+podman run --help
+man podman-run                  
+getenforce
+
+## SELinux 동작중이면, Z로 해서 컨텍스트 올바르게 변경
+podman run -d -v <VOLUME_NAME>:/var/www/html:Z --name test-volume centos /bin/sleep 10000  ## it's okay
+podman run -d -v <HOST_DIR>/:/var/www/html:Z --name test-volume centos /bin/sleep 10000    ## it's problem.
+
+podman exec -it <NAME> /bin/bash
+>df
+/dev/mapper/cs_podman-root  73364480 6772592  66591888  10% /var/www/html    ## bind, volume
+     ------
+     device mapper(DM)
+>mount     
+
+podman insepct <ID>
+>Volume: rw,rprivate,nosuid,nodev,rbind
+>Bind: rw,rprivate,rbind,
+
+```
+
+### podman volume
+
+```bash
+man podman-volume
+podman volume create test-volume   ## 이름이 없으면 UUID마음대로 생성함
+                                   ## 기본 드라이버는 local
+
+## https://github.com/containers/podman/blob/main/vendor/github.com/containers/storage/storage.conf                                  
+## CSI: Container Storage interface
+```
+
+### volume import/export
+
+```bash
+mkdir htdocs/
+echo "hello this is volume httpd container server" > htdocs/index.html
+tar cf volume-htdocs-index.tar htdocs/index.html
+podman volume import test-volume volume-htdocs-index.tar
+podman volume volume export test-volume > volume-htdocs-index-rev1.tar
+```
+
+### 작은 연습
+
+1. test-httpd-volume
+2. 연결할 볼륨의 이름 htdocs-files 생성
+  - /var/lib/containers/storage/volumes/
+  - podman inspect test-httpd-volume
+  - ls
+3. 웹 서버를 설치
+4. 연결 및 포트 할당 80포트를 8080으로
+5. index.html에는 "Hello Volume"출력
+
+```bash
+skopeo list-tags     ## centos-8-stream, 9-stream
+echo "Hello Volume" > index.html
+podman volume create htdocs-files
+podman volume import htdocs-files index.tar
+podman run -d -p8080:80 --name test-httpd-volume centos sleep 10000
+podman exec -it test-httpd-volume dnf install httpd -y
+curl localhost
+```
+
+위의 내용을 Containerfile로 변환
+```yaml
+# skopeo list-tags  docker://quay.io/centos/cetnos
+                    docker://httpd
+# nano Containerfile
+FROM <BASE_IMAGE>       ## 1. centos, httpd
+RUN dnf -y install httpd; dnf -y clean all
+VOLUME /var/www/html
+EXPOSE 80
+CMD ['/usr/sbin/httpd', '-DFORGROUND']
+```
+
+```yaml
+FROM centos:stream9
+RUN dnf -y install httpd; dnf -y clean all
+VOLUME /var/www/html         ## podman -v <VOLUME_NAME>:<CONTAINER_PATH>
+                             ## docker -v source=,target=
+EXPOSE 80
+#CMD /usr/sbin/httpd -DFOREGROUND
+#CMD ["/usr/sbin/httpd","-DFOREGROUND"]
+#CMD ["/usr/sbin/httpd", "-DFOREGROUND"]`
+CMD ["/usr/sbin/httpd", "-DFOREGROUND"]
+
+# ENTRYPOINT ["/usr/bin/httpd"]
+# CMD ["-DFOREGROUND"]
+
+# ENTRYPOINT + CMD
+```
+
+```bash
+podman build -f Containerfile-volume -t localhost/test-httpd-volume:lastest
+podman images | grep localhost
+```
+
+## podman + kube play
+
+```bash
+podman genereate kube <CONTAINER> --filename <YAML_NAME> --service
+podman kube play <YAML_FILENAME>
+podman kube down <YAML_FILENAME>
+```
+
+## docker/crio repository
+
+
+[containerd](https://docs.docker.com/engine/install/fedora/#set-up-the-repository)
+
+```bash
+dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+vi /etc/yum.repos.d/docker-ce.repo
+fedora ---> centos 
+%s/fedora/centos/g
+sed -i "%s/fedora/centos/g" docker-ce.repo
+dnf search containerd
+dnf install containerd
+
+systemctl is-active docker
+          status
+systemctl is-active containerd
+          status
+```
+
+
+https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo
+https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo
+
+```bash
+
+```
