@@ -875,6 +875,7 @@ gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kubelet kubeadm kubectl
 EOF
+
 dnf search --disableexcludes=kubernetes kube
 dnf list --disableexcludes=kubernetes kubeadm
 dnf install --disableexcludes=kubernetes kubeadm -y
@@ -897,9 +898,8 @@ overlay
 EOF
 
 cat <<EOF> /etc/sysctl.d/k8s-mod.conf
-net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
-net.ipv4.ip_forward=1                   ## pod <---> svc
-net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
+net.bridge.bridge-nf-call-iptables=1    
+net.ipv4.ip_forward=1                   
 EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 
@@ -909,22 +909,31 @@ kubeadm init
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
 
+
+crictl ps
 ```
+podman ---> kube play ---> containerd ---> crio = {kubernetes}
+                              CNCF
 
 ## containerd
 
 ```bash
-kubeadm init phase preflight 
 firewall-cmd --add-port=6443/tcp --permanent
 firewall-cmd --add-port=10250/tcp --permanent
 firewall-cmd --reload
 firewall-cmd --list-port
 
-김연세: containerd config default > /etc/containerd/config.toml && systemctl restart containerd
-이성헌: kubeadm reset --force
-        kubeadm init
+containerd config default > /etc/containerd/config.toml && systemctl restart containerd
+vi /etc/containerd/config.toml
+>disabled_plugins = [] ---> # disabled_plugins = []
+>enabled_plugins = ["cri"]  ## CRI 인터페이스와 호환, 이것만!!
+>[plugins."io.containerd.grpc.v1.cri".containerd]
+>  endpoint = "unix:///var/run/containerd/containerd.sock"
+>root = "/var/lib/containers"
+systemctl restart containerd 
 
-kubeadm init phase preflight 
+ctr containers ls
+
 swapoff -a
 swapon -s
 kubeadm init phase preflight 
