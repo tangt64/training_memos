@@ -826,6 +826,7 @@ firewall-cmd --list-port
 
 김연세: containerd config default > /etc/containerd/config.toml && systemctl restart containerd
 이성헌: kubeadm reset --force
+        kubeadm init
 
 kubeadm init phase preflight 
 swapoff -a
@@ -850,7 +851,6 @@ host podman.example.com
 kubeadm init phase preflight 
 systemctl enable --now kubelet ## systemctl restart kubelet
 kubeadm config images pull
-ctl images ls
 
 modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3+L4
 modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
@@ -863,11 +863,17 @@ cat <<EOF> /etc/sysctl.d/k8s-mod.conf
 net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
 net.ipv4.ip_forward=1                   ## pod <---> svc
 EOF
-sysctl --system        
+sysctl --system
 
 kubeadm init    ## init가 실패한 경우 다시 kubeadm reset --force
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
+
+journalctl -fl -u kubelet -perr -p warning   ## 시스템 로그에서 런타임 엔진 오류 확인
+journalctl -fl -u containerd -perr -p warning
+
+systemctl status kubelet
+systemctl status containerd
 ```
 
 kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
