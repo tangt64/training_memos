@@ -826,6 +826,7 @@ firewall-cmd --list-port
 
 김연세: containerd config default > /etc/containerd/config.toml && systemctl restart containerd
 이성헌: kubeadm reset --force
+
 kubeadm init phase preflight 
 swapoff -a
 swapon -s
@@ -833,13 +834,23 @@ kubeadm init phase preflight
 cat /etc/hosts
 ip a s eth0
 cat <<EOF>> /etc/hosts
-172.22.224.169 podman.example.com podman
+172.22.224.169 podman.example.com podman             ## Bind9서버나 혹은 Dnsmasq로 DNS서비스 구성(A Recode)
 EOF
+
+-----김민정님-----
+cat <<EOF>> /etc/hosts
+172.20.0.244 master.example.com podman
+EOF
+
+ping -c2 master.example.com
+-----------------
+
 dnf install bind-utils -y
 host podman.example.com
 kubeadm init phase preflight 
-systemctl enable --now kubelet
+systemctl enable --now kubelet ## systemctl restart kubelet
 kubeadm config images pull
+ctl images ls
 ```
 
 kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
