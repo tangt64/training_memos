@@ -817,6 +817,33 @@ crictl ps     =/= podman ps       ## 엔진이 다르게 정보를 관리함
 4. crio(지원)
 5. cri-docker(지원,mirantis-container)
 
+
+## FOR 경민님 :)
+
+```bash
+swapoff -a
+swapon -s
+nano /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports":
+        {
+            "docker-daemon":
+                {
+                    "": [{"type":"insecureAcceptAnything"}]
+                }
+        }
+}
+kubeadm reset --force
+kubeadm init
+
+
+```
+
 ```bash
 kubeadm init phase preflight 
 firewall-cmd --add-port=6443/tcp --permanent
