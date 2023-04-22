@@ -844,6 +844,75 @@ kubeadm init
 
 ```
 
+## crio
+
+```bash
+systemctl stop firewalld && systemctl disable firewalld
+dnf install iproute-tc -y ## centos-9-stream
+
+sed -i 's/enforcing/permissive/g' /etc/selinux/config
+setenforce 0
+
+vi /etc/fstab
+# 스왑 라인 주석처리
+# swap
+swapoff -a
+swapon -s
+
+hostnamectl set-hostname master.example.com
+hostnamectl
+cat <<EOF>> /etc/hosts
+<SERVER_IP_ETH0> master.example.com master        
+EOF
+ping -c2 master.example.com
+
+cat <<EOF> /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+EOF
+dnf search --disableexcludes=kubernetes kube
+dnf list --disableexcludes=kubernetes kubeadm
+dnf install --disableexcludes=kubernetes kubeadm -y
+
+systemctl status kubelet
+systemctl enable --now kubelet
+
+dnf install wget -y
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+dnf install cri-o -y
+systemctl enable --now crio
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
+
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+net.ipv4.ip_forward=1                   ## pod <---> svc
+net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
+EOF
+sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
+
+kubeadm init phase preflight 
+kubeadm init
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+
+```
+
+## containerd
+
 ```bash
 kubeadm init phase preflight 
 firewall-cmd --add-port=6443/tcp --permanent
@@ -904,3 +973,8 @@ systemctl status containerd
 ```
 
 kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
+
+
+systemctl status kubelet
+
+ps -ef | grep conmon
