@@ -851,6 +851,21 @@ kubeadm init phase preflight
 systemctl enable --now kubelet ## systemctl restart kubelet
 kubeadm config images pull
 ctl images ls
+
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3+L4
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+net.ipv4.ip_forward=1                   ## pod <---> svc
+EOF
+sysctl --system        
+
+kubeadm init    ## init가 실패한 경우 다시 kubeadm reset --force
 ```
 
 kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
