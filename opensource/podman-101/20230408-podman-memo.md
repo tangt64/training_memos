@@ -801,7 +801,7 @@ systemctl restart containerd
 wget -O /etc/yum.repos.d/libcontainers.repo https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo
 wget -O /etc/yum.repos.d/stable_crio.repo https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo
 
-dnf install crio -y
+dnf install cri-o -y
 systemctl enable --now crio
 systemctl start crio
 
