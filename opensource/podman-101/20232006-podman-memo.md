@@ -866,6 +866,8 @@ EOF
 sysctl --system        
 
 kubeadm init    ## init가 실패한 경우 다시 kubeadm reset --force
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
 ```
 
 kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
