@@ -774,15 +774,48 @@ sed -i "%s/fedora/centos/g" docker-ce.repo
 dnf search containerd
 dnf install containerd
 
+dnf remove podman-docker
+dnf install docker-ce        
+systemctl start docker  
 systemctl is-active docker
           status
 systemctl is-active containerd
           status
+systemctl is-active podman          
+```
+```text
+docker     <--- API <--- CLI(docker)
+  \
+   `---> dockerd  <--- fd://<SOCKET>
+           \
+            `---> containerd
+rpm -qa  containerd.io
+>/etc/containerd/config.toml      ## TOML초기화 필요
+
+ctr containers ls
+ctr image ls
+containerd config default > /etc/containerd/config.toml 
+systemctl stop docker
+systemctl restart containerd
+
+wget -O /etc/yum.repos.d/libcontainers.repo https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo
+wget -O /etc/yum.repos.d/stable_crio.repo https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo
+
+dnf install crio -y
+systemctl enable --now crio
+systemctl start crio
+
+
+ctr images =/= podman images == crictl images     ## OCI 표준 이미지 디렉터리
+crictl ps     =/= podman ps       ## 엔진이 다르게 정보를 관리함
 ```
 
 
-https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo
-https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo
+1. podman(지원,k8s 사용불가)
+2. docker(표준미지원,k8s 사용불가))
+3. containerd(호환, 어뎁터를 통한 지원)
+4. crio(지원)
+5. cri-docker(지원,mirantis-container)
 
 ```bash
 
