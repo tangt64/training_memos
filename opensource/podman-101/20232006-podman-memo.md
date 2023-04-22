@@ -712,7 +712,7 @@ podman volume volume export test-volume > volume-htdocs-index-rev1.tar
 skopeo list-tags     ## centos-8-stream, 9-stream
 echo "Hello Volume" > index.html
 podman volume create htdocs-files
-podman volume import htdocs-files < index.tar
+podman volume import htdocs-files index.tar
 podman run -d -p8080:80 --name test-httpd-volume centos sleep 10000
 podman exec -it test-httpd-volume dnf install httpd -y
 curl localhost
@@ -730,7 +730,45 @@ EXPOSE 80
 CMD ['/usr/sbin/httpd', '-DFORGROUND']
 ```
 
+```yaml
+FROM centos:stream9
+RUN dnf -y install httpd; dnf -y clean all
+VOLUME /var/www/html         ## podman -v <VOLUME_NAME>:<CONTAINER_PATH>
+                             ## docker -v source=,target=
+EXPOSE 80
+#CMD /usr/sbin/httpd -DFOREGROUND
+#CMD ["/usr/sbin/httpd","-DFOREGROUND"]
+#CMD ["/usr/sbin/httpd", "-DFOREGROUND"]`
+CMD ["/usr/sbin/httpd", "-DFOREGROUND"]
+
+# ENTRYPOINT ["/usr/bin/httpd"]
+# CMD ["-DFOREGROUND"]
+
+# ENTRYPOINT + CMD
+```
+
 ```bash
 podman build -f Containerfile-volume -t localhost/test-httpd-volume:lastest
 podman images | grep localhost
+```
+
+## podman + kube play
+
+```bash
+podman genereate kube <CONTAINER> --filename <YAML_NAME> --service
+podman kube play <YAML_FILENAME>
+podman kube down <YAML_FILENAME>
+```
+
+## docker/crio repository
+
+
+https://docs.docker.com/engine/install/fedora/#set-up-the-repository
+
+
+https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo
+https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo
+
+```bash
+
 ```
