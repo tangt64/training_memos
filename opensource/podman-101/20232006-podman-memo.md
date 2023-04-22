@@ -709,11 +709,28 @@ podman volume volume export test-volume > volume-htdocs-index-rev1.tar
 5. index.html에는 "Hello Volume"출력
 
 ```bash
+skopeo list-tags     ## centos-8-stream, 9-stream
 echo "Hello Volume" > index.html
 podman volume create htdocs-files
 podman volume import htdocs-files < index.tar
 podman run -d -p8080:80 --name test-httpd-volume centos sleep 10000
 podman exec -it test-httpd-volume dnf install httpd -y
 curl localhost
+```
 
+위의 내용을 Containerfile로 변환
+```yaml
+# skopeo list-tags  docker://quay.io/centos/cetnos
+                    docker://httpd
+# nano Containerfile
+FROM <BASE_IMAGE>       ## 1. centos, httpd
+RUN dnf -y install httpd; dnf -y clean all
+VOLUME /var/www/html
+EXPOSE 80
+CMD ['/usr/sbin/httpd', '-DFORGROUND']
+```
+
+```bash
+podman build -f Containerfile-volume -t localhost/test-httpd-volume:lastest
+podman images | grep localhost
 ```
