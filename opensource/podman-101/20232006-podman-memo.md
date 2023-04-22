@@ -763,12 +763,83 @@ podman kube down <YAML_FILENAME>
 ## docker/crio repository
 
 
-https://docs.docker.com/engine/install/fedora/#set-up-the-repository
-
-
-https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo
-https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo
+[containerd](https://docs.docker.com/engine/install/fedora/#set-up-the-repository)
 
 ```bash
+dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+vi /etc/yum.repos.d/docker-ce.repo
+fedora ---> centos 
+%s/fedora/centos/g
+sed -i "%s/fedora/centos/g" docker-ce.repo
+dnf search containerd
+dnf install containerd
 
+dnf remove podman-docker
+dnf install docker-ce        
+systemctl start docker  
+systemctl is-active docker
+          status
+systemctl is-active containerd
+          status
+systemctl is-active podman          
 ```
+```text
+docker     <--- API <--- CLI(docker)
+  \
+   `---> dockerd  <--- fd://<SOCKET>
+           \
+            `---> containerd
+rpm -qa  containerd.io
+>/etc/containerd/config.toml      ## TOML초기화 필요
+
+ctr containers ls
+ctr image ls
+containerd config default > /etc/containerd/config.toml 
+systemctl stop docker
+systemctl restart containerd
+
+wget -O /etc/yum.repos.d/libcontainers.repo https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo
+wget -O /etc/yum.repos.d/stable_crio.repo https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo
+
+dnf install cri-o -y
+systemctl enable --now crio
+systemctl start crio
+
+
+ctr images =/= podman images == crictl images     ## OCI 표준 이미지 디렉터리
+crictl ps     =/= podman ps       ## 엔진이 다르게 정보를 관리함
+```
+
+
+1. podman(지원,k8s 사용불가)
+2. docker(표준미지원,k8s 사용불가))
+3. containerd(호환, 어뎁터를 통한 지원)
+4. crio(지원)
+5. cri-docker(지원,mirantis-container)
+
+```bash
+kubeadm init phase preflight 
+firewall-cmd --add-port=6443/tcp --permanent
+firewall-cmd --add-port=10250/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-port
+
+김연세: containerd config default > /etc/containerd/config.toml && systemctl restart containerd
+이성헌: kubeadm reset --force
+kubeadm init phase preflight 
+swapoff -a
+swapon -s
+kubeadm init phase preflight 
+cat /etc/hosts
+ip a s eth0
+cat <<EOF>> /etc/hosts
+172.22.224.169 podman.example.com podman
+EOF
+dnf install bind-utils -y
+host podman.example.com
+kubeadm init phase preflight 
+systemctl enable --now kubelet
+kubeadm config images pull
+```
+
+kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
