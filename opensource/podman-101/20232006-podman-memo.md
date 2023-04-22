@@ -1,433 +1,719 @@
-# day 1
+# day1
 
-이름: 최국현
+## lab plan(5번)
 
-메일: tang@linux.com
+1,2: podman, crio
+3,4: crio+kubernetes
+  5: kubernetes
+<pre>
+docker runtime(==PODMAN) -->                                  --> KUBERNETES
+   [PODMAN]                   [CRIO]
+                              [CONTAINERD[EPEL]]
+                              [DOCKER(==CRI-DOCKER(COMPIEL))]
+</pre>
+* podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
+* docker는 docker-ee(swam)서버를 가지고 있음.
+<pre>
+docker-ee: RestAPI
+-> 확장성은 매우 낮음
+podman: podman.server, RestAPI
+-> 확장성은 낮음
+kubernetes: kubelet, kube-apiserver, RestAPI
+-> 확장성이 큼
+</pre>
 
-[GITHUB](http://github.com/tangt64/training_memos/opensource/podman)
+Low Level Runtime Engine
+-------
+cri-docker: socket, cri기반의 명령어 처리
+cri-o: socket, cri기반의 명령어 처리
+containerd: socket, cri adaptor, cri기반의 명령어 처리
 
-## PPT 및 교재 
-[PPT](https://github.com/tangt64/training_memos/blob/main/opensource/podman/OPENSOURCE%20CONTAINER.pdf)
-[PDF BOOK](https://github.com/tangt64/training_memos/blob/main/opensource/podman/Podman-in-Action-ebook-MEAP-Red-Hat-Developer-All-Chapters.pdf)
-
-
-[ISO파일 내려받기](http://172.16.8.31/)
-
-## 설치(빠르게)
 
 ```bash
-hostnamectl set-hostname podman.example.com
+
+  POD == CONTAINER == INFRA CONTAINER
+
+   +------------+
+   | kubernetes |  <--- MIDDLE WARE(API, MASTER/NODE ROLES, ORCHESTRATION, RESETAPI)
+   +------------+                                          
+-----------------------------------------------------------
+container runtime engine layer
+--> LOW
+--> HIGH
+    [EXEC]
+    +---------+
+    | runtime |
+    |         | ---> SOCKET
+    |  [LOW]  |
+    +---------+
+ # ps -ef | grep docker ---> docker(dockerd(containerd))
+ # ps -ef | grep podman ---> conmon(OCI)
+
+-----------------------------------------------------------
+container create layer
+       [FORK]
+         |
+       conmon
+         |
+        runc    ---> [container]
+         |
+    +--------+
+    | kernel | - namespace
+    +--------+ - cgroup
+               - seccomp
+
+
+```
+### 가상머신 사양
+
+vcpu: 2개
+vmem: 4기가
+vdisk: 최소 8기가
+os: centos-9-stream
+
+## 하이퍼바이저
+- HyperV
+  + Windows 10/11 pro
+  + HOME, not support
+
+- virtualbox(Windows 10, 11, vcpu bug)
+- vmware player(vcpu)
+- mac user
+  + virtualbox
+  + vmware fusion
+  + vmware player
+- ubuntu
+  + apt search podman  
+
+## docker vs podman(stand-alone-container-server)
+
+OCI: Open Container Initiative
+-> The Container(image, specs)
+CNI: Container Network Interface
+CSI: Container Storage Interface
+
+podman: https://podman.io/, Pod Manager tool (podman)
+buildah: https://buildah.io/, OCI container images.
+-> https://github.com/mairin/coloringbook-container-commandos
+-> https://github.com/containers/buildah/tree/main/docs/tutorials
+skopeo: performs various operations on container images and image repositories.
+-> https://github.com/containers/skopeo 
+
+```bash
+docker: search, build, container init
+        ------  -----  ---------
+        \       \      \
+         \       \      `---> runc/crun
+          \       `---> buildah
+           `---> skopeo
+
+runtime: runtime engine or container runtime engine           
+         --------------
+         \
+          `---> container, image, volume....(meta)
+
+```
+
+docker(더 이상 개발이 되지 않음): OCI/CRI표준 컨테이너 이미지 및 런타임 사양
+  - containerd: OCI/CRI 표준 컨테이너로 선언
+  - cri-o: K8S에서는 이 녀석을 표준 런타임으로 사용
+  - openshift, rancher...기타 컨테이너 미들웨어들은 cri-o기반으로 사용
+  - cri-docker, 최근에 프로젝트 릴리즈
+
+kubernetes runtimes list
+  1. crio(default)
+  2. containerd(standard)
+  3. cri-docker(optional)
+
+- 도커에서 사용하는 이미지가 산업표준
+- 도커에서 사용하는 명령어 방식이 산업표준
+
+## rocky vs rhel vs centos(HPC, CERN)
+
+```
+centos: release ---> rolling update  ---> RHEL(stream)
+          v9.1          (stream)          Phase 1/2/3/4
+          v9.2        3 years(EOL)              1: centos/rhel(os update + hardware)       
+                                                2/3/4: subscription update only 
+```                                                
+RHEL7 RPM REPOS
+----------------
+base
+os
+
+RHEL8(9) RPM REPOS
+----------------
+baseos
+appstream + module(PPA)
+            SCL(Software Collection)
+
+## 설치 시작
+
+```bash
 dnf install podman -y
-dnf install podman-docker -y   ## 도커 호환성 명령어 패키지
+systemctl status podman
+podman images
+podman container ls
+podman pod ls
 ```
 
 ```bash
-dnf install bash-completion epel-release -y
-complete -r -p
-exit
-ssh root@
+dnf install epel-release -y ## 엔터프라이즈 패키지 저장소
+dnf search podman
+dnf install podman-compose -y ## docker compose
+dnf install podman-docker -y  ## docker command 
+dnf install podman-tui -y     ## rhel9이후에 추가된 사용자 도구
+dnf install podman-catatonit  ## POD 이미지 혹은 애플리케이션 
 ```
 
 ```bash
-dnf install fish
-chsh -s /bin/fish 
-fish
+podman-tui        ## API 혹은 소켓 서버를 찾지 못함
+systemctl enable --now podman
+podman-tui
 ```
+
+## 잠깐 교양 시간 :)
 
 ```bash
-dnf install tmux -y
+podman pod create
+podman pod ls
+                                                               *                *
+POD ID        NAME               STATUS      CREATED        INFRA ID      # OF CONTAINERS
+0b5b6be932c6  strange_goldstine  Created     7 seconds ago  0db5c2d7c918  1
+                                                            ------------  ---------------
+                                                            POD: K8S      POD CONTAINER: 1 RUNNING
+                                                                          APP CONTAINER: 2 RUNNING
+                                                                == INFRA CONTAINER
+                                                                == CONTAINER
 
+COMMAND <OBJECT> <VERB> <OPTION> <RESOURCE> <ARGS>
+podman stop --all
+podman rm --all
+podman container run -d --name test-centos centos /bin/sleep 100000   ## 위치명령어, 옵션 위치에 따라서 동작이 안될 수도 있음
+                                           ------
+                                           hub.docker.io 
+podman container ls                                           
+podman pod create
+podman pod start --all
+podman pod ls                                           
 ```
 
-**Ubuntu/REHL(centos)/Rocky/Oracle Linux** 저장소에는 더 이상 docker를 지원하지 않음.
-오픈소스 표준 런타임 사양(runtime spec.) **CRI+OCI**
+pod, container는 같은 컨테이너 자원 및 개념
 
-현재 도커는 CRI사양을 따르지 않음. 최신 버전의 containerd기반 docker는 CRI를 충족함.
-OCI는 보통, 컨테이너에서 사용하는 이미지(파일). 현재 다수 오픈소스 리눅스는 'podman'으로 전환.
+POD라는 애플리케이션이 각기 다른걸 사용하기 때문에, POD개념이 소프트웨어 별로 조금씩 다를수 있음. 
 
-podman는 docker를 대체하는게 주요 목적.
+```
+kubernetes: pause(pod(pause))
+podman: pause(pod(catatonit))
+OCP: pause(pod(catatonit))
+Rancher: pause(pod(catatonit))
+
+pause ---> pod ---> infra container
+ \         \        \
+  \         \        `---> 자원 호칭
+   \         `---> 추상적인 개념
+    `---> 애플리케이션 이름
+```
+```bash
+ps -ef | grep podman    ## ??
+ps -ef | grep conmon    ## container monitor process, mandb, man -k conmon
+mandb
+man -k conmon
+man 8 conmon
+   
+   [stop]     
+   docker ---> dockerd ---> containerd == all stop
+                            ----------
+                            OpenStack Kolla(containerd)
+                                |
+                                v
+                            detached(daemon less,OCI)
+                                         \
+                                          `--->fork() ---> conmon ---> exec(container)
+
+   podman ---> container create ---> detached(daemon less,OCI)
+                                         \
+                                          `--->fork() ---> conmon ---> exec(container)
+                                         
+
+conmon(CONTAINER_IMAGE) == Image Loader == /var/lib/containers/storages  ## 컨테이너 이미지 및 레이어 파일 저장
+------
+\
+ `---> OCI 사양
+
+crun(CONTAINER(container_environment(PODMAN)))
+----
+\
+ `---> OCI 사양
+```
+
+### 컨테이너 이미지
 
 ```bash
-                .---> 쿠버네티스에서 사용
-               /
-docker ---> containerd ---> CRI-Docker 
-            ----------      [새로운 도커]
-            [표준 런타임]
+cd /var/lib/containers/storage
+
+
 ```
 
-도커 명령어 및 이미지는 현재 산업 표준.
+
+### 자동완성 기능
+```bash
+dnf search bash-completion
+dnf install bash-completion -y
+complet -rp
+exit | bash
+```
+
+## 격리기능
+
+container: namespace(USERSPACE(격리(PROCE/SYSCALL)))
+- 콜제한 및 환경 분리
+
+virtualization: OS(ring_strcuture(bytecode(hypervisor(cpu_emulate))))
+- 재구성
+- 실제 물리장비와 똑같이 구현이 가능
 
 
-ifconfig ---> ip addr show 
-route    ---> ip route 
-netstat  ---> ss 
----------
-NAMESPACE조회를 지원하지 않음
+namespace: 가상화하고 다르게 호스트의 자원을 공유하는게 주요 목적(격리 통해서)
+
+## 잠깐 역사
 
 
-## seccomp
+격리:
+컨테이너는: 호스트에서 동작하는 프로세스를 볼수 없음. +root권한 조절(rootless)
+호스트는: 컨테이너에서 동작하는 프로세스를 볼수 있음.
 
-시스템콜 확인하기.
+가상:
+가상머신은: 호스트의  프로세스를 볼수 없음.
+호스트는: 가상머신의 내부 프로세스를 볼수 없음.
+
+
+# podman
+   ---> container ---> root 권한 ---> 가지치기
+
+
+kernel(v4)
+--------
+- namespace
+- cgroup
+- seccomp
+
+
+1999~00년도에 리눅스 가상화 프로젝트. vServer project
+
+chroot기반으로 컨테이너 혹은 가상화 시스템 구성
+당시 리눅스 커널에는 격리 기능이 없었음. 구글에서 리눅스 기반의 컨테이너 프로젝트 그리고 가상화 프로젝트 시작. 
+- xen, kvm ---> 가상화 
+- namespace ---> redhat, google, ibm 
+  --------
+  격리
+- cgroup    ---> linux container ---> lxc(runtime,rootful(booting))   
+  -----                                   ---> docker(runtime,rootless(none-boot, none-root))
+  추적
+
+
+## 포드만 런타임
+
+URI
+docker://
+oci://
+
+podman명령어로 제어(OCI)
+
+/etc/containers/: 컨테이너 설정파일 위치
+/var/lib/containers/: 컨테이너 이미지 파일 위치
+/run/containers
+/etc/cni/: 컨테이너 런타임이 사용하는 네트워크 설정 디렉터리
+
+
+
+
+# 포드만 랩
+
+컨테이너 둘러보기
 
 ```bash
-dnf install strace
-strace ls
+podman run -ti --rm registry.access.redhat.com/ubi8/httpd-24 bash
+        -t: tty, pesudo device
+        -i: interactive, stdout/in, console(/dev/console)
+        --rm: 컨테이너가 중지가 되면, 즉시 삭제
+
+bash-4.4$ ps -ef
+UID          PID    PPID  C STIME TTY          TIME CMD
+default        1       0  0 05:38 pts/0    00:00:00 bash
+default        3       1  0 05:41 pts/0    00:00:00 ps -ef
+
+container(bash) ---> container(ps) ---> [syscall] ---> [seccomp] ---> <HOST> ---> namespace                                
 ```
-
-
-## namespace
-
-1. 격리의 목적(가상화의 하이퍼바이저와는 다름)
-  - 하이퍼바이저 type-1, 컨테이너와 비슷함(유닉스에서는 하드웨어 파티션)
-2. 프로세스의 안전성 강화  
-  - mnt, ipc, net등의 프로세스 자원들을 분리하여 시스템에 치명적인 영향을 줄인다.
-3. 컨테이너에서 사용하는 런타임은 네임스페이스를 통해서 프로세스 격리 및 맵핑을 한다.
-
-```bash
-                               <RING STRUCTURE>
-
-     +--------+                        |              +------+
-     | KERNEL |                        |              | USER |        [APPLICATION]
-     +--------+              <--- | DRIVER | --->     +------+          - net
-                                  +--------+
-     [KERNELSPACE]                     |             [USERSPACE]
-                                       |
-                                       v
-                                  [NAMESPACE,ns]
-                                  # echo $$
-                                  # cd /proc/$$/ns/
-
-```     
-## virtual machine vs container
-
-### virtualization type-1 tech.(vServer)
-- 부팅하는 단계가 있음.
-- require to hardware V/T
-  * CPU
-  * Mainboard
-- namespace: 자원격리, kernel             <---> 프로세스 격리 및 자원 격리 + 가상장치 제공
-- cgroup: 자원 감시 및 제한, kernel        <---> 자원 제한 용도로 사용
-- seccomp/SELinux: 가상머신 자원 접근 제한  <---> 컨테이너에서는 매우 의존성이 강함
-- 링 구조 자체 구현  <---> 링을 호스트에서 공유 받음
-
-- qemu, 예뮬레이터(disk, network, cpu, memory, bios) <---> runc, crun, kata와 같은 컨테이너 생성자가 필요함. 
-- kvm, 가속기(kernel module(mainboard, cpu))     <---> 컨테이너는 가속기가 필요하지 않음
-- libvirtd, 가상머신 런타임(라이프 사이클) 관리자  <---> podman
-
-```bash
-
-dnf groupinstall "Virtualization Host" -y
-
-```
-
-### container tech.(vServer)
-- 부팅하는 단계가 없음. 
-- namespace: 자원격리, kernel
-- cgroup: 자원 감시 및 제한, kernel
-- seccomp/SELinux: 가상머신 자원 접근 제한(시스템 콜 제한)
-- 링 구조를 호스트와 공유
-- podman, crio, cri-docker, containerd같은 런타임으로 컨테이너 라이프사이클 관리
-
-kubernetes HPA: MSA, H: Horizontal 
-kubernetes VPA: 3Tires V: Vertical
 
 
 ```bash
+     registry.access.redhat.com/ubi8/httpd-24
+     ----
+     서브스크립션이 필요
+podman run -d -p  80:8080 --name my-httpd-app registry.access.redhat.com/ubi8/httpd-24
+                  /    \
+                 /      \
+          <---사용자  <---컨테이너
+    -p: port 컨테이너 및 호스트 포트 매핑
+--name: 컨테이너가 사용할 이름
 
+podman stop --all
+podman rm --all
+                          .----> 호스트
+                         /   .---> 컨테이너
+                        /   /
+podman run -it --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 bash
+                    ---
+                    \
+                     `---> 1. iptables(nft)
+                           2. veth(tap)
+                           3. bridge(switch)
+                           4. namespace
 
-| process | ---> <driver> --->  | kernel | ---> | device |
+ip netns 
+ip netns exec <ID> ip a 
+                   ip r 
+iptables-save | grep 8080 
+bridge link
+bridge fdb                   
+```
 
-OpenFlow(ovs,ovn)
-+---------+     
-| process | ---> {{ [tap device] --- [namespace] ---> [tap device] --- }}[BRIDGE] --- | kernel | 
-+---------+                          <net,veth>                         <podman0>
-                                      
+# 연습문제 
 
-``` 
+## 컨테이너 생성 문제
 
+```
+podman run -it --rm -p 호스트:컨테이너 --name     bash 
+podman run -it --rm -p 9090:8080 --name hello-nginx quay.io/redhattraining/hello-world-nginx bash
+podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
+```
 
-### seccomp/namespace/cgroup(virtual, container)
+1. nginx(quay.io/redhattraining/hello-world-nginx)기반으로 컨테이너 생성
+  - 컨테이너 이름은 hello-nginx
+2. 8080포트는 호스트 9090으로 접근이 가능
+3. 웹 페이지 내용을 변경
+  - hello nginx
+  - /usr/share/nginx/html/index.html
+4. find으로 파일 위치 확인(index.html)
+5. iptables-save, podman port로 아이피 및 포트 번호 일치 확인
+6. ip netns exec, bridge로 아이피 및 장치 조회
 
 ```bash
-systemctl enable --now libvirtd
-systemctl start libvirtd
-systemctl is-active libvirtd
-dnf install guestfs-tools virt-install -y
-virt-builder --list
-virt-builder --format=qcow2 --size=1G --output=/var/lib/libvirt/images/cirros.qcow2 cirros-0.3.5
-virt-install --vcpus=1 --memory=100 --disk=path=/var/lib/libvirt/images/cirros.qcow2 --network=default --import --noautoconsole --virt-type=qemu --osinfo detect=on,require=off --name cirros
-virsh list
-virsh console cirros
+podman run -d -p 9090:8080 --name hello-nginx-2 quay.io/redhattraining/hello-world-nginx
+curl localhost:9090
+podman container port hello-world-ngninx
+iptables-save | grep 9090
+podman run -d --rm -p 8080:80 --name my-httpd-app quay.io/centos/centos:stream8 sleep 100000
 ```
 
+
+## 컨테이너 커밋
+
+컨테이너 생성 후 커밋을 한다.
+
+- 컨테이너는 데비안 컨테이너를 생성한다. 
+  - quay.io/official-images/debian
+  - 이미지가 없는 경우 이미지를 런타임에 내려받기 한다.
+- 생성된 데비안 컨테이너의 이름은 fresh-debian-server로 지정한다.
+  - 생성 후 바로 이미지를 커밋한다.
+  - 커밋 이름은 before-install-package-debian으로 한다.
+- 데비안에 다음과 같은 패키지를 설치한다.
+  - apache2
+  - vsftpd
+  - 설치시 사용하는 명령어는 apt install이다. apt install apache2 -y 
+  - 올바르게 동작하지 않으면 apt update를 먼저 수행한다.
+  - 설치가 완료가 되면 이미지를 커밋한다. 
+  - 커밋 이름은 after-install-package-debian으로 한다.
+- 설치가 완료가 되면 diff으로 before, after에 어떠한 차이가 있는지 확인한다.
+  - 확인이 완료가 되면 before, after이미지를 제거한다.
+  - 동작중인 컨테이너 fresh-debian-server는 중지한다.
+
+```bash
+podman commit fresh-debian-server before-install-package-debian
+podman images
+podman exec -it fresh-debian-server /bin/bash
+podman commit fresh-debian-server after-install-package-debian
+podman diff before-install-package-debian:latest after-install-package-debian:latest
 ```
- docker ---> search  ---> skopeo
-        ---> image   ---> buildah
-        ---> build   ---> buildah
-        ---> lifecycle 
-```
+
+  1. iptables, bridge부분 
+  2. echo, permission 
 
 # day 2
 
-**pause:** application(pause.c). 응용프로그램 중 하나. 
-       - 신호처리
-```c
-static void sigreap(int signo) {
-  while (waitpid(-1, NULL, WNOHANG) > 0)
-    ;
-}
+- podman 명령어 계속
+- 컨테이너 이미지 부분
+- 컨테이너 구조 및 구성
 
-```   
-       - 무한대기
-```c
-  for (;;)
-    pause();
-  fprintf(stderr, "Error: infinite loop terminated\n");
-  return 42;
-```       
-       - 네임스페이스를 직접 관리하지 않음
-
-**pod:** 쿠버네티스에서 추상적으로 격리하는 부분을 'Pod'라고 부름.
-       - 실제로는 pause에서 구현
-       - 네임스페이스도 같이 필요함
-       - cgroup POD자원 제어를 함(cpu, memory)
-
-**infra container:** infra_container{container(POD_APP)}
-       - 시스템 엔지니어나 혹은 런타임 영역에서 "pod"라는 단어 대신, "infra container"라고함. 
-       - 'puase' 격리 애플리케이션 중 하나.
-
+## 레지스트리 주소 추가 및 변경
 ```bash
-   .---> APP
-  /
-pause == POD == infra container(shared namespace)
-          |                    (shared network)
-          |
-      container
-       (equal)
-```       
-
-
-podman run -d --name apache -v /root/htdocs:/var/www/html/ 
-                               ---------------------------
-                              # mount --bind /root/namespaces /root/namespaces
-                              > # mount --bind /root/htdocs /var/lib/containers/overlay-container/??
-                              > stat
-                              # mount --make-private /root/namespaces
-                              > flag
-                              # touch /root/namespaces/mnt
-                              # unshare --mount=/root/namespaces/mnt
-                              > into namespace 
-## podman command
-
-```bash
-dnf install epel-release
-dnf install podman-docker podman-compose
-podman build     # Dockerfile, Containerfile
-docker build
-
+pwd
+/etc/containers
+nano registries.conf
+grep -Ev '^#|^$' registries.conf
+unqualified-search-registries = ["quay.io"]
+short-name-mode = "enforcing"
+podman search centos
+podman pull centos
+podman search --list-tags centos/centos                ## tag목록이 출력이 되나, 자세하지는 않음
+dnf install skopeo -y
+skopeo list-tags docker://quay.io/centos/centos | less ## tag목록이 자세하게 출력
+podman pull centos/centos:stream9
 ```
 
-### used case
+```bash
+podman run -it --rm --name test-centos-stream-9 centos:stream9 /bin/bash
+-> dnf search httpd
+-> dnf install httpd -y
+podman commit test-centos-stream-9 commit-test-centos-stream-9    ## 실행중인 컨테이너를 이미지화
+podman save quay.io/centos/centos:stream9 -o stream9.tar          ## 컨테이너 이미지를 파일로 저장
+podman save localhost/commit-test-centos-stream-9 -o modified-stream9.tar  ## 컨테이너 이미지를 파일로 저장
+ls
+anaconda-ks.cfg  modified-stream9.tar  stream9.tar
+mkdir original
+mkdir modified
+tar xf modified-stream9.tar -C modified/
+tar xf stream9.tar -C original/
+ls -l modified/
+ls -l original/
 
-docker: Nvidia Data/AI
-       ---> podman Nvidia/AMD => local(x)
-                                 nfs ---> data
-                                 HBA ---> data
+podman diff test-centos-stream-9 quay.io/centos/centos:stream9    ## 런타임이 이미지 diff 디렉터리를 확인 함.
+```
+
+OSTree: https://ostree.readthedocs.io/en/stable/
+
+RedHat Podman Ebook: 141page
+
+__Dockerfile:__ Docker 이미지 빌드를 도와주는 명령어(instruction) 셋(set) 파일. 구성할 내용들을 쭉 적어둠. 참고로 Dockerfile은 OCI에서 지원은 하나, 표준은 아님.
+
+__Containerfile:__: OCI 이미지 빌드 도구 명령어. 앞으로 모든 컨테이너 이미지는 Containerfile기반으로 구성이 됨. Dockerfile과 서로 호환은 되나, 사용방법이 조금은 다름. 앞으로는 이 이름으로 이미지 빌드 파일 생성.
+
+이미지 빌드 시 사용하는 도구는 __podman build__, __buildah bud__ 명령어 사용이 가능. 이미지 빌드시 권장은 buildah를 사용. 
+
+```yaml
+FROM centos
+FROM ubi-init   
+```
+
+만약, 베이스 이미지에 '-init'라고 표시가 되어 있으면, 컨테이너에서 systemd, init사용이 가능함. 
+본래 컨테이너에서 System V init, systemD사용이 불가능.
+
+
+```bash
+cd
+nano Container-httpd
+->FROM ubi8-init
+->RUN dnf -y install httpd; dnf -y clean all
+->RUN systemctl enable httpd.service
+ln -s Container-httpd Dockerfile
+podman build .
+rm -f Dockfile
+ln -s Container-httpd Containerfile
+podman build .
+dnf install buildah -y
+buildah images                ## /var/lib/containers/storage/
+buildah bud -f Container-httpd
+```
+
+
+```Containerfile
+FROM ubi8-init
+RUN dnf -y install httpd; dnf -y clean all
+RUN systemctl enable httpd.service
+_EOF
+```
+
+## Low/High level image build tool
+
+### Podman
+고수준 이미지 빌드 도구
+- Dockerfile
+- Containerfile
+
+### Buildah
+저수준 이미지 빌드 도구
+- Dockerfile
+- Containerfile
+- "scratch", 이미지를 처음부터 빌드가 가능.
+
+
+buildah 이미지 빌드 관련 정보
+-----
+
+[이미지 처음부터 빌드](https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html#building-a-container-from-scratch)
+
+[이미지 크기, 왜 이미지가 docker 이미지보다 크게 보이는가?](https://github.com/containers/buildah/issues/532)
+
+
+
+```bash
+newcontainer=$(buildah from scratch)
+echo $newcontainer     # scratch-3
+buildah ps == buildah containers
+buildah rm <ID>                               ## 필요 없는거 제거
+buildah images
+scratchmnt=$(buildah mount $newcontainer)  
+echo $scratchmnt
+ls /var/lib/containers/storage/overlay/1cf801765945a490af5316a7c77b47f87ebdb3184260692cce6f6328fe5d88cb/merged  ## 현재 컨테이너는 비어 있음. 그래서 bash가 실행이 안됨
+
+dnf install --installroot $scratchmnt --setopt=tsflags=nodocs --setopt=override_install_langs=en_US.utf8 --setopt install_weak_deps=false -y --releasever=9 bash 
+buildah run $newcontainer /bin/bash microdnf coreutils-single          ## bash가 동작
+buildah run $newcontainer /bin/bash
+-> ls
+-> exit
+
+# buildah config --cmd  /usr/bin/runecho.sh      ## 컨테이너 메타정보 생성, podman inspect, docker inspect 
+buildah config --created-by "Tang"  $newcontainer
+buildah config --author "CHOIGOOKHYUN at linux.com @tang" --label name=centos-9-stream $newcontainer
+buildah inspect $newcontainer
+buildah unmount $newcontainer
+buildah commit $newcontainer choi-centos-9-stream-cus
+buildah images
+```
+
+
+## share/unshare
+unshare: Run a command inside of a modified user namespace
+         -> 명령어 혹은 프로그램을 사용자 네임스페이스에서 실행
+
+scratch(완벽하게 명령어 구현은 아님)
+
+```bash
+mkdir -p /scratch
+chown 1000.1000 /scratch
+unshare -S 1000 -G 1000 -w /scratch  ## bash 프로세스의 작업 디렉터리가 임의로 "/scratch/"로 변경
+```
+
+          .---> mount --bind /var/lib/containers/storage/overlay/<DIR>    ## USER
+         /      mount --make-private <DIR>                                ## NAMESPACE
+        /       touch /var/lib/containers/storage/overlay/scratch
+       /        unshare --mount=/var/lib/containers/storage/overlay/scratch   ## buildah mount
+--------------------
+buildah from scratch == NAMESPACE(scratch(unshare(MOUNT((/VAR/LIB/CONTAINERS/STORAGE/OVERLAY))))
+                                  ------- -------
+                                  \        \
+                                   \        \
+                                    \        '---> syscall(function)
+                                     '---> function
+```bash
+man -k unshare
+man 1 unshare
+
+adduser test1
+echo centos | passwd --stdin test1
+ssh test1@localhost
+```
+keywords
+---------
+
+1. namespace
+2. unshare
+
+
+# day 3번째 
+
+## 주제
+- 컨테이너 볼륨 생성 및 바인딩의 차이점 
+- 쿠버네티스 런타임 살펴보기
+  * crio
+  * containerd
+  * 무엇이 다른지??
+- 쿠버네티스 설치
+  * kubeadm init 
+  * https://github.com/tangt64/training_memos/blob/main/opensource/kubernetes-101/command-collection.md
+
+
+## 머여 backingFsBlockDev?!
+
+- containers/storage/overlay
+- volume/<ID>/backingFsBlockDev
+
+컨테이너 내부에 접근을 하면..  
+
+```
+overlay         73364480 6772588  66591892  10% /
+------
+\
+ `---> /var/lib/containers/storage/overlay ---> devicemapper(fuse)
+```
+"backingFSBlockDev", 컨테이너는 원칙상 블록장치를 가져갈수가 없어, backingFSBlockDev를 통해서, 마치 컨테이너가 블록장치를 가지고 있는것 처럼, 예뮬레이팅 함.
+
+
+## 볼륨 및 바인딩 확인
+
+--volumes-from: "podman volumes ls"에서 나오는 블록 장치를 연결. 런타임 엔진에서 가지고 있는 디렉터리는 연결.
+--volume: 호스트 디렉터리를 바로 컨테이너로 마운트. 컨테이너가 시작 시, 런타임(일시적으로)으로 디렉터리 연결
+
+쿠버네티스에서는 "pv(persistent volume)",            "pvc(persistent volume claim)"
+                ----------------------              -----------------------------
+                호스트 쪽에서 제공하는 논리 드라이버   요청 혹은 요구하는(Pod)
+```bash
+podman run -d -v <HOST>:<CONTAINER>
+                 -----  -----------
+                  \         /
+                   `-------'
+                   '
+
+podman run --help
+man podman-run                  
+getenforce
+
+## SELinux 동작중이면, Z로 해서 컨텍스트 올바르게 변경
+podman run -d -v <VOLUME_NAME>:/var/www/html:Z --name test-volume centos /bin/sleep 10000  ## it's okay
+podman run -d -v <HOST_DIR>/:/var/www/html:Z --name test-volume centos /bin/sleep 10000    ## it's problem.
+
+podman exec -it <NAME> /bin/bash
+>df
+/dev/mapper/cs_podman-root  73364480 6772592  66591888  10% /var/www/html    ## bind, volume
+     ------
+     device mapper(DM)
+>mount     
+
+podman insepct <ID>
+>Volume: rw,rprivate,nosuid,nodev,rbind
+>Bind: rw,rprivate,rbind,
+
+```
 
 ### podman volume
 
-**podman -v:** 'unshare', binding + private = namespace
-           -> mount --bind --private  ## high level
-**podman volume:** 'backingFsBlockDev', overlayFS 
-           -> mount -t overlay        ## low level
-              /var/lib/containers/storage/volumes/, 'local'로 사용시, '-v'하고 별반 차이 없음.
-                                                    'local'
+```bash
+man podman-volume
+podman volume create test-volume   ## 이름이 없으면 UUID마음대로 생성함
+                                   ## 기본 드라이버는 local
 
-# day 3
+## https://github.com/containers/podman/blob/main/vendor/github.com/containers/storage/storage.conf                                  
+## CSI: Container Storage interface
+```
 
-
-### 연습문제 
-
-0. 기존에 생성이 되어 있는 컨테이너 및 POD모두 제거.
-
-1. 컨테이너 centos, apache, nginx를 총 3개를 구성한다.
-  - apache, nginx는 이미지나 혹은 quay.io에서 명시된 포트로 포워딩한다.
-  - 포워딩 포는 apache, 8088/tcp, nginx, 8099/tcp로 구성한다.
-  - centos의 이름은 debug-container
-  - apache의 이름은 httpd-container
-  - nginx의 이름은 nginx-container
-  - apache, nginx는 중지가 되면 반드시 자동으로 제거가 되어야 한다.
-  - curl명령어로 올바르게 동작하는지 확인.
-
-2. POD가 구성된 apache서비스를 구성한다.
-  - pod의 이름은 apache-pod라고 명시한다.
-  - container의 이름은 apache-pod-container라고 명시한다.
-  - 포트는 8085로 접근이 가능해야 한다.
-
-3. 변경된 메인 페이지를 제공한다.
-  - 기존에 생성된 컨테이너 및 POD는 전부 제거한다.
-  - /var/www/html/에 /root/apache-htdocs를 연결한다.
-  - /usr/share/nginx/htdocs/에 /root/ngninx-htdocs를 연결한다.
-  - 이 두개의 컨테이너는 POD와 연결이 되어야 한다.
-  - nginx는 포트는 8081, apache는 8082로 접근이 되어야 한다.
-  - apache "welcome apache", nginx "welcome nginx"메세지가 출력이 되어야 한다.
-  
-4. 네임스페이스 확인
-  - 컨테이너가 올바르게 POD 네임스페이스 연결이 되어 있는지 확인한다. 
-  - 컨테이너에서 연결이 되어있는 mnt가 올바르게 unshare, private상태로 구성이 되어 있는지 확인한다.
-  - kata, crun을 통해서 올바르게 pod, container가 구성이 되어 있는지 확인한다.
-
-5. 네트워크 조회 및 확인
-  - iptables(nftables)를 통해서 POD하고 Container데이터 경로 확인.
-  - CNI네트워크 플러그인 확인. 
-
-힌트: 
-* crun --root=/var/run/crun/  
-* POD(kata), df
-* iptables-save, iptables, nft 
-
-
-vCPU: 2
-vMEM: 4
-
-
-JBOSS(Wildfly) ---> init ---> ubi-init ---> dumb-init(openstack, wildfly)
-                                            ---------
-                                            + SECCOMP(추가가 몇게 필요함)
-
-# day 4
-
-master, node1, node2
-
-1. 내부네트워크 추가
-2. 호스트 이름 설정
+### volume import/export
 
 ```bash
-cat <<EOF>> /etc/hosts
-192.168.90.100 master.example.com
-192.168.90.101 node1.example.com
-192.168.90.102 node1.example.com
-EOF
-swapoff -a
-sed -i '/\/dev\/mapper\/rl-swap/d' /etc/fstab
-dnf install wget -y
-
-cd /etc/yum.repos.d/
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
-
-
-cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-exclude=kubelet kubeadm kubectl
-EOF
-
-setenforce 0
-sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
-yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes -y 
-systemctl enable --now kubelet ## 'activing..'
-systemctl stop firewalld
-
-sysctl -a | grep forward
-sysctl -w net.ipv4.ip_forward=1 
-cat <<EOF> /etc/sysctl.d/k8s_forward.conf    ## 영구적인 설정(kernel parameter)
-net.ipv4.ip_forward=1 
-EOF
-
-sysctl -p -f
-modprobe br_netfilter     ## 일시적으로 메모리 상주
-
-cat <<EOF> /etc/modules-load.d/k8s_modules.conf   ## 영구적으로 부팅시 자동 상주
-br_netfilter
-EOF
-
-systemctl daemon-reload
-
-cd /etc/yum.repos.d/
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable.repo
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/devel_kubic_libcontainers_stable_cri-o_1.24_1.24.4.repo
-dnf search cri-o -y
-dnf install cri-o -y
-systemctl enable --now crio
+mkdir htdocs/
+echo "hello this is volume httpd container server" > htdocs/index.html
+tar cf volume-htdocs-index.tar htdocs/index.html
+podman volume import test-volume volume-htdocs-index.tar
+podman volume volume export test-volume > volume-htdocs-index-rev1.tar
 ```
 
+### 작은 연습
 
+1. test-httpd-volume
+2. 연결할 볼륨의 이름 htdocs-files 생성
+  - /var/lib/containers/storage/volumes/
+  - podman inspect test-httpd-volume
+  - ls
+3. 웹 서버를 설치
+4. 연결 및 포트 할당 80포트를 8080으로
+5. index.html에는 "Hello Volume"출력
 
 ```bash
-skopeo sync --src docker --dest dir --scoped k8s.gcr.io/ /tmp/
-                                docker                   localhost.registry.io
-
-registry.k8s.io/kube-apiserver:v1.26.1
-registry.k8s.io/kube-controller-manager:v1.26.1
-registry.k8s.io/kube-scheduler:v1.26.1
-registry.k8s.io/kube-proxy:v1.26.1
-registry.k8s.io/pause:3.9
-registry.k8s.io/etcd:3.5.6-0
-registry.k8s.io/coredns/coredns:v1.9.3
-```
-
+echo "Hello Volume" > index.html
+podman volume create htdocs-files
+podman volume import htdocs-files < index.tar
+podman run -d -p8080:80 --name test-httpd-volume centos sleep 10000
+podman exec -it test-httpd-volume dnf install httpd -y
+curl localhost
 
 ```
-kubeadm init --apiserver-advertise-address=192.168.90.100 --control-plane-endpoint 192.168.90.100
-
-```
-
-- containerd (v, -)
-- crio       (=, i)
-+ cri-docker (x)
-
-```
-curl -s --unix-socket /run/podman/podman.sock  http://d/v1.0.0/libpod/images/json | jq
-curl -s --unix-socket $XDG_RUNTIME_DIR/podman/podman.sock http://d/v1.0.0/libpod/pods/json | jq
-
-```
-
-## 연습문제
-
-* 컨테이너 서비스를 POD기반으로 구성한다.
-```
-quay.io/eformat/openshift-vsftpd
-quay.io/centos7/nginx-116-centos7
-
-run -d --pod new: -p :8080 -p 21100
-run -d --pod 
-buildah bud -f 
-podman generate
-podman play 
-kubectl get pods/svc
-kubectl create
-KUBECONFIG=/etc/kubernetes/admin.conf
-```
-
-- POD 1개, Container 3개
-- 쿠버네티스 YAML 전환
-- 쿠버네티스 POD, SVC로 등록
-- podman만 서비스는 중지(제거가 아님)
-
-** 이미지 빌드가 어려운 경우, 빌드는 제외하고 서비스 두개(ftp, www)만 올리세요.
-
-1. 웹 서비스 아파치로 구성한다. 포트는 이미지에서 명시한 기본포트 8080를 사용한다.
-2. ftp서비스를 구성한다. 포트는 이미지에서 명시한 기본포트 21100를 사용한다.
-3. pod의 이름은 www_svc으로 구성한다.
-4. mysql 서비스를 위한 컨테이너를 구성한다. 
-5. 쿠버네티스에는 pv, pvc가 없기 때문에 바인딩을 사용해서는 안된다. 
-6. centos7이미지 기반으로 mysql컨테이너 이미지를 빌드한다. 포트는 3306를 사용한다. 
-```
-from quay.io/centos/centos
-run yum install <PACKAGE> -y && yum clean all
-expose 3306
-cmd mysqld_safe
-entrypoint    ## 동작이 안되면 이걸로 변경
-```
-7. 구성된 서비스를 쿠버네티스로 전환한다.
-8. 쿠버네티스로 서비스가 전환이 완료가 되면, yaml파일으로 모든 서비스를 동시에 중지한다.
-
-
-# 추가 정보
-
-https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/
