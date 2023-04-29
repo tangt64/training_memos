@@ -1217,3 +1217,37 @@ kubectl get nodes
 export KUBECONFIG=/etc/kubernetes/admin.conf 
 kubectl get nodes
 ```
+
+
+수정된 podman YAML
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: centos-apache-pod-srv-port
+  name: centos-apache-pod-srv-port
+spec:
+  ports:
+  - name: "centos-apache-srv-port"
+    nodePort: 31033
+    port: 80
+    targetPort: 80
+  selector:
+    app: centos-apache-pod-deploy
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: centos-apache-pod-deploy
+  name: centos-apache-pod-deploy
+spec:
+  containers:
+  - image: quay.io/redhattraining/httpd-parent:latest
+    name: centos-apache
+    ports:
+    - containerPort: 80
+```
