@@ -810,13 +810,57 @@ ctr images =/= podman images == crictl images     ## OCI 표준 이미지 디렉
 crictl ps     =/= podman ps       ## 엔진이 다르게 정보를 관리함
 ```
 
-
 1. podman(지원,k8s 사용불가)
 2. docker(표준미지원,k8s 사용불가))
 3. containerd(호환, 어뎁터를 통한 지원)
 4. crio(지원)
 5. cri-docker(지원,mirantis-container)
 
+
+
+# day 4
+
+__master:__ 2 NICs
+__하이퍼바이저:__ 추가 네트워크 구성 꼭 해주세요!!
+
+eth0: external, 외부에서 필요한 패키지 혹은 이미지
+eth1: internal <---> internal, 노드 통신
+
+eth0: DHCP, IP Fixed No!! 
+eth1: STATIC, IP fixed!!, POD 네트워크 구성을 위해서 고정이 필요.
+
+
 ```bash
+ip link
+> eth0
+> eth1
+
+
+## 명령어
+nmcli con add con-name eth1 ipv4.addresses 192.168.10.1/24 ifname eth1 type ethernet ipv4.method static
+nmcli con down eth1
+nmcli con up eth1
+## TUI
+nmtui
+> eth1                    ## 고정 아이피 192.168.10.1/24 설정
+                          ## 게이트웨이 사용하지 않음(랩에서만!!!)                          
+IPv4 CONFIGURATION: MANUAL
+Addresses 192.168.10.1/24
+Gateway 없음
+DNS servers 없음
+Search domains 없음
+│ | [X] Never use this network for default route 
+│ | [X] Ignore automatically obtained routes 
+│ | [X] Ignore automatically obtained DNS parameters
+
+Activate a connection
+> eth1만 다시 재적용!!
+
+ip a s eth0  
+ip a s eth1               ## 고정 API인터페이스 + POD네트워크
+
+kubeadm reset --force
+kubeadm init <OPT>        ## API 서버가 바라볼 인터페이스 설정          
+
 
 ```
