@@ -891,3 +891,13 @@ kubectl get nodes
 kubectl get pods -A
 journalctl -fl -perr -pwarning
 ```  
+
+
+```bash
+kubeadm token create --print-join-command
+@node1]# kubeadm join 192.168.10.1:6443 --token ph550v.mkmgptvx62wqs2du --discovery-token-ca-cert-hash sha256:3a27e75663ed35d94013e90bbec36c24cc57023708375a21eabbe529b9b00c69
+
+
+## 노드1번에 kubeadm 명령어를 사용할 수 있도록 구성
+## 구성이 완료가 되면, join 명령어로 클러스터에 노드 추가
+```
