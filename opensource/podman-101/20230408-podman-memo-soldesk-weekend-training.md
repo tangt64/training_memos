@@ -1244,10 +1244,28 @@ metadata:
   labels:
     app: centos-apache-pod-deploy
   name: centos-apache-pod-deploy
+
 spec:
-  containers:
-  - image: quay.io/redhattraining/httpd-parent:latest
-    name: centos-apache
-    ports:
-    - containerPort: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: centos-apache-pod-deploy
+  template:
+    metadata:
+      labels:
+        app: centos-apache-pod-deploy
+    spec:
+      containers:
+      - image: quay.io/redhattraining/httpd-parent:latest
+        name: centos-apache
+        ports:
+        - containerPort: 80
+```
+
+```bash
+kubectl delete svc centos-apache-pod-srv-port
+kubectl create -f centos-apache-deploy.yaml
+kubectl get svc
+kubectl get pod
+kubectl get deploy
 ```
