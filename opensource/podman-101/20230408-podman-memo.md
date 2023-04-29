@@ -885,7 +885,12 @@ kubeadm --apiserver-advertise-address <IP_ADDRESS>     ## kubectl eth0 ---> eth1
         --service-cidr 10.96.0.0/12
         --service-dns-domain cluster.local             ## cgh.local
 
-kubeadm init --apiserver-advertise-address 192.168.10.1 --service-dns-domain cgh.local
+kubeadm init --apiserver-advertise-address 192.168.10.1 --pod-network-cidr 192.168.0.0/16 --service-dns-domain cgh.local
+
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
+
+kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
 kubectl get pods -A
@@ -894,10 +899,11 @@ journalctl -fl -perr -pwarning
 
 
 ```bash
-kubeadm token create --print-join-command
+@master]# kubeadm token create --print-join-command
 @node1]# kubeadm join 192.168.10.1:6443 --token ph550v.mkmgptvx62wqs2du --discovery-token-ca-cert-hash sha256:3a27e75663ed35d94013e90bbec36c24cc57023708375a21eabbe529b9b00c69
 
 
 ## 노드1번에 kubeadm 명령어를 사용할 수 있도록 구성
 ## 구성이 완료가 되면, join 명령어로 클러스터에 노드 추가
+## 완료가 되시면 마스터/노드 다시 리셋 후 재구성
 ```
