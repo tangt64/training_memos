@@ -1,6 +1,6 @@
 # day1
 
-## lab plan(5번)
+## lab plan
 
 1,2: podman, crio
 3,4: crio+kubernetes
@@ -13,6 +13,7 @@ docker runtime(==PODMAN) -->                                  --> KUBERNETES
 </pre>
 * podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
 * docker는 docker-ee(swam)서버를 가지고 있음.
+
 <pre>
 docker-ee: RestAPI
 -> 확장성은 매우 낮음
@@ -810,12 +811,181 @@ ctr images =/= podman images == crictl images     ## OCI 표준 이미지 디렉
 crictl ps     =/= podman ps       ## 엔진이 다르게 정보를 관리함
 ```
 
+
 1. podman(지원,k8s 사용불가)
 2. docker(표준미지원,k8s 사용불가))
 3. containerd(호환, 어뎁터를 통한 지원)
 4. crio(지원)
 5. cri-docker(지원,mirantis-container)
 
+
+## FOR 경민님 :)
+
+```bash
+swapoff -a
+swapon -s
+nano /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports":
+        {
+            "docker-daemon":
+                {
+                    "": [{"type":"insecureAcceptAnything"}]
+                }
+        }
+}
+kubeadm reset --force
+kubeadm init
+
+
+```
+
+## crio
+
+```bash
+systemctl stop firewalld && systemctl disable firewalld
+dnf install iproute-tc -y ## centos-9-stream
+
+sed -i 's/enforcing/permissive/g' /etc/selinux/config
+setenforce 0
+
+vi /etc/fstab
+# 스왑 라인 주석처리
+# swap
+swapoff -a
+swapon -s
+
+hostnamectl set-hostname master.example.com
+hostnamectl
+cat <<EOF>> /etc/hosts
+<SERVER_IP_ETH0> master.example.com master        
+EOF
+ping -c2 master.example.com
+
+cat <<EOF> /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+EOF
+
+dnf search --disableexcludes=kubernetes kube
+dnf list --disableexcludes=kubernetes kubeadm
+dnf install --disableexcludes=kubernetes kubeadm -y
+
+systemctl status kubelet
+systemctl enable --now kubelet
+
+dnf install wget -y
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+dnf install cri-o -y
+systemctl enable --now crio
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
+
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+net.bridge.bridge-nf-call-iptables=1    
+net.ipv4.ip_forward=1                   
+EOF
+sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
+
+kubeadm init phase preflight 
+kubeadm init
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+
+
+crictl ps
+```
+podman ---> kube play ---> containerd ---> crio = {kubernetes}
+                              CNCF
+
+## containerd
+
+```bash
+firewall-cmd --add-port=6443/tcp --permanent
+firewall-cmd --add-port=10250/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-port
+
+containerd config default > /etc/containerd/config.toml && systemctl restart containerd
+vi /etc/containerd/config.toml
+>disabled_plugins = [] ---> # disabled_plugins = []
+>enabled_plugins = ["cri"]  ## CRI 인터페이스와 호환, 이것만!!
+>[plugins."io.containerd.grpc.v1.cri".containerd]
+>  endpoint = "unix:///var/run/containerd/containerd.sock"
+>root = "/var/lib/containers"
+systemctl restart containerd 
+
+ctr containers ls
+
+swapoff -a
+swapon -s
+kubeadm init phase preflight 
+cat /etc/hosts
+ip a s eth0
+cat <<EOF>> /etc/hosts
+172.22.224.169 podman.example.com podman             ## Bind9서버나 혹은 Dnsmasq로 DNS서비스 구성(A Recode)
+EOF
+
+-----김민정님-----
+cat <<EOF>> /etc/hosts
+172.20.0.244 master.example.com podman
+EOF
+
+ping -c2 master.example.com
+-----------------
+
+dnf install bind-utils -y
+host podman.example.com
+kubeadm init phase preflight 
+systemctl enable --now kubelet ## systemctl restart kubelet
+kubeadm config images pull
+
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3+L4
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+net.ipv4.ip_forward=1                   ## pod <---> svc
+EOF
+sysctl --system
+
+kubeadm init    ## init가 실패한 경우 다시 kubeadm reset --force
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+
+journalctl -fl -u kubelet -perr -p warning   ## 시스템 로그에서 런타임 엔진 오류 확인
+journalctl -fl -u containerd -perr -p warning
+
+systemctl status kubelet
+systemctl status containerd
+kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
+
+systemctl status kubelet
+
+ps -ef | grep conmon
+```
 
 
 # day 4
