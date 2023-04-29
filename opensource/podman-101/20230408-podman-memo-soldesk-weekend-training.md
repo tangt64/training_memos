@@ -1269,3 +1269,149 @@ kubectl get svc
 kubectl get pod
 kubectl get deploy
 ```
+
+## 쿠버네티스 쉽게 접근하기
+
+
+```bash
+dnf search fish
+dnf install epel-release
+dnf install fish -y
+```
+
+개인적으로 "fish"를 좀 더 선호 합니다. 
+
+
+```bash
+rpm -qa bash-completion
+complete -rp
+kubeadm completion bash > k8s-completion.sh
+kubeadm completion fish > k8s-completion.sh
+
+kubectl completion bash > k8s-completion.sh
+kubectl completion fish > k8s-completion.sh
+
+kubectl completion fish > ~/.config/fish/completions/kubectl.fish
+
+source k8s-completion.sh
+complete -rp
+```
+
+## 명령어 및 쿠버네티스 서비스 설명
+
+
+podman pod ls == crictl pods
+podman container ls == crict ps
+
+## 간단한 구성 설명 및 명령어 
+
+
+쿠버네티스 클러스터의 기본값은 __"kubernetes"__ 일반적으로 프로젝트의 이름
+
+설치시 변경하려면 YAML기반으로 설치하는 경우, 설치시 변경이 가능. 
+
+클러스터 이름을 확인 및 변경하기 위해서는 다음과 같은 명령어로 확인이 가능함.
+
+```bash
+kubeadm config print init-defaults | grep cluster
+kubectl config view
+```
+
+혹은, 설치후에 /etc/kubernetes/admin.conf에서도 간단하게 확인이 가능.
+
+```bash
+grep kubernetes /etc/kubernetes/admin.conf
+  name: kubernetes
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+- name: kubernetes-admin
+```
+
+kubectl명령어는 사용자를 생성 및 설정하지 않으면, "kubernetes-admin"으로 클러스터 접근해서 사용. 명령어는 다음과 같이 동작한다. 'kubeadm'의 기본값
+
+```bash
+kubectl {kubernetes-admin@kubernetes+TLS} get pods
+```
+
+kubectl 명령어 사용방법은 아래 주소를 참조한다.
+
+[명령어 레퍼런스](https://kubernetes.io/docs/reference/kubectl/)
+
+자주 사용하는 명령어는 보통 아래와 같다.
+
+```
+kubectl get po     ## Pod 목록 확인
+kubectl get svc    ## 서비스 목록 확인(아이피 및 포트)
+kubectl get dep    ## 컨테이너 구성설정 목록 확인
+```
+
+컨테이너 및 Pod는 동일한 컨테이너이지만, 자원 성격 및 구성이 다름. 
+- POD + Container, POD는 POD 아이피를 가지고 있고, 컨테이너는 루프백 장치로 POD에 구성 및 연결.
+- container는 서비스 애플리케이션을 가지고 있음.
+- 쿠버네티스에서 사용하는 기본 Pod 애플리케이션은 Pause를 사용하고 있음.
+
+```bash
+crictl images
+```
+
+
+kubectl get pod
+- Pod 애플리케이션으로 컨테이너 격리
+- 컨테이너 애플리케이션으로 직접적으로 접근을 할 수 없음
+
+
+kubectl get svc(service)
+- iptables, nftables하고 관계가 있음.
+- pod는 svc하고 연결이 됨.
+
+```bash
+kubectl describe service <NAME>
+Endpoints:                192.168.11.66:80   ## POD 아이피
+IP:                       10.97.36.205       ## NAT 아이피
+
+iptables-save | grep 10.97.36.205
+```
+
+create apply
+
+
+kubectl describe svc <객체>
+                 pod <객체>
+
+
+get: 자원 목록
+describe: 자원 구성 내용 확인
+
+
+### 네임스페이스 생성 및 제거
+
+```bash
+kubectl create namespace <NAME>
+kubectl get ns | namespaces
+kubectl delete namesapce <NAME>
+kubectl run --image quay.io/redhattraining/httpd-parent:latest <POD_NAME> -n <NAMESPACE_NAME>
+
+## 같은 네임스페이스에서는 같은 리소스에 같은 이름으로 생성이 안됨!!
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test1
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test1
+
+## 다른 네임스페이스에서는 같은 이름에 자원을 생성이 가능
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test1
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test2
+
+kubectl delete namespace test2                         ## 내부에 있는 자원도 한번에 제거
+```
+
+### 네임스페이스 고정적으로 변경하기
+
+```bash
+kubectl config get-context
+kubectl create namespace main-project
+kubectl config set-context --current --namespace main-project
+kubectl config get-context
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test
+kubectl get pods -owide
+kubectl get pods -A
+```
