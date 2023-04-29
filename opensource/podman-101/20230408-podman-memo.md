@@ -830,6 +830,13 @@ eth0: DHCP, IP Fixed No!!
 eth1: STATIC, IP fixed!!, POD 네트워크 구성을 위해서 고정이 필요.
 
 
+PoC
+------
+master x 3, NIC x 2
+node x 2, NIC x 2
+
+infra_node{storageroute}
+
 ```bash
 ip link
 > eth0
@@ -843,17 +850,20 @@ nmcli con up eth1
 ## TUI
 nmtui
 > eth1                    ## 고정 아이피 192.168.10.1/24 설정
-                          ## 게이트웨이 사용하지 않음(랩에서만!!!)                          
-IPv4 CONFIGURATION: MANUAL
-Addresses 192.168.10.1/24
-Gateway 없음
-DNS servers 없음
-Search domains 없음
-│ | [X] Never use this network for default route 
-│ | [X] Ignore automatically obtained routes 
-│ | [X] Ignore automatically obtained DNS parameters
-
-Activate a connection
+                          ## 게이트웨이 사용하지 않음(랩에서만!!!)
++----------------------------+
+| IPv4 CONFIGURATION: MANUAL                            |
+| Addresses 192.168.10.1/24                             |
+| Gateway        없음                                   |
+| DNS servers    없음                                   |
+| Search domains 없음                                   |
++-------------------------------------------------------+
+| │ | [X] Never use this network for default route      |
+| │ | [X] Ignore automatically obtained routes          |
+| │ | [X] Ignore automatically obtained DNS parameters  |
++-------------------------------------------------------+
+| Activate a connection                                 |
++-------------------------------------------------------+
 > eth1만 다시 재적용!!
 
 ip a s eth0  
@@ -861,6 +871,23 @@ ip a s eth1               ## 고정 API인터페이스 + POD네트워크
 
 kubeadm reset --force
 kubeadm init <OPT>        ## API 서버가 바라볼 인터페이스 설정          
-
-
 ```
+
+```bash
+kubeadm init --help
+kubeadm --apiserver-advertise-address <IP_ADDRESS>     ## kubectl eth0 ---> eth1
+                                      192.168.10.1     ## pod network     
+                                                       ## eth0는 외부에서 서비스 접근
+                                                       ## eth1는 내부에서 서비스 관 리
+        --image-repository                             ## 쿠버네티스 이미지 내려받기 주소
+        --kubernetes-version                           ##  
+        --node-name <NODE_NAME>                        ## 
+        --service-cidr 10.96.0.0/12
+        --service-dns-domain cluster.local             ## cgh.local
+
+kubeadm init --apiserver-advertise-address 192.168.10.1 --service-dns-domain cgh.local
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+kubectl get pods -A
+journalctl -fl -perr -pwarning
+```  
