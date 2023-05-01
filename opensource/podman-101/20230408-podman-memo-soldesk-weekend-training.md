@@ -13,6 +13,7 @@ docker runtime(==PODMAN) -->                                  --> KUBERNETES
 </pre>
 * podman은 io.podman혹은 podman.io라는 API서버를 가지고 있음.
 * docker는 docker-ee(swam)서버를 가지고 있음.
+
 <pre>
 docker-ee: RestAPI
 -> 확장성은 매우 낮음
@@ -817,6 +818,600 @@ crictl ps     =/= podman ps       ## 엔진이 다르게 정보를 관리함
 4. crio(지원)
 5. cri-docker(지원,mirantis-container)
 
+
+## FOR 경민님 :)
+
+```bash
+swapoff -a
+swapon -s
+nano /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports":
+        {
+            "docker-daemon":
+                {
+                    "": [{"type":"insecureAcceptAnything"}]
+                }
+        }
+}
+kubeadm reset --force
+kubeadm init
+
+
+```
+
+## crio
+
+```bash
+systemctl stop firewalld && systemctl disable firewalld
+dnf install iproute-tc -y ## centos-9-stream
+
+sed -i 's/enforcing/permissive/g' /etc/selinux/config
+setenforce 0
+
+vi /etc/fstab
+# 스왑 라인 주석처리
+# swap
+swapoff -a
+swapon -s
+
+hostnamectl set-hostname master.example.com
+hostnamectl
+cat <<EOF>> /etc/hosts
+<SERVER_IP_ETH0> master.example.com master        
+EOF
+ping -c2 master.example.com
+
+cat <<EOF> /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+EOF
+
+dnf search --disableexcludes=kubernetes kube
+dnf list --disableexcludes=kubernetes kubeadm
+dnf install --disableexcludes=kubernetes kubeadm -y
+
+systemctl status kubelet
+systemctl enable --now kubelet
+
+dnf install wget -y
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+dnf install cri-o -y
+systemctl enable --now crio
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
+
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+net.bridge.bridge-nf-call-iptables=1    
+net.ipv4.ip_forward=1                   
+EOF
+sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
+
+kubeadm init phase preflight 
+kubeadm init
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+
+
+crictl ps
+```
+podman ---> kube play ---> containerd ---> crio = {kubernetes}
+                              CNCF
+
+## containerd
+
+```bash
+firewall-cmd --add-port=6443/tcp --permanent
+firewall-cmd --add-port=10250/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --list-port
+
+containerd config default > /etc/containerd/config.toml && systemctl restart containerd
+vi /etc/containerd/config.toml
+>disabled_plugins = [] ---> # disabled_plugins = []
+>enabled_plugins = ["cri"]  ## CRI 인터페이스와 호환, 이것만!!
+>[plugins."io.containerd.grpc.v1.cri".containerd]
+>  endpoint = "unix:///var/run/containerd/containerd.sock"
+>root = "/var/lib/containers"
+systemctl restart containerd 
+
+ctr containers ls
+
+swapoff -a
+swapon -s
+kubeadm init phase preflight 
+cat /etc/hosts
+ip a s eth0
+cat <<EOF>> /etc/hosts
+172.22.224.169 podman.example.com podman             ## Bind9서버나 혹은 Dnsmasq로 DNS서비스 구성(A Recode)
+EOF
+
+-----김민정님-----
+cat <<EOF>> /etc/hosts
+172.20.0.244 master.example.com podman
+EOF
+
+ping -c2 master.example.com
+-----------------
+
+dnf install bind-utils -y
+host podman.example.com
+kubeadm init phase preflight 
+systemctl enable --now kubelet ## systemctl restart kubelet
+kubeadm config images pull
+
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3+L4
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+net.ipv4.ip_forward=1                   ## pod <---> svc
+EOF
+sysctl --system
+
+kubeadm init    ## init가 실패한 경우 다시 kubeadm reset --force
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+
+journalctl -fl -u kubelet -perr -p warning   ## 시스템 로그에서 런타임 엔진 오류 확인
+journalctl -fl -u containerd -perr -p warning
+
+systemctl status kubelet
+systemctl status containerd
+kubeadm ---> 컨테이너 이미지 기반의 쿠버네티스 서비스 <--- kubelet(컨테이너 기반의 쿠버네티스 서비스 구성, 일종의 프록시 서버)
+
+systemctl status kubelet
+
+ps -ef | grep conmon
+```
+
+
+# day 4
+
+__master:__ 2 NICs
+__하이퍼바이저:__ 추가 네트워크 구성 꼭 해주세요!!
+
+eth0: external, 외부에서 필요한 패키지 혹은 이미지
+eth1: internal <---> internal, 노드 통신
+
+eth0: DHCP, IP Fixed No!! 
+eth1: STATIC, IP fixed!!, POD 네트워크 구성을 위해서 고정이 필요.
+
+
+PoC
+------
+master x 3, NIC x 2
+node x 2, NIC x 2
+
+infra_node{storageroute}
+
+```bash
+ip link
+> eth0
+> eth1
+
+
+## 명령어
+nmcli con add con-name eth1 ipv4.addresses 192.168.10.1/24 ifname eth1 type ethernet ipv4.method static
+nmcli con down eth1
+nmcli con up eth1
+## TUI
+nmtui
+> eth1                    ## 고정 아이피 192.168.10.1/24 설정
+                          ## 게이트웨이 사용하지 않음(랩에서만!!!)
++----------------------------+
+| IPv4 CONFIGURATION: MANUAL                            |
+| Addresses 192.168.10.1/24                             |
+| Gateway        없음                                   |
+| DNS servers    없음                                   |
+| Search domains 없음                                   |
++-------------------------------------------------------+
+| │ | [X] Never use this network for default route      |
+| │ | [X] Ignore automatically obtained routes          |
+| │ | [X] Ignore automatically obtained DNS parameters  |
++-------------------------------------------------------+
+| Activate a connection                                 |
++-------------------------------------------------------+
+> eth1만 다시 재적용!!
+
+ip a s eth0  
+ip a s eth1               ## 고정 API인터페이스 + POD네트워크
+
+kubeadm reset --force
+kubeadm init <OPT>        ## API 서버가 바라볼 인터페이스 설정          
+```
+
+```bash
+kubeadm init --help
+kubeadm --apiserver-advertise-address <IP_ADDRESS>     ## kubectl eth0 ---> eth1
+                                      192.168.10.1     ## pod network     
+                                                       ## eth0는 외부에서 서비스 접근
+                                                       ## eth1는 내부에서 서비스 관 리
+        --image-repository                             ## 쿠버네티스 이미지 내려받기 주소
+        --kubernetes-version                           ##  
+        --node-name <NODE_NAME>                        ## 
+        --service-cidr 10.96.0.0/12
+        --service-dns-domain cluster.local             ## cgh.local
+
+kubeadm init --apiserver-advertise-address 192.168.10.1 --pod-network-cidr 192.168.0.0/16 --service-dns-domain cgh.local
+
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
+
+kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+kubectl get pods -A
+
+0/1     Init:1/2     ## 이건 정상 
+                     ## selinux, firewalld, pod network issue
+
+journalctl -fl
+kubectl describe pod -n calico-system <POD>
+kubectl logs -n calico-system <POD>
+```  
+
+
+```bash
+@master]# kubeadm token create --print-join-command
+@node1]# kubeadm join 192.168.10.1:6443 --token ph550v.mkmgptvx62wqs2du --discovery-token-ca-cert-hash sha256:3a27e75663ed35d94013e90bbec36c24cc57023708375a21eabbe529b9b00c69
+
+
+## 노드1번에 kubeadm 명령어를 사용할 수 있도록 구성
+## 구성이 완료가 되면, join 명령어로 클러스터에 노드 추가
+## 완료가 되시면 마스터/노드 다시 리셋 후 재구성
+```
+
+## 터널링 네트워크 구성
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
+kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
+```
+
+
+## 명령어 모음(노드 및 마스터(컨트롤) 공통 사항)
+
+### 공통 설정
+
+```bash
+cat <<EOF> /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+exclude=kubelet kubeadm kubectl
+EOF
+dnf search --disableexcludes=kubernetes kube
+dnf list --disableexcludes=kubernetes kubeadm
+dnf install --disableexcludes=kubernetes kubeadm -y
+setenforce 0
+systemctl stop firewalld
+systemctl disable firewalld
+
+```
+
+```bash
+systemctl stop firewalld && systemctl disable firewalld
+swapon -s
+swapoff -a
+dnf install tc -y
+dnf install iproute-tc -y ## centos-9-stream
+```
+
+### hosts A Recode(insted bind)
+1. bind(dns) 구성(primary)
+2. /etc/hosts A(ipv4),AAAA(ipv6) recode를 구성(backup)
+
+```bash
+cat <<EOF>> /etc/hosts
+192.168.90.110 master.example.com master
+192.168.90.240 master2.example.com master2
+192.168.90.250 master3.example.com master3
+192.168.90.120 node1.example.com node1
+192.168.90.130 node2.example.com node2
+EOF
+```
+### kubelet service
+
+```bash
+systemctl status kubelet
+systemctl enable --now kubelet
+```
+
+### crio install(o)
+
+```bash
+dnf install wget -y
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+dnf install cri-o -y
+systemctl enable --now crio
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
+```
+### modules
+
+```bash
+modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
+modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+```
+
+### kenrel parameter
+```bash
+cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+net.ipv4.ip_forward=1                   ## pod <---> svc
+net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
+EOF
+sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
+```
+
+### firewalld stop and disabled
+```bash
+systemctl stop firewalld && systemctl disable firewalld
+```
+
+### kubeadm join(single)
+
+```bash
+@master]# KUBECONFIG=/etc/kubernetes/admin.conf kubeadm token create --print-join-command
+```
+
+#### node join
 ```bash
 
+kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
+        --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27
+```
+#### 터널링 네트워크 구성
+
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
+kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
+```
+
+#### 메트릭/역할(임시)
+```bash
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
+kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
+kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
+kubectl top nodes
+kubectl get nodes
+```
+
+- 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
+- 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
+
+#### 확인하기(마스터)
+```bash
+export KUBECONFIG=/etc/kubernetes/admin.conf 
+kubectl get nodes
+```
+
+
+수정된 podman YAML
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: centos-apache-pod-srv-port
+  name: centos-apache-pod-srv-port
+spec:
+  ports:
+  - name: "centos-apache-srv-port"
+    nodePort: 31033
+    port: 80
+    targetPort: 80
+  selector:
+    app: centos-apache-pod-deploy
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: centos-apache-pod-deploy
+  name: centos-apache-pod-deploy
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: centos-apache-pod-deploy
+  template:
+    metadata:
+      labels:
+        app: centos-apache-pod-deploy
+    spec:
+      containers:
+      - image: quay.io/redhattraining/httpd-parent:latest
+        name: centos-apache
+        ports:
+        - containerPort: 80
+```
+
+```bash
+kubectl delete svc centos-apache-pod-srv-port
+kubectl create -f centos-apache-deploy.yaml
+kubectl get svc
+kubectl get pod
+kubectl get deploy
+```
+
+## 쿠버네티스 쉽게 접근하기
+
+
+```bash
+dnf search fish
+dnf install epel-release
+dnf install fish -y
+```
+
+개인적으로 "fish"를 좀 더 선호 합니다. 
+
+
+```bash
+rpm -qa bash-completion
+complete -rp
+kubeadm completion bash > k8s-completion.sh
+kubeadm completion fish > k8s-completion.sh
+
+kubectl completion bash > k8s-completion.sh
+kubectl completion fish > k8s-completion.sh
+
+kubectl completion fish > ~/.config/fish/completions/kubectl.fish
+
+source k8s-completion.sh
+complete -rp
+```
+
+## 명령어 및 쿠버네티스 서비스 설명
+
+
+podman pod ls == crictl pods
+podman container ls == crict ps
+
+## 간단한 구성 설명 및 명령어 
+
+
+쿠버네티스 클러스터의 기본값은 __"kubernetes"__ 일반적으로 프로젝트의 이름
+
+설치시 변경하려면 YAML기반으로 설치하는 경우, 설치시 변경이 가능. 
+
+클러스터 이름을 확인 및 변경하기 위해서는 다음과 같은 명령어로 확인이 가능함.
+
+```bash
+kubeadm config print init-defaults | grep cluster
+kubectl config view
+```
+
+혹은, 설치후에 /etc/kubernetes/admin.conf에서도 간단하게 확인이 가능.
+
+```bash
+grep kubernetes /etc/kubernetes/admin.conf
+  name: kubernetes
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+- name: kubernetes-admin
+```
+
+kubectl명령어는 사용자를 생성 및 설정하지 않으면, "kubernetes-admin"으로 클러스터 접근해서 사용. 명령어는 다음과 같이 동작한다. 'kubeadm'의 기본값
+
+```bash
+kubectl {kubernetes-admin@kubernetes+TLS} get pods
+```
+
+kubectl 명령어 사용방법은 아래 주소를 참조한다.
+
+[명령어 레퍼런스](https://kubernetes.io/docs/reference/kubectl/)
+
+자주 사용하는 명령어는 보통 아래와 같다.
+
+```
+kubectl get po     ## Pod 목록 확인
+kubectl get svc    ## 서비스 목록 확인(아이피 및 포트)
+kubectl get dep    ## 컨테이너 구성설정 목록 확인
+```
+
+컨테이너 및 Pod는 동일한 컨테이너이지만, 자원 성격 및 구성이 다름. 
+- POD + Container, POD는 POD 아이피를 가지고 있고, 컨테이너는 루프백 장치로 POD에 구성 및 연결.
+- container는 서비스 애플리케이션을 가지고 있음.
+- 쿠버네티스에서 사용하는 기본 Pod 애플리케이션은 Pause를 사용하고 있음.
+
+```bash
+crictl images
+```
+
+
+kubectl get pod
+- Pod 애플리케이션으로 컨테이너 격리
+- 컨테이너 애플리케이션으로 직접적으로 접근을 할 수 없음
+
+
+kubectl get svc(service)
+- iptables, nftables하고 관계가 있음.
+- pod는 svc하고 연결이 됨.
+
+```bash
+kubectl describe service <NAME>
+Endpoints:                192.168.11.66:80   ## POD 아이피
+IP:                       10.97.36.205       ## NAT 아이피
+
+iptables-save | grep 10.97.36.205
+```
+
+create apply
+
+
+kubectl describe svc <객체>
+                 pod <객체>
+
+
+get: 자원 목록
+describe: 자원 구성 내용 확인
+
+
+### 네임스페이스 생성 및 제거
+
+```bash
+kubectl create namespace <NAME>
+kubectl get ns | namespaces
+kubectl delete namesapce <NAME>
+kubectl run --image quay.io/redhattraining/httpd-parent:latest <POD_NAME> -n <NAMESPACE_NAME>
+
+## 같은 네임스페이스에서는 같은 리소스에 같은 이름으로 생성이 안됨!!
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test1
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test1
+
+## 다른 네임스페이스에서는 같은 이름에 자원을 생성이 가능
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test1
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test -n test2
+
+kubectl delete namespace test2                         ## 내부에 있는 자원도 한번에 제거
+```
+
+### 네임스페이스 고정적으로 변경하기
+
+```bash
+kubectl config get-context
+kubectl create namespace main-project
+kubectl config set-context --current --namespace main-project
+kubectl config get-context
+kubectl run --image quay.io/redhattraining/httpd-parent:latest test
+kubectl get pods -owide
+kubectl get pods -A
 ```
