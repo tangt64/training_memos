@@ -1,6 +1,0 @@
-- hosts: all
-  tasks:
-    - name: shows to the nodename variables from the host_vars
-      debug: var=nodename
-    - name: shows to the nodename variables from the host_vars
-      debug: var=storage_type

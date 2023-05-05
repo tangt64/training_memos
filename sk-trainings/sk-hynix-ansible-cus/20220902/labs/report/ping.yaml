@@ -1,5 +1,0 @@
-- hosts: all
-
-  tasks:
-  - name: ping to all hosts
-    ping

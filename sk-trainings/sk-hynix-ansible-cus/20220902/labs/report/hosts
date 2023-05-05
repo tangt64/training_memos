@@ -1,7 +1,0 @@
-[test]
-servera.lab.example.com nodename=web.lab.example.com
-serverb.lab.example.com nodename=db.lab.example.com
-serverc.lab.example.com nodename=was.lab.example.com
-
-[product]
-server[d:f].lab.example.com
