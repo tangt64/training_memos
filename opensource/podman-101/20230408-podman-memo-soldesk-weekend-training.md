@@ -1356,7 +1356,6 @@ kubectl get dep    ## 컨테이너 구성설정 목록 확인
 crictl images
 ```
 
-
 kubectl get pod
 - Pod 애플리케이션으로 컨테이너 격리
 - 컨테이너 애플리케이션으로 직접적으로 접근을 할 수 없음
