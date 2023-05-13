@@ -1481,6 +1481,14 @@ kubectl delete po --all -n applycreate
 kubectl delete -f <YAML> -n applycreate
 ```
 
+##  replace 
+
+YAML로 작성되어 있는 자원의 내용을 업데이트.
+
+```bash
+kubectl replace -f <DEPLOYMENT_YAML>
+```
+
 ## deployment
 
 구성설정을 관리하는 영역
@@ -1492,7 +1500,14 @@ nano nginx.yaml
 - apiVersion: apps/v1
 
 kubectl create deployment nginx --image=nginx --dry-run=client -oyaml > nginx.yaml
-kubectl create -f nginx.yaml
+kubectl create -f nginx.yaml         ## 이전에 사용하였던 rs, revision #1
+nano nginx.yaml
+    image: nginx ---> quay.io/redhattraining/hello-world-nginx:latest
+kubectl replace -f nginx.yaml        ## 현재 사용중인 rs, revision #2
+kubectl get pods
+kubectl describe pod nginx-<ID>
+kubectl describe deploy nginx
+
 ```
 
 
@@ -1509,4 +1524,35 @@ kubectl config get-contexts          ## 현재 사용자가 사용중인 네임�
 grep -A5 -i context ~/.kube/config   ## 컨텍스트=사용자+네임스페이스+클러스터
 kubectl config set-context --namespace applycreate --current    ## 기존 내용에서 네임스페이스만 변경
                                                                 ## kubectl는 다중 클러스터 접근 가능
+```
+
+
+
+Deployment ---> ReplicaSet  ---> POD
+[volume]        [pod_count]      pod x <COUNT>
+[container]     [container]
+[pod]           [pod]
+[limit/quota]
+
+
+## 네임스페이스
+
+default: 기본 프로젝트 혹은 네임스페이스
+kube-system: 주요 쿠버네티스 서비스가 동작하는 영역
+kube-public(openshift): 공유 쿠버네티스 자원
+
+
+1. 구축 테스트 할때는 명령어로 만들어도 괜찮음.
+2. 실 구축에 들어 갈때는 네임스페이스도 YAML기반으로 생성.
+
+```bash
+kubectl create namespace threenamespace --dry-run=client -oyaml   ## YAML파일로 생성
+kubectl create -f <YAML_NAME>
+kubectl create namespace threenamespace
+
+
+kubectl get pod -n <NAMESPACE>
+kubectl get pod -A 
+kubectl get all -A
+kubectl delete all -A
 ```
