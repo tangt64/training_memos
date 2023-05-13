@@ -1442,5 +1442,71 @@ Pod를 실행.(Pod(container))
 kubectl run hello-nginx --image=quay.io/redhattraining/hello-world-nginx:latest                   ## 실제 생성
 kubectl run hello-nginx --image=quay.io/redhattraining/hello-world-nginx:latest --dry-run=client  ## 실행이 되는지 확인
 kubectl run hello-nginx --image=quay.io/redhattraining/hello-world-nginx:latest --dry-run=client -oyaml > hello-world-nginx.yaml  ## 실제로 생성하지 않고 YAML으로 생성 및 구성
+```
 
+## create, apply + replace
+create: Pod를 만들기(생성), 일회성으로 자원 생성(YAML기반)
+  - apply를 추후에 적용하는 경우, annotation(메모)가 빠져있기 때문에 추가 후, 다시 변경 내용 적용.
+apply: Pod를 적용
+  - apply가 된 경우에는, 변경 내용(선언자)에 대해서 확인 및 추적이 가능
+replace: 기존에 사용하였던 자원을 다른 내용으로 갱신할때 사용한다.
+  - kubectl replace -f <FILE> 
+
+```bash
+kubectl create namespace applycreate
+kubectl get ns
+kubectl create -f hello-world-nginx.yaml -n applycreate
+kubectl get po -n applycreate
+```
+
+## describe
+etcd에 있는 내용을 사용작 보기 편하게 렌더링
+
+```bash
+kubectl describe pod hello-nginx -n applycreate
+```
+
+## edit
+ETCD에 있는 내용을 실시간으로 편집
+
+```bash
+kubectl edit pod hello-nginx -n applycreate
+```
+
+## pod delete
+
+```bash
+kubectl get pods 
+kubectl delete po --all -n applycreate 
+kubectl delete -f <YAML> -n applycreate
+```
+
+## deployment
+
+구성설정을 관리하는 영역
+
+```bash
+kubectl get deploy
+nano nginx.yaml
+---
+- apiVersion: apps/v1
+
+kubectl create deployment nginx --image=nginx --dry-run=client -oyaml > nginx.yaml
+kubectl create -f nginx.yaml
+```
+
+
+## config set-context 
+
+말 그대로 문맥 ~/.kube/config 혹은 /etc/kubernetes/admin.conf파일에서 네임스페이스 값 수정
+
+```bash
+cp /etc/kubernetes/admin.conf ~/.kube/config
+unset KUBECONFIG
+echo $KUBECONFIG
+kubectl get nodes
+kubectl config get-contexts          ## 현재 사용자가 사용중인 네임스페이스 확인
+grep -A5 -i context ~/.kube/config   ## 컨텍스트=사용자+네임스페이스+클러스터
+kubectl config set-context --namespace applycreate --current    ## 기존 내용에서 네임스페이스만 변경
+                                                                ## kubectl는 다중 클러스터 접근 가능
 ```
