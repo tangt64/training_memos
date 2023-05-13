@@ -1556,3 +1556,141 @@ kubectl get pod -A
 kubectl get all -A
 kubectl delete all -A
 ```
+
+
+## apply/create
+
+
+
+```bash
+kubectl create deploy public-vsftpd --image vsftpd --port=21 --dry-run=client --namespace=first-namespace -o yaml
+```
+
+## cp + volume binding + debug + exec
+
+cp로 복사해서 파일을 컨테이너에 밀어 넣으면, 특정 호스트에 "/var/lib/containers/storage/overlay"에 복사하는거와 똑같음. kubelet에 사용자가 보낸 파일을 전달 받아서 특정 노드에 저장.
+
+
+컨테이너 디스크는 실제로 존재하지 않고, 일반적으로 디렉터리 형태로 오버레이 장치로 구성.
+
+
+### 신방식(권장)
+
+컨테이너 프로세스가 출력하는 메시지 확인
+```bash
+kubectl log <PODNAME>   ## 표준 오류 및 출력내용
+## kubectl exec -it 직접 접근. 하지만, debug는 간접으로 접근.
+kubectl debug -it hello-httpd-5f49689664-rwgxd --image=busybox --target=hello-httpd
+```
+
+
+### 구형방식
+```bash
+kubectl exec -it <PODNAME>
+# -i: interactive
+# -t: tty(가짜)
+kubectl cp <FILE> <POD> 
+# ssh root@<NODE1>
+node1@ find / -name findme.html -type f -print 
+```
+
+
+### SVC
+
+```bash
+
+@node1#] iptables-save | grep SEP  ---> nft list table filter
+
+                  # kubectl get po
+                   [SEP]       # kubectl get ep
+                  +-----+     +-----+
+| container | --- | POD | --- | SVC | -------------- (USER)
+                  +-----+     +-----+   # watch -n1 curl
+                    | POD |    [L/B]
+                    +-----+
+                     | POD |
+                     +-----+
+                      | POD | RS=4
+                      +-----+
+```
+
+## debug + shareprocess(PID 1)
+
+1. 격리 역할
+2. 네임스페이스 자원(ls -l /proc/self/ns)
+3. PID 1(dummy init, dumb init)
+  - 컨테이너 전용 init가 있음
+
+```bash
+
+Debugger Container + POD 1 + Container 2
+
+systemd <-> PID 1(POD(pause == infra container)
+
++ shareProcessNamespace: true
+
++-----------+
+| container |  ---.
++-----------+      \      +-----+
+ [prg1]             > --- | POD |
++-----------+      /      +-----+
+| container |  ---'
++-----------+
+ [prg2]
+
+```
+- binding 타입은 아님
+```bash
+
+                                             # mount -obind  <DIR> ---> <DIR> 바인딩
+                                            .---> NODE:/run/containers, /var/lib/containers(rbind,rprivate)
+                                           /
+                                         [host]         [container]
+podman run --name test-container -v /opt/storage/www/:/var/www/html/     ## 다시 연결 하려면 re-create
+                                 ----
+                                 PVC(host에서 제공)
+```
+Persistent Storage: 고정(static)  ---> PVC == volume
+Storage Class: 정적(dynamic)      ---> PVC == volume
+
+
+```bash
+# docker volume, podman volume ---> pv, pvc같은 역할
+# podman -v /etc/hosts:/etc/hosts   ## 변경이 불가능
+# podman volume create test
+# podman volume ls      
+# local(driver)                     ## PV
+# podman -v test:/etc/hosts         ## 변경이 가    
+
+# crictl ps 
+          "destination": "/run/secrets",    ## kubectl get secret, 컨테이너가 생성 시 전달(ETCD)
+          "type": "bind",
+          "source": "/run/containers/storage/overlay-containers/fa2a2872e196c414079ecaeb91df736c6313146078d140a8d4c5673b417ebbd5/userdata/run/secrets",
+          "options": [
+            "bind",
+            "rprivate",
+            "bind"
+          ]
+        },
+```
+
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  shareProcessNamespace: true
+  containers:
+  - name: nginx
+    image: nginx
+  - name: shell
+    image: busybox:1.28
+    securityContext:
+      capabilities:
+        add:
+        - SYS_PTRACE
+    stdin: true
+    tty: true
+```
