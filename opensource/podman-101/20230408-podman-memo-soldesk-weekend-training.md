@@ -1694,3 +1694,28 @@ spec:
     stdin: true
     tty: true
 ```
+
+
+## 동향
+
+
+- openstack(IaaS)
+- kubernetes + kube-virt(PaaS)
+
+
++ ONOS
++ OpenDaylight(ODL)
+  - OLD 5G
+  - NFV
+
+
+* OS-Tree
+* systemd
+  - crontab, rsyslog, at, logrotate, iptables, network-script, firewalld, NetworkManager
+  - Linux Bridge ---> OVS
+  - journalctl
+  - hostnamectl, timedatectl
+  - /etc/resolve.conf ---> systemd에 관리(아마존 리눅스)
+* XFS, btrfs
+* KERNEL(Module) ---> systemd 
+* dbus/udev
