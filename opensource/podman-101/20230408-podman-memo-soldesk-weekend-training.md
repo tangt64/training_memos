@@ -1414,3 +1414,33 @@ kubectl run --image quay.io/redhattraining/httpd-parent:latest test
 kubectl get pods -owide
 kubectl get pods -A
 ```
+
+# DAY 4 :(
+
+쿠버네티스에서는 제일 중요한것은 "자원 설정"
+- 여러 애플리케이션을 한번 배포 및 유지 관리 하는게 주요 목적
+- podman 혹은 런타임 기반으로 서비스 구성
+  * CRI런타임 기준으로
+  * 쿠버네티스가 런타임, 즉 컨테이너를 생성하지 않음.
+- 미들웨어와 같은 플랫폼 애플리케이션
+- 엔지니어 혹은 개발자에게 다음과 같은 기술을 요구
+  * 리눅스 관련 명령어 혹은 지식을 요구
+  * 런타임 관련 지식
+  * 스토리지 및 네트워크 
+  * SRE수준의 기술 요구 ---> Dev/Ops(한국은 아직..ㅠㅠ)
+- 명령어가 중요한게 아니라, 이 개념이 어떤식으로 동작하는지
+- 설명이 가능한 엔지니어
+  * 설명이 안되면 SRE가 안됨.
+  * 다이어그램 혹은 그림으로 어느정도 스스로 증명
+
+
+## run 명령어
+
+Pod를 실행.(Pod(container))
+
+```bash
+kubectl run hello-nginx --image=quay.io/redhattraining/hello-world-nginx:latest                   ## 실제 생성
+kubectl run hello-nginx --image=quay.io/redhattraining/hello-world-nginx:latest --dry-run=client  ## 실행이 되는지 확인
+kubectl run hello-nginx --image=quay.io/redhattraining/hello-world-nginx:latest --dry-run=client -oyaml > hello-world-nginx.yaml  ## 실제로 생성하지 않고 YAML으로 생성 및 구성
+
+```
