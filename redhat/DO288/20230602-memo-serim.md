@@ -2,10 +2,13 @@
 
 ## 랩
 
+메모파일 위치
+---
+https://github.com/tangt64/training_memos/
+>redhat/DO288/20230602-memo-serim.md
+
 1. 레드햇 개발자 계정
 2. RHEL, Code Ready Container, IDE...
-3. 
-
 
 https://rol.redhat.com    ## 이 주소로 접근 부탁 드립니다.
 
@@ -84,3 +87,35 @@ selector: 선언된 자원을 선택하는 영역
   		version: v1
 ```
 
+## 쿠버네티스 리소스 정리
+
+OCP == kubernetes(CR) + OCP(CR+CRD)
+
+io.kubernetes: 코어 API 컴포넌트
+io.openshift: 확장 API 컴포넌트
+
+BuildConfig(bc): OCP의 확장 기능. 이 부분이 개발자 분들이 제일 접근하는 영역. 이미지 + 소스코드 빌드가 발생. CI/CD PIPE
+ImageStream(is): 이미지 저장소. docker-registry. 이미지 레지스트리. 특정 프로젝트(네임스페이스)에서 빌드된(bc) 이미지를 저장하는 위치. 다른 이름으로 internal registry라고 부르기도 함. 
+route: 본래 쿠버네티스에서는 'ingress'라고 부름. DNS서버와 연동이 되어서 애플리케이션 도메인을 자동으로 구성 및 할당(wildcard domain). L/B 및 A/B, Blue/Green와 같은 기능을 제공. 카나리아(Canary)기능을 사용하기 위해서는 라우트(route)가 필요. 
+
+
+쿠버네티스는 nodeport, externalip, externaldns를 통해서 접근. 개발자가 빠르게 확인이 어려운 부분이 있음. 
+
+[카나리아 동작방식](https://developer.harness.io/docs/continuous-delivery/deploy-srv-diff-platforms/kubernetes/kubernetes-executions/create-a-kubernetes-canary-deployment/)
+
+
+## 애플리케이션 배포
+
+```bash
+kubectl run <IMAGE>
+        create <YAML>
+
+oc      run
+        create
+        new-app   <TEMPLATE_기반>     
+
+oc login -u developer -p developer https://api.ocp4.example.com:6443
+
+oc new-app https://github.com/RedHatTraining/DO288/tree/main/apps/apache-httpd            
+oc new-app https://github.com/RedHatTraining/DO280-apps/tree/master/hello-world-nginx
+```
