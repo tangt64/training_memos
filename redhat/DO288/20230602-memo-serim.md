@@ -242,6 +242,25 @@ oc get deploy
 oc get rs
 ```
 
+debug모드 들어가는 방법
+---
+
+```bash
+oc new-app --name hola quay.io/redhattraining/hello-world-nginx:v1.0
+oc get nodes
+oc debug node/master01
+> chroot /host/
+> bash
+> master01@> crictl ps | grep hola     # cri-o, crictl명령어 관리
+> master01@> crictl inspect <CONTAINER_ID> | grep -A2 root
+> MASTER01@> cd /var/lib....
+```
+
+configmap, secret 암호화
+---
+https://docs.openshift.com/container-platform/4.13/security/encrypting-etcd.html
+
+
 podman build == buildah
 
 - buildah, CD자동화
@@ -249,6 +268,75 @@ podman build == buildah
 
 
 
+configmap
+---
+사용하시는 애플리케이션, wildfly사용하는 경우, jvm.conf있는 경우 혹은 .xml 를 여러 컨테이너에 동시에 배포 및 업데이트 할때
 
+secret
+---
+base64로 인코딩 되어서 저장. pod를 실행하면, pod를 통해서 애플리케이션에 데이터 제공.
+
+좀 더 민감하게 보안이 필요한 경우, etcd(configmap,secret)를 암호화가 필요.
+>https://docs.openshift.com/container-platform/4.13/security/encrypting-etcd.html
+
+
+## 쿠버네티스 리소스
+
+YAML: 앞으로 모든 리소스는 YAML으로만 입력(kubectl create, oc create)
+JSON: 이전에는 가능하였으나, 지금은 내부적으로 핸들링(API, oc/kubectl(x))
+TOML: 설정은 앞으로 TOML으로 구성.
+- /etc/containers가 대표적
+
+```bash
+oc describe build/build-halo      ## oc describe build build-halo
+```
+
+
+## 이미지 레지스트리
+
+quay.io: OCP는 Quay기반으로 이미지 레지스트리 구성을 권장.
+>https://github.com/quay
+>다른 레지스트리로 사용이 가능.
+
+ImageStream(is)는 docker-registry기반으로 동작.
+>내부 레지스트리 라고 부르기도 함.
+>
+>
+## 애플리케이션 배포
+
+페이지 11 --> 177페이지 연습문제 진행(1번만!!)
+
+
+## BC
+
+BUILD IMAGE: 애플리케이션 타입별로 이미지가 다름
+ - ruby
+ - python
+ - wildfly
+
+OCP --> K8S(x), BC?? 
+new-app --docker, k8s와 호환성
+        php~http://, OCP에서만
+
+
+```
+# oc new-app http://git~~~
+# oc new-app --docker-image
+-> /etc/containers/regsitries.conf
+-> grep -Ev '^#|^$' /etc/containers/regsitries.conf
+
++-----------------------
+| BC
+| +------- POD -------------+
+| | image(external registry)|    ## 내부 레지스트리(IS)
+| | source(git_server)      |    ## 내부 혹은 외부
+| | = BUILD POD             |
+| +-------------------------+
++-----------------------
+
+```
+
+
+### triggers
 
 
