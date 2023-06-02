@@ -117,5 +117,19 @@ oc      run
 oc login -u developer -p developer https://api.ocp4.example.com:6443
 
 oc new-app https://github.com/RedHatTraining/DO288/tree/main/apps/apache-httpd            
-oc new-app https://github.com/RedHatTraining/DO280-apps/tree/master/hello-world-nginx
+```
+
+
+간단하게 테스트
+
+```bash
+git clone https://github.com/RedHatTraining/DO288-apps
+cd DO288-apps/php-helloworld
+ls -l 
+> index.php       ## buildah 이미지를 빌드(dockerfile, container)
+oc new-app .      ## php-template를 사용해서 애플리케이션 빌드(이미지+소스코드)
+
+oc new-app https://github.com/RedHatTraining/DO288-apps/tree/main/php-helloworld
+
+
 ```
