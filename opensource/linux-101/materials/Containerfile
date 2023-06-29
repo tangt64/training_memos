@@ -1,3 +1,0 @@
-FROM quay.io/centos/centos:centos7
-RUN yum install httpd -y
-CMD /usr/sbin/httpd -DFOREGROUND
