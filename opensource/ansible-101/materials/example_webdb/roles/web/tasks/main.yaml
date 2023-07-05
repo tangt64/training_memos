@@ -15,4 +15,4 @@
 - name: copy second data.html file to /var/www/html on {{ ansible_hostname }}
   copy:
     src: data.html
-    dest: /var/www/html/index.html
+    dest: /var/www/html/data.html

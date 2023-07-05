@@ -1,0 +1,12 @@
+---
+- name: open to the httpd service {{ ansible_hostname }}
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - http
+    - https
+
+- import: firewall.yaml

@@ -4,5 +4,4 @@
     - { role: web, when: "ansible_hostname in groups['web']" }
     - { role: db, when: "ansible_hostname in groups['db']" }
     - { role: firewall }
-#    - role: web
-#      when: ansible_hostname in groups['web']
+    - { role: exweb, when: "ansible_hostname in groups['web']" }

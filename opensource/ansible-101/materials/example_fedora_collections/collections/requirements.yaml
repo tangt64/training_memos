@@ -1,0 +1,5 @@
+---
+collections:
+  - name: lab.system.fedora.collection
+    type: url
+    source: http://deploy.example.com/fedora-collection.tar.gz
