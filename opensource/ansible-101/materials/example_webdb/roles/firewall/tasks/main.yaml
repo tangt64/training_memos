@@ -1,0 +1,11 @@
+---
+- name: open to the httpd and mariadb service to each server
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - http
+    - https
+    - mysql

@@ -1,0 +1,22 @@
+---
+- name: install a db package
+  package:     ## module
+    name: "{{ item }}"
+    state: present
+  loop:    ## plugin
+    - mariadb-server
+    - mariadb
+    - mariadb-client
+  ignore_errors: true
+
+- name: start and enable to the mariadb service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - mariadb
+    - mariadb-server
+    - mysql
+    - mysql-server
+  ignore_errors: true

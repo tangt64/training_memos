@@ -1,0 +1,18 @@
+---
+- name: install a httpd package
+  package:
+    name: httpd
+    state: present
+- name: start and enable to the httpd service
+  service:
+    name: httpd
+    state: started
+    enabled: true    ## yes
+- name: copy new index.html file to /var/www/html on {{ ansible_hostname }}
+  get_url:
+    url: http://deploy.example.com/default.html
+    dest: /var/www/html/index.html
+- name: copy second data.html file to /var/www/html on {{ ansible_hostname }}
+  copy:
+    src: data.html
+    dest: /var/www/html/index.html
