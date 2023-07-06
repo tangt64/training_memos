@@ -1,0 +1,26 @@
+---
+- hosts: all
+
+  become: true
+  remote_user: remote
+  vars:
+    isfile: "/etc/issue"
+
+  tasks:
+  - name: overwrite to /etc/issue {{ ansible_hostname }}
+    copy:
+      content: "welcome to web server"
+      dest: "{{ isfile }}"
+    when: ansible_hostname in groups['web']
+
+  - name: overwrite to /etc/issue {{ ansible_hostname }}
+    copy:
+      content: "welcome to db server"
+      dest: "{{ isfile }}"
+    when: ansible_fqdn in groups['db']
+
+  - name: overwrite to /etc/issue {{ ansible_hostname }}
+    copy:
+      content: "welcome to wildfly server"
+      dest: "{{ isfile }}"
+    when: ansible_hostname in groups['wildfly']

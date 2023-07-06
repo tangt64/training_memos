@@ -1,0 +1,14 @@
+---
+- hosts: all
+
+  become: true
+  tasks:
+  - name: install to secure program
+    package:
+      name: squid
+      state: present
+  - name: enable and start secure program
+    service:
+      name: squid
+      state: started
+      enabled: true
