@@ -1,5 +1,0 @@
----
-- name: /etc/hosts templating {{ ansible_hostname }}
-  template:
-    src: hosts.j2
-    dest: /etc/ansible_hosts
