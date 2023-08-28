@@ -130,10 +130,22 @@ dnf module list
 dnf install epel-release -y
 dnf search podman
 dnf install podman-docker podman-compose podman-tui -y
+```
 
+/etc/docker
+/etc/sysconfig/docker
+
+설정파일
+---
+/etc/containers/registries.conf: 저장소 관련 설정
+/etc/containers/policy.json: 접근을 허용할 저장소 위치
+
+```
 podman container ls        # docker ps
 podman pod ls              # -
 podman ps                  # docker ps
+
+grep -Ev '^#|^$' /etc/containers/registries.conf
 ```
 
 
