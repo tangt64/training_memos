@@ -193,7 +193,7 @@ ls -l
 podman run -d centos /bin/sleep 10000
 podman ps
 podman exec -it faa3845b109f /bin/bash
-````
+```
 
 
 crun/conmon(podman(crun(conmon)))
@@ -233,7 +233,7 @@ https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html
 
 
 쿠버네티스 설치 명령어
-
+---
 ```bash
 ## A recode 구성
 cat <<EOF>> /etc/hosts
@@ -295,7 +295,6 @@ yum install crio -y
 
 systemctl enable --now kubelet
 systemctl enable --now crio
-
 ```
 
 
