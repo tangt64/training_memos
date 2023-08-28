@@ -28,13 +28,16 @@
 2. 보안이 강화된 배포판(읽기전용)
 3. 하지만 최근에...
 
+```
 - https://www.suse.com/news/OpenELA-for-a-Collaborative-and-Open-Future/
 - https://openela.org/
 - https://www.reddit.com/r/linux/comments/15ynpwc/prediction_openela_trade_association_is_likely_to/
 - https://www.reddit.com/r/RockyLinux/comments/15nhra5/ciq_oracle_and_suse_create_open_enterprise_linux/
+```
 
-* ubuntu --> debian 
-* rhel   --> suse, rocky, alma
+ubuntu -> debian 
+
+rhel   -> suse, rocky, alma
 
 리눅스 커널
 ---
@@ -48,6 +51,7 @@ OCI표준도구
 2. buildah
 3. skopeo
 
+
 쿠버네티스 표준 런타임(CRI지원)
 ---
 - cri-docker
@@ -56,8 +60,8 @@ OCI표준도구
 
 ## 랩준비
 
-하이퍼브이 
-- https://learn.microsoft.com/ko-kr/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
+[하이퍼브이 설치 방법, 마이크로소프트](https://learn.microsoft.com/ko-kr/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
+
 
 
 # day 2
