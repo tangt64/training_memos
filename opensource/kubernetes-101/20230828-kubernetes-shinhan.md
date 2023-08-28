@@ -147,9 +147,9 @@ podman ps                  # docker ps
 
 grep -Ev '^#|^$' /etc/containers/registries.conf
 systemctl enable --now podman
-systemctl is-acrive podman
+systemctl is-active podman
 > active
-podman-tui
+podman-tui                 # 종료는 ctrl+c
 ```
 
 podman(crun(conmon))
