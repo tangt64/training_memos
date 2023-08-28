@@ -224,8 +224,12 @@ podman search pause
 podman pull docker.io/google/pause
 
 podman save 279dc3ec850c -o podman-pause.tar   
-podman save f9d5de079539 -o kubernetes-pause.tar                             
+podman save f9d5de079539 -o kubernetes-pause.tar 
+
+pod --> pause --> pause/catat                            
 ```
+
+https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html
 
 
 ## 오늘의 목표
