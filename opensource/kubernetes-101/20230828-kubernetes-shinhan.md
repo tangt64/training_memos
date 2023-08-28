@@ -28,16 +28,20 @@
 2. 보안이 강화된 배포판(읽기전용)
 3. 하지만 최근에...
 
+
+### OpenELA/CIQ()
+
 ```
 - https://www.suse.com/news/OpenELA-for-a-Collaborative-and-Open-Future/
 - https://openela.org/
 - https://www.reddit.com/r/linux/comments/15ynpwc/prediction_openela_trade_association_is_likely_to/
 - https://www.reddit.com/r/RockyLinux/comments/15nhra5/ciq_oracle_and_suse_create_open_enterprise_linux/
-```
 
 ubuntu -> debian 
-
 rhel   -> suse, rocky, alma
+
+```
+
 
 리눅스 커널
 ---
@@ -50,7 +54,6 @@ OCI표준도구
 1. podman
 2. buildah
 3. skopeo
-
 
 쿠버네티스 표준 런타임(CRI지원)
 ---
