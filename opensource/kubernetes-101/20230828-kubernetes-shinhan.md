@@ -132,13 +132,10 @@ dnf search podman
 dnf install podman-docker podman-compose podman-tui -y
 ```
 
-/etc/docker
-/etc/sysconfig/docker
-
 설정파일
 ---
-/etc/containers/registries.conf: 저장소 관련 설정
-/etc/containers/policy.json: 접근을 허용할 저장소 위치
+- /etc/containers/registries.conf: 저장소 관련 설정
+- /etc/containers/policy.json: 접근을 허용할 저장소 위치
 
 ```bash
 podman container ls        # docker ps
@@ -152,8 +149,25 @@ systemctl is-active podman
 podman-tui                 # 종료는 ctrl+c
 ```
 
+tmux사용하실 분은 아래처럼 설치 및 설정하세요.
+
+```bash
+dnf install tmux -y
+cat <<EOF> ~/.tmux.conf
+set -g mouse on
+EOF
+tmux
+```
+
 podman(crun(conmon))
 
+
+## 오늘의 목표
+
+1. podman기반으로 pod, runc, conmon, pause
+2. 표준 컨테이너 동작 방식 및 관련 디렉터리/서비스 확인
+3. 쿠버네티스 설치을 위한 준비
+4. 컨테이너 이미지 및 표준 도구
 
 # day 2
 # day 3
