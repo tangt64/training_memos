@@ -63,6 +63,11 @@ OCI표준도구
 
 ## 랩준비
 
+http://172.16.0.84/rocky.iso
+
+https://github.com/tangt64/training_memos/
+>opensource/kubernetes-101/20230828-kubernetes-shinhan.md
+
 [하이퍼브이 설치 방법, 마이크로소프트](https://learn.microsoft.com/ko-kr/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
 
 [로키 리눅스 9.2, 네이버 미러사이트](http://mirror.navercorp.com/rocky/9/isos/x86_64/Rocky-9.2-x86_64-minimal.iso)
