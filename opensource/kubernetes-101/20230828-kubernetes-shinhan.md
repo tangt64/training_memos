@@ -130,6 +130,10 @@ dnf module list
 dnf install epel-release -y
 dnf search podman
 dnf install podman-docker podman-compose podman-tui -y
+
+podman container ls        # docker ps
+podman pod ls              # -
+podman ps                  # docker ps
 ```
 
 
