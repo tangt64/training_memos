@@ -159,6 +159,38 @@ EOF
 tmux
 ```
 
+간단하게 컨테이너 실행하기
+---
+```bash
+podman run -d httpd   # podman run docker.io/library/httpd:latest
+                      # 저장소 위치는 registries.conf의 내용 출력
+podman ps
+>CONTAINER ID  IMAGE                           COMMAND           CREATED        STATUS        PORTS       NAMES   2b13f90dd82c  docker.io/library/httpd:latest  httpd-foreground  6 seconds ago  Up 6 seconds              gifted_rhodes
+
+```
+
+
+detach(-d)
+---
+```bash
+ +------+
+ | HOST | -- ps -- > [container]
+ +------+               (bin)
+     \                    /
+      `-------- X -------`
+      userspace disconnected
+```
+
+```bash
+cd /var/lib/containers/storage                ## 컨테이너 파일이 저장되는 위치
+cd overlay/
+ls -l
+> backingFsBlockDev                           ## 컨테이너 COW생성 장치
+
+podman run -d centos /bin/sleep 10000
+podman ps
+podman exec -it faa3845b109f /bin/bash
+````
 podman(crun(conmon))
 
 
