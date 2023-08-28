@@ -170,7 +170,7 @@ podman ps
 ```
 
 
-detach(-d)
+컨테이너 프로세서 동작 방식(detach(-d))
 ---
 ```bash
  +------+
@@ -181,6 +181,9 @@ detach(-d)
       userspace disconnected
 ```
 
+
+컨테이너 저장 위치
+---
 ```bash
 cd /var/lib/containers/storage                ## 컨테이너 파일이 저장되는 위치
 cd overlay/
@@ -191,7 +194,38 @@ podman run -d centos /bin/sleep 10000
 podman ps
 podman exec -it faa3845b109f /bin/bash
 ````
-podman(crun(conmon))
+
+
+crun/conmon(podman(crun(conmon)))
+---
+
+```bash
+pstree -ap
+> sleep
+  ├─conmon --api-version 1 -c faa3845b109f41f4494b92f99161ad33440e7688f728f62db5a1447ad5a0a8c0 -ufaa3845b10        
+  │   
+  └─sleep --coreutils-prog-shebang=sleep /bin/sleep 10000  
+man conmon
+
+crun: c언어 만들어진 표준 런타임(2,redhat,suse)
+runc: go언어 만들어진 표준 런타임(1)
+
+podman(engine) 
+  \
+   `--->[exec] $ podman stop centos
+           \
+            `---> conmon(loader(image(app+lib)))
+                    \
+                     `--->[fork](runtime)
+                             \
+                              `---> [crun] ---> (hello.aout)
+podman images
+podman search pause
+podman pull docker.io/google/pause
+
+podman save 279dc3ec850c -o podman-pause.tar   
+podman save f9d5de079539 -o kubernetes-pause.tar                             
+```
 
 
 ## 오늘의 목표
