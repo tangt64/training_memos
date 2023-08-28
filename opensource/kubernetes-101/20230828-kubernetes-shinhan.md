@@ -72,6 +72,61 @@ https://github.com/tangt64/training_memos/
 
 [로키 리눅스 9.2, 네이버 미러사이트](http://mirror.navercorp.com/rocky/9/isos/x86_64/Rocky-9.2-x86_64-minimal.iso)
 
+## 리눅스 및 런타임
+
+### namespace/cgroup
+
+__namespace(ns):__ 프로세스 격리(범위), 커널 버전별로 범위가 다름.
+
+__cgroup:__ 프로세스 추적 및 감사(제한(systemd(.slice))).
+
+#### namespace
+
+PID --> namespace ID(NSID)
+
+```bash
+ps -e -ocmd,pid | grep bash
+-bash                          1635
+
+cd /proc/$$/ns
+        [1635]
+ls -l
+---
+cgroup -> 'cgroup:[4026531835]'
+ipc -> 'ipc:[4026531839]'
+mnt -> 'mnt:[4026531841]'
+net -> 'net:[4026531840]'
+pid -> 'pid:[4026531836]'
+pid_for_children -> 'pid:[4026531836]'
+time -> 'time:[4026531834]'
+time_for_children -> 'time:[4026531834]'
+user -> 'user:[4026531837]'
+uts -> 'uts:[4026531838]'
+
+lsns
+ip netns
+```
+
+### cgroup
+
+1. cgroup은 systemd에 통합(.slice)
+2. /usr/lib/systemd/system(.slice)
+
+```bash
+systemctl -t slice
+systemd-cgls
+systemd-cgtop
+```
+
+### runtime
+
+1. podman
+
+```bash
+dnf install podman -y
+
+```
+
 
 # day 2
 # day 3
