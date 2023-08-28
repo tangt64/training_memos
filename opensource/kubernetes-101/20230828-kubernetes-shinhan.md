@@ -232,6 +232,74 @@ pod --> pause --> pause/catat
 https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html
 
 
+쿠버네티스 설치 명령어
+
+```bash
+## A recode 구성
+cat <<EOF>> /etc/hosts
+192.168.90.250 master.example.com master 
+EOF
+
+## 커널 모듈 자동 불러오기
+cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+br_netfilter
+overlay
+EOF
+modprobe br_netfilter
+modprobe overlay
+
+## 커널 파라메터 변경
+cat <<EOF> /etc/sysctl.d/99-k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+sysctl --system
+
+## 쿠버네티스 저장소 등록
+cat <<EOF> /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+dnf install kubeadm kubelet kubectl -y --disableexcludes=kubernetes
+
+## CRIO저장소 구성 및 설치
+cat <<EOF> /etc/yum.repos.d/libcontainer.repo
+[devel_kubic_libcontainers_stable]
+name=devel_kubic_libcontainers_stable
+type=rpm-md
+baseurl=https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_9_Stream/
+gpgcheck=1
+gpgkey=https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_9_Stream/repodata/repomd.xml.key
+enabled=1 
+EOF
+
+cat <<EOF> /etc/yum.repos.d/crio_stable.repo
+[crio]
+name=cri-o for derivatives RHEL
+type=rpm-md
+baseurl=https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24:/1.24.6/CentOS_8/
+gpgcheck=1
+gpgkey=https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24:/1.24.6/CentOS_8/repodata/repomd.xml.key
+enabled=1
+EOF
+yum install crio -y
+
+
+## kubelet 및 crio시작
+
+systemctl enable --now kubelet
+systemctl enable --now crio
+
+```
+
+
+
 ## 오늘의 목표
 
 1. podman기반으로 pod, runc, conmon, pause
