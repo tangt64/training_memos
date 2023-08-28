@@ -140,13 +140,19 @@ dnf install podman-docker podman-compose podman-tui -y
 /etc/containers/registries.conf: 저장소 관련 설정
 /etc/containers/policy.json: 접근을 허용할 저장소 위치
 
-```
+```bash
 podman container ls        # docker ps
 podman pod ls              # -
 podman ps                  # docker ps
 
 grep -Ev '^#|^$' /etc/containers/registries.conf
+systemctl enable --now podman
+systemctl is-acrive podman
+> active
+podman-tui
 ```
+
+podman(crun(conmon))
 
 
 # day 2
