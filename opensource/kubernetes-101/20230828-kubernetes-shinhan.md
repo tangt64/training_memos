@@ -120,11 +120,16 @@ systemd-cgtop
 
 ### runtime
 
-1. podman
+1. podman(docker호환)
 
 ```bash
 dnf install podman -y
-
+systemctl status podman
+systemctl is-active podman
+dnf module list
+dnf install epel-release -y
+dnf search podman
+dnf install podman-docker podman-compose podman-tui -y
 ```
 
 
