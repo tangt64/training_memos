@@ -64,6 +64,7 @@ OCI표준도구
 ## 랩준비
 
 [하이퍼브이 설치 방법, 마이크로소프트](https://learn.microsoft.com/ko-kr/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v)
+
 [로키 리눅스 9.2, 네이버 미러사이트](http://mirror.navercorp.com/rocky/9/isos/x86_64/Rocky-9.2-x86_64-minimal.iso)
 
 
