@@ -463,6 +463,7 @@ spec:
     tty: true
 EOF
 kubectl apply -f shareprocess-pod-container.yaml
+kubectl attach -it nginx -c shell
 ```
 
 ## 오늘의 목표
