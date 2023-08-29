@@ -232,9 +232,20 @@ pod --> pause --> pause/catat
 https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html
 
 
-쿠버네티스 설치 명령어
----
+### <a name="osinstall"></a>쿠버네티스 설치 및 OS설정
+
 ```bash
+## 네트워크 아이피 설정
+
+# 방법1
+nmtui edit eth1
+nmcli con up eth1
+
+# 방법2
+nmcli con add con-name eth1 ipv4.addresses 192.168.90.250/24 type ethernet ifname eth1
+nmcli con up eth1
+
+
 ## A recode 구성
 
 hostnamectl
@@ -324,8 +335,6 @@ systemctl enable --now kubelet
 systemctl enable --now crio
 ```
 
-
-
 ## 오늘의 목표
 
 1. podman기반으로 pod, runc, conmon, pause
@@ -334,6 +343,9 @@ systemctl enable --now crio
 4. 컨테이너 이미지 및 표준 도구
 
 # day 2
+
+위의 설치 내용 계속 이어서...[link](#osinstall)
+
 
 ```bash
 systemctl stop firewalld
