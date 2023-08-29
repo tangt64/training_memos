@@ -251,10 +251,12 @@ hostnamectl
 > node1.example.com
 hostnamectl set-hostname master.example.com         ## PTR도 권장
                          node1.example.com
+                         node2.example.com
 
-cat <<EOF>> /etc/hosts
+cat <<EOF>> /etc/hosts                              ## FQDN에 맞추어서 구성
 192.168.90.250 master.example.com master 
 192.168.90.110 node1.example.com node1
+192.168.90.120 node2.example.com node2
 EOF
 
 # ping yahoo.com 
@@ -349,7 +351,8 @@ systemctl enable --now crio
 
 
 master: eth1, 192.168.90.250
-node1: eth1, 192.167.90.110
+node1: eth1, 192.168.90.110
+node2: eth1, 192.168.90.120
 
 ```bash
 systemctl stop firewalld
@@ -387,6 +390,20 @@ mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config 
 ```
+
+kubeadm명령어 completion
+---
+```bash
+kubeadm completion bash > kubeadm_rc.sh
+source kubeadm_rc.sh
+````
+
+노드 조인 명령어
+---
+```bash
+kubeadm token create --print-join-command
+```
+
 
 Pod(pause) 컨테이너 [소스코드](
 https://github.com/kubernetes/kubernetes/blob/master/build/pause/linux/pause.c)
