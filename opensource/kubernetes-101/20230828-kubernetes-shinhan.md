@@ -438,6 +438,33 @@ https://github.com/kubernetes/kubernetes/blob/master/build/pause/linux/pause.c)
 
 https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 
+
+pod+container 테스트
+---
+
+```bash
+cat <<EOF> shareprocess-pod-container.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  shareProcessNamespace: true
+  containers:
+  - name: nginx
+    image: quay.io/redhattraining/hello-world-nginx  
+  - name: shell
+    image: quay.io/quay/busybox
+    securityContext:
+      capabilities:
+        add:
+        - SYS_PTRACE
+    stdin: true
+    tty: true
+EOF
+kubectl apply -f shareprocess-pod-container.yaml
+```
+
 ## 오늘의 목표
 
 1. pod, runc, conmon, pause
