@@ -236,27 +236,52 @@ https://buildah.io/blogs/2017/11/02/getting-started-with-buildah.html
 ---
 ```bash
 ## A recode 구성
+
+hostnamectl
+> master.example.com
+hostnamectl set-hostname master.example.com         ## PTR도 권장
+
 cat <<EOF>> /etc/hosts
 192.168.90.250 master.example.com master 
 EOF
 
+# ping yahoo.com 
+# 1. /etc/hosts
+# 2. /etc/resolve.conf
+
+
 ## 커널 모듈 자동 불러오기
+#
+# br_netfilter: netfilter(iptables,nftables)에서 브릿지 관련 모듈
+# overlay: 컨테이너 파일시스템 구성, 계층으로 파일 시스템 구성
+#     \
+#      `-->mount -t overlay 
+# systemd는 부팅 시 커널 모듈을 추가적으로 "modules-load.d"에서 불러옴
+#
 cat <<EOF> /etc/modules-load.d/k8s-modules.conf
-br_netfilter
+br_netfilter                      
 overlay
 EOF
 modprobe br_netfilter
 modprobe overlay
 
 ## 커널 파라메터 변경
+#
+# 라우팅 테이블 및 데이터 흐름 제어하기 위해서 커널 기능 활성화
+# source:destination packet
+# 
 cat <<EOF> /etc/sysctl.d/99-k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.ipv4.ip_forward                 = 1
-net.bridge.bridge-nf-call-ip6tables = 1
+# net.bridge.bridge-nf-call-ip6tables = 1
 EOF
 sysctl --system
 
 ## 쿠버네티스 저장소 등록
+# /etc/yum.repos.d/  -->  /etc/dnf/repos.d/
+# "exclude=" 패키지 업데이트 방지
+# CNI: Container Network Interface(plugin)
+# CRI: Container Runtime Interface(podman, buildah, skopeo)
 cat <<EOF> /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -268,7 +293,10 @@ exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 dnf install kubeadm kubelet kubectl -y --disableexcludes=kubernetes
 
-## CRIO저장소 구성 및 설치
+#
+# CRI-O저장소 구성 및 설치
+# 쿠버네티스 전용 런타임(혹은 엔진 설치), 저수준의 런타임
+# 
 cat <<EOF> /etc/yum.repos.d/libcontainer.repo
 [devel_kubic_libcontainers_stable]
 name=devel_kubic_libcontainers_stable
@@ -290,7 +318,6 @@ enabled=1
 EOF
 yum install crio -y
 
-
 ## kubelet 및 crio시작
 
 systemctl enable --now kubelet
@@ -307,6 +334,32 @@ systemctl enable --now crio
 4. 컨테이너 이미지 및 표준 도구
 
 # day 2
+
+```bash
+systemctl stop firewalld
+systemctl disable firewalld
+
+swapon -s
+swapoff -a
+swapon -s
+
+kubeadmin init
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get nodes
+```
+
+
+## 오늘의 목표
+
+1. pod, runc, conmon, pause
+2. 쿠버네티스 서비스 확인
+3. 쿠버네티스 설치 설명 및 리눅스와 관계
+4. 기본적인 사용 방법
+
+
+
+
 # day 3
 # day 4
 # day 5
