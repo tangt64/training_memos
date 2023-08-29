@@ -355,11 +355,11 @@ swapon -s
 swapoff -a
 swapon -s
 
-ls -l /etc/containers/pocliy.json
-cat /etc/containers/pocliy.json
+ls -l /etc/containers/policy.json
+cat /etc/containers/policy.json
 > registry.access
 > registry.redhat
-rm -f /etc/containers/pocliy.json
+rm -f /etc/containers/policy.json
 wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json
 
 kubeadm init
