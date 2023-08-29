@@ -363,6 +363,10 @@ kubectl describe node master.example.com
 >Taints: node-role.kubernetes.io/control-plane:NoSchedule
 kubectl taint nodes master.example.com node-role.kubernetes.io/control-plane:NoSchedule-
 kubectl run --image=nginx nginx
+kubectl get pods -w                   ## 생성이 완료가 되면 ctrl+c
+kubectl delete pod --all
+
+kubeadm reset --force                 ## 노드 초기화
 ```
 
 
