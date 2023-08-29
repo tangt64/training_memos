@@ -355,7 +355,7 @@ swapon -s
 swapoff -a
 swapon -s
 
-kubeadmin init
+kubeadm init
 
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
