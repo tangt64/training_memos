@@ -344,7 +344,7 @@ systemctl enable --now crio
 
 # day 2
 
-위의 설치 내용 계속 이어서...[link](#osinstall)
+위의 설치 내용 계속 이어서...[이전내용](#osinstall)
 
 
 ```bash
