@@ -360,7 +360,7 @@ kubeadmin init
 export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
 kubectl describe node master.example.com
->Taints:             node-role.kubernetes.io/control-plane:NoSchedule
+>Taints: node-role.kubernetes.io/control-plane:NoSchedule
 kubectl taint nodes master.example.com node-role.kubernetes.io/control-plane:NoSchedule-
 ```
 
