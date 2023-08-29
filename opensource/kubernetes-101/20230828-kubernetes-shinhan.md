@@ -401,9 +401,30 @@ source kubeadm_rc.sh
 노드 조인 명령어
 ---
 ```bash
-kubeadm token create --print-join-command
+master]# export KUBECONFIG=/etc/kubernetes/admin.conf
+master]# kubeadm token create --print-join-command
+kubeadm join 172.20.132.64:6443 --token p4dyt8.evuhs3qz2k2jdyho --discovery-token-ca-cert-hash sha256:6ec1cd787606d32e5326b4f75a870bbbc311b4962a45c2fcd33f359560ed40c2  
 ```
 
+```bash
+nodeX]# kubeadm join 172.20.132.64:6443 --token p4dyt8.evuhs3qz2k2jdyho --discovery-token-ca-cert-hash sha256:6ec1cd787606d32e5326b4f75a870bbbc311b4962a45c2fcd33f359560ed40c2  
+```
+
+kubectl + export KUBECONFIG
+---
+1. 클러스터 정보(주소 및 포트)
+2. 클러스터에 접근 할 사용자
+3. 클러스터 인증 시 사용할 TLS
+
+```bash
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl(TLS(ADDRESS+PORT))
+-------
+\
+ `---> ~/.kube/config
+       SHELL($KUBECONFIG)
+
+```
 
 Pod(pause) 컨테이너 [소스코드](
 https://github.com/kubernetes/kubernetes/blob/master/build/pause/linux/pause.c)
