@@ -369,6 +369,14 @@ kubectl delete pod --all
 kubeadm reset --force                 ## 노드 초기화
 ```
 
+kubectl명령어의 KUBECONFIG설정이 번거로울때...
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config 
+```
+
 
 ## 오늘의 목표
 
