@@ -362,6 +362,7 @@ kubectl get nodes
 kubectl describe node master.example.com
 >Taints: node-role.kubernetes.io/control-plane:NoSchedule
 kubectl taint nodes master.example.com node-role.kubernetes.io/control-plane:NoSchedule-
+kubectl run --image=nginx nginx
 ```
 
 
