@@ -426,6 +426,13 @@ kubectl(TLS(ADDRESS+PORT))
 
 ```
 
+
+싱글 마스터 + 인터페이스 명시(API)
+---
+```bash
+kubeadm init --apiserver-advertise-address=192.168.90.250 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
+```
+
 Pod(pause) 컨테이너 [소스코드](
 https://github.com/kubernetes/kubernetes/blob/master/build/pause/linux/pause.c)
 
