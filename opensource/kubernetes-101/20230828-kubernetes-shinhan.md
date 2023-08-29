@@ -245,15 +245,16 @@ nmcli con up eth1
 nmcli con add con-name eth1 ipv4.addresses 192.168.90.250/24 type ethernet ifname eth1
 nmcli con up eth1
 
-
 ## A recode 구성
-
 hostnamectl
 > master.example.com
+> node1.example.com
 hostnamectl set-hostname master.example.com         ## PTR도 권장
+                         node1.example.com
 
 cat <<EOF>> /etc/hosts
 192.168.90.250 master.example.com master 
+192.168.90.110 node1.example.com node1
 EOF
 
 # ping yahoo.com 
@@ -347,6 +348,9 @@ systemctl enable --now crio
 위의 설치 내용 계속 이어서...[이전내용](#osinstall)
 
 
+master: eth1, 192.168.90.250
+node1: eth1, 192.167.90.110
+
 ```bash
 systemctl stop firewalld
 systemctl disable firewalld
@@ -387,6 +391,7 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 Pod(pause) 컨테이너 [소스코드](
 https://github.com/kubernetes/kubernetes/blob/master/build/pause/linux/pause.c)
 
+https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 
 ## 오늘의 목표
 
