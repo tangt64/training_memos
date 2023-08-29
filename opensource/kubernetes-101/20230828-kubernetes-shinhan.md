@@ -355,6 +355,12 @@ swapon -s
 swapoff -a
 swapon -s
 
+ls -l /etc/containers/pocliy.json
+cat /etc/containers/pocliy.json
+> registry.access
+> registry.redhat
+rm -f /etc/containers/pocliy.json
+wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json
 kubeadm init
 
 export KUBECONFIG=/etc/kubernetes/admin.conf
@@ -391,3 +397,4 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 # day 3
 # day 4
 # day 5
+
