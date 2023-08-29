@@ -384,12 +384,15 @@ cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config 
 ```
 
+Pod(pause) 컨테이너 [소스코드](
+https://github.com/kubernetes/kubernetes/blob/master/build/pause/linux/pause.c)
+
 
 ## 오늘의 목표
 
 1. pod, runc, conmon, pause
 2. 쿠버네티스 서비스 확인
-3. 쿠버네티스 설치 설명 및 리눅스와 관계
+3. 쿠버네티스 설치 설명 및 리눅스와 관계(노드 추가)
 4. 기본적인 사용 방법
 
 
