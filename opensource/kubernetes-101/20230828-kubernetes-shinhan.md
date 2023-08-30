@@ -436,8 +436,6 @@ kubeadm init --apiserver-advertise-address=192.168.90.250 --pod-network-cidr=192
 Pod(pause) 컨테이너 [소스코드](
 https://github.com/kubernetes/kubernetes/blob/master/build/pause/linux/pause.c)
 
-https://kubernetes.io/docs/setup/production-environment/container-runtimes/
-
 
 pod+container 테스트
 ---
@@ -477,6 +475,30 @@ kubectl attach -it nginx -c shell
 
 
 # day 3
+
+- quay.io/redhattraining/hello-world-nginx
+- quay.io/centos/centos:stream8
+- quay.io/centos7/httpd-24-centos7
+
+
+```bash
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get pods
+kubectl run --image=quay.io/redhattraining/hello-world-nginx test-nginx
+kubectl get pod
+kubectl run --image=quay.io/centos/centos:stream8 -i --tty --rm test-centos
+
+kubectl run --image=quay.io/redhattraining/hello-world-nginx yaml-nginx --dry-run=client -oyaml > yaml-nginx.yaml
+
+
+podman run -d -n test-nginx quay.io/redhattraining/hello-world-nginx 
+
+podman generate kube elated_kepler
+podman generate kube elated_kepler --filename test-nginx.yaml
+kubectl apply -f nginx.yaml
+
+```
+
 # day 4
 # day 5
 
