@@ -678,6 +678,7 @@ https://kodekloud.com/courses/certified-kubernetes-administrator-cka/
         - containerPort: 8080
       - name: httpd-80
         image: quay.io/centos7/httpd-24-centos7
+        ports:
         - containerPort: 80
 ```
 # day 4
