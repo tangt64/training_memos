@@ -720,6 +720,23 @@ basic-deployment-nginx.yaml파일을 수정해서 구성한다.
 2.  네임스페이스 hello-namespace에 생성한다.
 3.  올바르게 생성이 되었는지 확인한다.
 
+pod네트워크 설정(calico)
+---
+
+```bash
+master]# kubectl create -f https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cni/cni-calico/files/tigera-operator.yaml
+master]# curl https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cni/cni-calico/templates/custom-resources.yaml -o /root/custom-resources.yaml
+master]# vi custom-resources.yaml
+> ipPools:
+    - blockSize: 26
+      cidr: 192.168.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+> registry: quay.io
+master]# kubectl apply -f custom-resources.yaml
+master]# kubectl get pods --all-namespaces -w
+```
 
 # day 4
 # day 5
