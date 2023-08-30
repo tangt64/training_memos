@@ -582,7 +582,8 @@ curl -sS https://webi.sh/vim-ale | sh
 ```
 
 
-```yaml
+```bash
+cat <<EOF> basic-deployment-nginx.yaml
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -605,13 +606,15 @@ spec:
         image: nginx:1.14.2
         ports:
         - containerPort: 80
+EOF
+kubectl create -f basic-deployment-nginx.yaml 
 ```
 
 
-```bash
-cat <<EOF> basic-deployment-nginx.yaml
+설명용
 ---
-
+```yaml
+---
 #
 # 메타정보
 #
@@ -632,20 +635,17 @@ spec:
       matchLabels:
         app: nginx
 
-
   template:                  # replicaset이라는 복제자 자원에서 사용
     metadata:
       labels:
         app: nginx
 
-
-  spec:                      # 컨테이너 사양
-    containers:              # 런타임에서 동작하는 컨테이너
-    - name: nginx            # 컨테이너 이름
-      image: nginx:1.14.2    # 컨테이너 이미지
-      ports:                 # 컨테이너 포트
-      - containerPort: 80    # 추후 svc(service)하고 맵핑
-EOF
+    spec:                      # 컨테이너 사양
+      containers:              # 런타임에서 동작하는 컨테이너
+      - name: nginx            # 컨테이너 이름
+        image: nginx:1.14.2    # 컨테이너 이미지
+        ports:                 # 컨테이너 포트
+        - containerPort: 80    # 추후 svc(service)하고 맵핑
 ```
 
 
