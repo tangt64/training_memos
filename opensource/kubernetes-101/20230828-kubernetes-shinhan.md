@@ -639,15 +639,23 @@ spec:
     metadata:
       labels:
         app: nginx
-
+    
     spec:                      # 컨테이너 사양
       containers:              # 런타임에서 동작하는 컨테이너
-      - name: nginx            # 컨테이너 이름
+      - name: nginx-80            # 컨테이너 이름
         image: nginx:1.14.2    # 컨테이너 이미지
         ports:                 # 컨테이너 포트
         - containerPort: 80    # 추후 svc(service)하고 맵핑
+        - containerPort: 82
+      - name: nginx-82
+        image: nginx
+        ports:
+        - containerPOrt: 82
 ```
 
+시험대비
+---
+https://kodekloud.com/courses/certified-kubernetes-administrator-cka/
 
 
 # day 4
