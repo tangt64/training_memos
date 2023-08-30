@@ -603,7 +603,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.14.2
+        image: quay.io/redhattraining/hello-world-nginx
         ports:
         - containerPort: 80
 EOF
@@ -625,6 +625,7 @@ metadata:
   name: nginx           ## 자원 이름(deployment, pod)
     labels:             ## 최소 한개 이상 레이블(추후 selector로 사용)
       app: nginx        ## Pod도 위의 이름 사용 "nginx"
+      auth: choigookhyun
 
 #
 # 컨테이너 생성 및 설정
@@ -658,6 +659,27 @@ spec:
 https://kodekloud.com/courses/certified-kubernetes-administrator-cka/
 
 
+
+```yaml
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-80-8080
+        image: quay.io/redhattraining/hello-world-nginx
+        ports:
+        - containerPort: 80
+        - containerPort: 8080
+      - name: httpd-80
+        image: quay.io/centos7/httpd-24-centos7
+        - containerPort: 80
+```
 # day 4
 # day 5
 
