@@ -582,30 +582,69 @@ curl -sS https://webi.sh/vim-ale | sh
 ```
 
 
-```bash
-cat <<EOF> basic-deployment-nginx.yaml
+```yaml
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
-    labels:
-      app: nginx
+  labels:
+    app: nginx
 spec:
   replicas: 3
-    selector: 
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+
+
+```bash
+cat <<EOF> basic-deployment-nginx.yaml
+---
+
+#
+# 메타정보
+#
+
+apiVersion: apps/v1
+kind: Deployment        ## 자원(resource)
+metadata:
+  name: nginx           ## 자원 이름(deployment, pod)
+    labels:             ## 최소 한개 이상 레이블(추후 selector로 사용)
+      app: nginx        ## Pod도 위의 이름 사용 "nginx"
+
+#
+# 컨테이너 생성 및 설정
+#
+spec:
+  replicas: 3                # 복제 개수
+    selector:                # replicaset에서 생성 및 관리
       matchLabels:
         app: nginx
-  template:
-  metadata:
-    labels:
-      app: nginx
-  spec:
-    containers:
-    - name: nginx
-      image: nginx:1.14.2
-      ports:
-      - containerPort: 80
+
+
+  template:                  # replicaset이라는 복제자 자원에서 사용
+    metadata:
+      labels:
+        app: nginx
+
+
+  spec:                      # 컨테이너 사양
+    containers:              # 런타임에서 동작하는 컨테이너
+    - name: nginx            # 컨테이너 이름
+      image: nginx:1.14.2    # 컨테이너 이미지
+      ports:                 # 컨테이너 포트
+      - containerPort: 80    # 추후 svc(service)하고 맵핑
 EOF
 ```
 
