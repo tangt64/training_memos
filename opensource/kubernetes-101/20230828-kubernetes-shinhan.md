@@ -676,10 +676,12 @@ https://kodekloud.com/courses/certified-kubernetes-administrator-cka/
         ports:
         - containerPort: 80
         - containerPort: 8080
-      - name: httpd-80
-        image: quay.io/centos7/httpd-24-centos7
+      - image: quay.io/centos/centos:stream8
+        name: container-centos-8
+        command: ["sleep"]
+        args: ["10000"]
         ports:
-        - containerPort: 80
+        - containerPort: 8081
 ```
 # day 4
 # day 5
