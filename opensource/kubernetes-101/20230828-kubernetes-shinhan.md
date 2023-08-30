@@ -724,6 +724,7 @@ pod네트워크 설정(calico)
 ---
 
 ```bash
+master]# kubectl expose deployment apache --type NodePort --port=8080 -n pc-app
 master]# kubectl create -f https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cni/cni-calico/files/tigera-operator.yaml
 master]# curl https://raw.githubusercontent.com/tangt64/duststack-k8s-auto/master/roles/cni/cni-calico/templates/custom-resources.yaml -o /root/custom-resources.yaml
 master]# vi custom-resources.yaml
