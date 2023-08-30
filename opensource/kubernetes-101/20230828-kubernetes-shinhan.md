@@ -555,7 +555,6 @@ kubectl apply -f nginx.yaml
 vi/nano설정
 ---
 
-
 ### vi/vim
 
 ```bash
@@ -567,6 +566,42 @@ EOF
 ### nano
 
 ```bash
+master]# nano /usr/share/nano/yaml.nanorc
+
+## Keys
+color magenta "^\s*[\$A-Za-z0-9_-]+\:"
+color brightmagenta "^\s*@[\$A-Za-z0-9_-]+\:"
+
+## Values
+color white ":\s.+$"
+## Booleans
+icolor brightcyan " (y|yes|n|no|true|false|on|off)$"
+## Numbers
+color brightred " [[:digit:]]+(\.[[:digit:]]+)?"
+## Arrays
+color red "\[" "\]" ":\s+[|>]" "^\s*- "
+## Reserved
+color green "(^| )!!(binary|bool|float|int|map|null|omap|seq|set|str) "
+
+## Comments
+color brightwhite "#.*$"
+
+## Errors
+color ,red ":\w.+$"
+color ,red ":'.+$"
+color ,red ":".+$"
+color ,red "\s+$"
+
+## Non closed quote
+color ,red "['\"][^['\"]]*$"
+
+## Closed quotes
+color yellow "['\"].*['\"]"
+
+## Equal sign
+color brightgreen ":( |$)"
+
+
 master]# cat <<EOF> /$($USER)/.nanorc
 syntax "YAML" "\.ya?ml$"
 header "^(---|===)" "%YAML"
