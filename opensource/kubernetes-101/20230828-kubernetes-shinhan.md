@@ -480,6 +480,59 @@ kubectl attach -it nginx -c shell
 - quay.io/centos/centos:stream8
 - quay.io/centos7/httpd-24-centos7
 
+### 연습문제 풀이
+
+```bash
+kubectl run --image=quay.io/centos/centos:stream8 centos8-stream-test-1
+kubectl describe pod/centos8-stream-test-1
+kubectl run --image=quay.io/centos/centos:stream8 centos8-stream-test-1 --dry-run=client -o yaml > centos8-command.yaml
+nano centos8-command.yaml
+```
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pod-centos-8-test
+  name: pod-centos-8-test
+spec:
+  containers:
+  - image: quay.io/centos/centos:stream8
+    name: container-centos-8
+    resources: {}
+    command: ["sleep"]
+    args: ["10000"]
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+```
+```bash
+
+kubectl run --image=quay.io/redhattraining/hello-world-nginx nginx-test --dry-run=client -o yaml > nginx-test.yaml
+kubectl apply -f nginx-test.yaml
+kubectl get pods
+nano nginx-test.yaml
+```
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx-test
+  name: nginx-test
+spec:
+  containers:
+  - image: quay.io/redhattraining/hello-world-nginx
+    name: nginx-test
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+```
+
+
 
 ```bash
 export KUBECONFIG=/etc/kubernetes/admin.conf
