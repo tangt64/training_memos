@@ -737,6 +737,7 @@ master]# vi custom-resources.yaml
 > registry: quay.io
 master]# kubectl apply -f custom-resources.yaml
 master]# kubectl get pods --all-namespaces -w
+master]# curl localhost:<PORT>
 ```
 
 # day 4
