@@ -685,6 +685,10 @@ https://kodekloud.com/courses/certified-kubernetes-administrator-cka/
 ```
 #### 연습문제
 
+- quay.io/redhattraining/hello-world-nginx
+- quay.io/centos/centos:stream8
+- quay.io/centos7/httpd-24-centos7
+
 문제1 문법을 아래와 같이 수정한다.
 
 basic-deployment-nginx.yaml파일을 수정해서 구성한다.
@@ -694,6 +698,7 @@ basic-deployment-nginx.yaml파일을 수정해서 구성한다.
 3.  컨테이너 이미지를 quay.io의 아파치로 변경한다.
 4.  pod의 갯수는 10개로 변경한다.
 5.  올바르게 생성이 되었는지 개수를 확인한다.
+6.  pc-app 혹은 default에다가 생성.
 
 문제2 네임스페이스를 아래와 같이 생성한다.
 
