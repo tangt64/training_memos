@@ -683,6 +683,39 @@ https://kodekloud.com/courses/certified-kubernetes-administrator-cka/
         ports:
         - containerPort: 8081
 ```
+#### 연습문제
+
+문제1 문법을 아래와 같이 수정한다.
+
+basic-deployment-nginx.yaml파일을 수정해서 구성한다.
+
+1.  자원의 이름을 nginx에서 apache로 변경한다.
+2.  모든 메타정보의 레이블을 nginx에서 apache로 변경한다.
+3.  컨테이너 이미지를 quay.io의 아파치로 변경한다.
+4.  pod의 갯수는 10개로 변경한다.
+5.  올바르게 생성이 되었는지 개수를 확인한다.
+
+문제2 네임스페이스를 아래와 같이 생성한다.
+
+1.  쿠버네티스에서 네임스페이스를 "basic”라는 이름으로 생성한다.
+2.  생성된 "basic” 네임스페이스를 기본 네임스페이스로 설정한다.
+3.  올바르게 생성이 되면 kubectl get pods 그리고 kubectl config current-context 명령어로 올바르게 전환이 되었는지 확인한다.
+4.  해당 네임스페이스 basic-nginx라는 이름으로 nginx pod를 생성한다.
+
+문제3 다음과 같은 이름으로 네임스페이스를 만든다. 만든 후, set-context로 네임 스페이스 변경을 한번씩 한다. 완료가 되면 현재 어떤 네임스페이스에 있는지 get-context으로 확인한다.
+
+1.  hello-namespace
+2.  second-namespace
+3.  third-namespace
+4.  각각 pod에 quay.io/eformat/openshift-vsftpd사용하여 vsftp-server라는 pod를 생성한다.
+
+문제4 run명령어로 아래와 같이 자원을 생성한다.
+
+1.  quay.io의 nginx이미지를 사용한다.
+2.  네임스페이스 hello-namespace에 생성한다.
+3.  올바르게 생성이 되었는지 확인한다.
+
+
 # day 4
 # day 5
 
