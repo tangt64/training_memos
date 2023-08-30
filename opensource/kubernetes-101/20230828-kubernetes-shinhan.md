@@ -552,6 +552,24 @@ kubectl apply -f nginx.yaml
 
 ```
 
+vi/nano설정
+---
+
+```bash
+master]# cat <<EOF> /$($USER)/.vimrc
+au! BufNewFile,BufReadPost *.u{yaml,yml} set filetype=yaml foldmethod=indent
+EOF
+
+master]# cat <<EOF> /$($USER)/.nanorc
+syntax "YAML" "\.ya?ml$"
+header "^(---|===)" "%YAML"
+set tabsize 2
+set tabstospaces
+EOF
+
+```
+
+
 # day 4
 # day 5
 
