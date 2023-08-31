@@ -765,10 +765,85 @@ master]# curl localhost:<PORT>
 kubectl create service nodeport --tcp=8080:80 -o yaml --dry-run=client test-httpd > svc-test-httpd.yaml
 
 kubectl run -n pc-app --image quay.io/redhattraining/hello-world-nginx --expose --port 8080 my-nginx-second
+kubectl describe -n pc-app pod my-nginx-second
 
 kubectl -n pc-app expose pod my-nginx-second --name my-nginx-second-nodeport --type NodePort --target-port 8080 --port 8500
 
 ```
+
+
+### 컨테이너 보안
+
+[참고자료](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo-as-noneroot
+spec:
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+  volumes:
+  - name: sec-ctx-vol
+    emptyDir: {}
+  containers:
+  - name: sec-ctx-demo
+    image: busybox:1.28
+    command: [ "sh", "-c", "sleep 1h" ]
+    volumeMounts:
+    - name: sec-ctx-vol
+      mountPath: /data/demo
+    securityContext:
+      allowPrivilegeEscalation: false
+```
+
+```bash
+kubectl exec -it security-context-demo-2 -- sh
+```
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo-as-root
+spec:
+  securityContext:
+    runAsUser: 0
+  volumes:
+  - name: sec-ctx-vol
+    emptyDir: {}
+  containers:
+  - name: sec-ctx-demo
+    image: busybox:1.28
+    command: [ "sh", "-c", "sleep 1h" ]
+    volumeMounts:
+    - name: sec-ctx-vol
+      mountPath: /
+    securityContext:
+      runAsUser: 0
+      allowPrivilegeEscalation: true
+```
+
+
+### delete/edit/debug/exec 연습문제
+
+1. 네임 스페이스 willbegone 생성시 레이블 "flag=deleteme"레이블을 같이 할당한다.
+2. 네임 스페이스 willbegone에 기존에 사용하던 basic-deployment-nginx.yaml를 사용하여 POD 20개를 생성한다
+3. willbegone에 생성되는 모든 Pod에는 레이블 flag=dead를 가지고 있다.
+4. apache이미지로 동작하는 debug-me라는 Pod를 생성한다.
+quay.io/centos7/httpd-24-centos7
+
+5. debug-me Pod에 다음과 같은 옵션으로 debug를 시도한다. 내부에서 apache프로세서가 보이는지 확인한다. curl명령어로 아파치 서비스 접근을 시도한다. 
+--share-process --copy-to=debug-me-copy
+
+6. exec명령어로 basic-deployment-nginx Pod중 하나에 curl명령어로 8080 접근 후 웹 페이지가 잘 뜨는지 확인한다.
+7. edit명령어를 사용하여 debug-me에 company=shinhan이라고 추가한다.
+8. 작성된 모든 Pod 및 namespace를 삭제한다.
+
+
 
 
 # day 5
