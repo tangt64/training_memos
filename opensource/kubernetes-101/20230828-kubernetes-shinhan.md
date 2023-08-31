@@ -757,10 +757,17 @@ master]# curl localhost:<PORT>
 참고
 ---
 ```bash
-# container port: 80/tcp
+# container port: 8080/tcp
 # pod port: 8500/tcp
 # node port: 자동 혹은 32676
+
+## 참고용
 kubectl create service nodeport --tcp=8080:80 -o yaml --dry-run=client test-httpd > svc-test-httpd.yaml
+
+kubectl run -n pc-app --image quay.io/redhattraining/hello-world-nginx --expose --port 8080 my-nginx-second
+
+kubectl -n pc-app expose pod my-nginx-second --name my-nginx-second-nodeport --type NodePort --target-port 8080 --port 8500
+
 ```
 
 
