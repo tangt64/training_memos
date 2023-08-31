@@ -759,7 +759,7 @@ master]# curl localhost:<PORT>
 ```bash
 # container port: 80/tcp
 # pod port: 8500/tcp
-# node port: 자동 혹은 34284
+# node port: 자동 혹은 32676
 kubectl create service nodeport --tcp=8080:80 -o yaml --dry-run=client test-httpd > svc-test-httpd.yaml
 ```
 
