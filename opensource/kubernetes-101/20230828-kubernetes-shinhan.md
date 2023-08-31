@@ -750,12 +750,16 @@ master]# curl localhost:<PORT>
 
 ```
 
-my-nginx-second라는 이름으로 컨테이너 포트 80/TCP로 my-nginx-second디플로이먼트 및 서비스를 ClusterIP로 구성한다.
-my-nginx-third라는 이름으로 포드 포트는 8500/TCP로 접근이 가능한 디플로이먼트 및 서비스를 NodePort는 알아서 할당.
+1. my-nginx-second라는 이름으로 컨테이너 포트 80/TCP로 my-nginx-second디플로이먼트 및 서비스를 ClusterIP로 구성한다.
+2. my-nginx-second라는 이름으로 포드 포트는 8500/TCP로 접근이 가능한 디플로이먼트 및 서비스를 NodePort는 알아서 할당.
+3. 생성되는 위치는 pc-app에 생성이 된다.
 
 참고
 ---
 ```bash
+# container port: 80/tcp
+# pod port: 8500/tcp
+# node port: 자동 혹은 34284
 kubectl create service nodeport --tcp=8080:80 -o yaml --dry-run=client test-httpd > svc-test-httpd.yaml
 ```
 
