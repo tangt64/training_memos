@@ -947,8 +947,6 @@ roleRef:
 EOF
 master]# storageclass-rolebinding.yaml
 
-
-
 master]# cat <<EOF> storageclass-configure.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -1006,7 +1004,7 @@ spec:
       labels:
         app: nfs-csi-pod
     spec:
-      serviceAccountName: nfs-pod-provisioner-sa
+      serviceAccountName: nfs-pod-provisioner-sa  ## csi-nfs-controller-sa
       containers:
         - name: sc-nginx
           image: quay.io/redhattraining/hello-world-nginx
@@ -1029,7 +1027,7 @@ EOF
 
 master]# kubectl apply -f nfs-csi-pod.yaml
 
-master]# https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/v4.4.0/rbac-csi-nfs.yaml
+master]# kubectl https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/v4.4.0/rbac-csi-nfs.yaml    ## csi-nfs-controller-sa
 
 master]# kubectl get pods
 master]# kubectl get sc
