@@ -845,10 +845,43 @@ quay.io/centos7/httpd-24-centos7
 
 
 
+
+
+# day 5
+
+
 NFS
 ---
 NFS v3/4
 
+CKD
+---
+1. helm chart
+2. debug container
 
-# day 5
+CKA
+---
+
+1. pod 생성(pod, static-pod,kubelet(hosted-service))
+2. 네임스페이스 확인 및 컨텍스트 확인
+3. deployment 생성 및 설정
+4. scaleout(scale)
+5. pv,pvc,storageclass
+6. ingress,networkpolicy
+7. role,rolebind(cluster)
+8. labels, selector
+9. apply -f 
+10. kubectl create
+11. YAML파일 생성
+12. initcontainer, multicontainer
+13. debug
+14. kubernetes docs/blog
+
+
+https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+
+https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#algorithm-details
+
+
 
