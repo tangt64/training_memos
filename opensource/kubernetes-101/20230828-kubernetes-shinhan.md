@@ -940,6 +940,11 @@ spec:
               mountPath: /usr/share/nginx/html
           ports:
             - containerPort: 8080
+#  volumes:
+#    - name: config
+#      persistentVolumeClaim:
+#        claimName: pvc-nfs-dynamic
+
       volumes:
        - name: csi-nfs
          nfs:
@@ -947,6 +952,26 @@ spec:
            path: /nfs
 EOF
 
+master]# kubectl apply -f nfs-csi-pod.yaml
+
+master]# kubectl get pods
+master]# kubectl get sc
+master]# kubectl get pvc
+master]# kubectl get pv
+master]# kubectl expose deployment nfs-csi-pod --type NodePort --name nfs-csi-pod-nodeport
+master]# kubectl describe pod nfs-csi-pod-xxxx
+> Mounts:
+master]# kubectl exec -it nfs-csi-pod-xxxx -- ls /usr/share/nginx/html
+> pvc-4d515fba-62a1-4853-b26a-8f5a02d550b1
+master]# curl localhost:<NODE_PORT>/index.html
+> ERROR
+
+#  volumes:
+#    - name: config
+#      persistentVolumeClaim:
+#        claimName: test-nfs-claim
+
+EOF
 ```
 
 
