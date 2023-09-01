@@ -881,6 +881,7 @@ apiVersion: v1
 metadata:
   name: nfs-pod-provisioner-sa
 EOF
+master]# kubectl apply -f storageclass-sa.yaml
 
 master]# cat <<EOF> storageclass-clusterrole.yaml
 kind: ClusterRole
@@ -901,7 +902,7 @@ rules:
     resources: ["events"]
     verbs: ["create", "update", "patch"]
 EOF
-master]# storageclass-clusterrole.yaml
+master]# kubectl apply -f storageclass-clusterrole.yaml
 
 master]# cat <<EOF> storageclass-clusterrolebind.yaml
 kind: ClusterRoleBinding
@@ -917,7 +918,7 @@ roleRef:
   name: nfs-provisioner-clusterRole
   apiGroup: rbac.authorization.k8s.io
 EOF
-master]# storageclass-clusterrolebind.yaml
+master]# kubectl apply -f storageclass-clusterrolebind.yaml
 
 master]# cat <<EOF> storageclass-role.yaml
 kind: Role
@@ -929,7 +930,7 @@ rules:
     resources: ["endpoints"]
     verbs: ["get", "list", "watch", "create", "update", "patch"]
 EOF
-master]# storageclass-role.yaml
+master]# kubectl apply -f storageclass-role.yaml
 
 master]# cat <<EOF> storageclass-rolebinding.yaml
 kind: RoleBinding
@@ -945,7 +946,7 @@ roleRef:
     name: nfs-pod-provisioner-otherRoles
     apiGroup: rbac.authorization.k8s.io
 EOF
-master]# storageclass-rolebinding.yaml
+master]# kubectl apply -f storageclass-rolebinding.yaml
 
 master]# cat <<EOF> storageclass-configure.yaml
 apiVersion: storage.k8s.io/v1
