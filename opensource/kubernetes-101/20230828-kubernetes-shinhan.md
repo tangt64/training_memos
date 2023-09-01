@@ -910,6 +910,41 @@ master]# kinectl apply -f storageclass-pvc.yaml
 
 master]# kubectl get sc
 master]# kubectl get pvc
+
+master]# kubectl describe pvc pvc-nfs-dynamic
+
+
+master]# cat <<EOF> nfs-csi-pod.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nfs-csi-pod
+spec:
+  selector:
+    matchLabels:
+      app: nfs-csi-pod
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-csi-pod
+    spec:
+      serviceAccountName: nfs-pod-provisioner-sa
+      containers:
+        - name: sc-nginx
+          image: nginx
+          volumeMounts:
+            - name: csi-nfs
+              mountPath: /var/www/html/
+      volumes:
+       - name: csi-nfs
+         nfs:
+           server: master.example.com
+           path: /nfs
+EOF
+
 ```
 
 
