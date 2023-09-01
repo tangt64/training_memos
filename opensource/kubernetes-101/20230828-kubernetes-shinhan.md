@@ -242,7 +242,7 @@ nmtui edit eth1
 nmcli con up eth1
 
 # 방법2
-nmcli con add con-name eth1 ipv4.addresses 192.168.90.250/24 type ethernet ifname eth1
+nmcli con add con-name eth1 ipv4.addresses 192.168.90.250/24 ipv4.method manual type ethernet ifname eth1 ipv4.method manual
 nmcli con up eth1
 
 ## A recode 구성
