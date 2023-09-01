@@ -845,6 +845,10 @@ quay.io/centos7/httpd-24-centos7
 
 
 
+NFS
+---
+NFS v3/4
+
 
 # day 5
 
