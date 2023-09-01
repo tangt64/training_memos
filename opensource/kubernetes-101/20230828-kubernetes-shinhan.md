@@ -875,6 +875,80 @@ NFS v3/4
 ```bash
 node1/2]# dnf install nfs-utils -y
 
+master]# cat <<EOF> storageclass-sa.yaml
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: nfs-pod-provisioner-sa
+EOF
+
+master]# cat <<EOF> storageclass-clusterrole.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-provisioner-clusterRole
+rules:
+  - apiGroups: [""] # rules on persistentvolumes
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "update", "patch"]
+EOF
+master]# storageclass-clusterrole.yaml
+
+master]# cat <<EOF> storageclass-clusterrolebind.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-provisioner-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: nfs-pod-provisioner-sa
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: nfs-provisioner-clusterRole
+  apiGroup: rbac.authorization.k8s.io
+EOF
+master]# storageclass-clusterrolebind.yaml
+
+master]# cat <<EOF> storageclass-role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-pod-provisioner-otherRoles
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+EOF
+master]# storageclass-role.yaml
+
+master]# cat <<EOF> storageclass-rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-pod-provisioner-otherRoles
+subjects:
+  - kind: ServiceAccount
+    name: nfs-pod-provisioner-sa
+    namespace: default
+roleRef:
+    kind: Role
+    name: nfs-pod-provisioner-otherRoles
+    apiGroup: rbac.authorization.k8s.io
+EOF
+master]# storageclass-rolebinding.yaml
+
+
+
 master]# cat <<EOF> storageclass-configure.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -890,6 +964,7 @@ mountOptions:
   - hard
   - nfsvers=4.1
 EOF
+master]# kubectl apply -f storageclass-configure.yaml
 
 master]# cat <<EOF> storageclass-pvc.yaml
 apiVersion: v1
@@ -906,7 +981,7 @@ spec:
 EOF
 
 master]# kubectl apply -f storageclass-configure.yaml
-master]# kinectl apply -f storageclass-pvc.yaml
+master]# kubectl apply -f storageclass-pvc.yaml
 
 master]# kubectl get sc
 master]# kubectl get pvc
