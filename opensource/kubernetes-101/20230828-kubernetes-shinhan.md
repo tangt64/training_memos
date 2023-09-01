@@ -937,7 +937,7 @@ spec:
           image: quay.io/redhattraining/hello-world-nginx
           volumeMounts:
             - name: csi-nfs
-              mountPath: /var/www/html/
+              mountPath: /usr/share/nginx/html
           ports:
             - containerPort: 8080
       volumes:
