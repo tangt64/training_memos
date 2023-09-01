@@ -1043,11 +1043,32 @@ master]# curl localhost:<NODE_PORT>/index.html
 > ERROR
 
 #  volumes:
-#    - name: config
+#    - name: csi-nfs
 #      persistentVolumeClaim:
-#        claimName: test-nfs-claim
+#        claimName: pvc-nfs-dynamic
 
 EOF
+
+master]# kubectl get sc -A
+master]# cat <<EOF> manual-pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+  labels:
+    type: nfs
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+nfs:
+    server: master.example.com
+    share: "/nfs/manual-pv"
+EOF
+master]# kubectl apply -f manual-pv.yaml
+
 ```
 
 
