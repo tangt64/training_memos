@@ -844,15 +844,73 @@ quay.io/centos7/httpd-24-centos7
 8. 작성된 모든 Pod 및 namespace를 삭제한다.
 
 
-
-
-
 # day 5
 
+
+쿠버네티스 권장 구성
+---
+
+1. 가상머신 기반
+
+순수하게 쿠버네티스 설치(컨테이너 서비스만 사용하는 경우). 
+서비스 클러스터를 구성.
+
+- oVirt(RHV) + kubernetes, Rancher
+- OpenStack + kubernetes, Rancher
+- VMWare ESX + OpenShift
+
+2. 베어메탈(서버 장비)
+
+컨테이너 + 가상머신 동시에 운영(kubernetes + kube-virt). 
+MSA + 3Tiers
+
+- OpenShift(okd)
+- Rancher
+- Kubernetes
 
 NFS
 ---
 NFS v3/4
+
+```bash
+node1/2]# dnf install nfs-utils -y
+
+master]# cat <<EOF> storageclass-configure.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: master.example.com
+  share: /nfs
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=4.1
+EOF
+
+master]# cat <<EOF> storageclass-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-nfs-dynamic
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: nfs-csi
+EOF
+
+```
+
+
+
+
+
 
 CKD
 ---
