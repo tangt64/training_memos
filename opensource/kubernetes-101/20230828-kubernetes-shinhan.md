@@ -954,6 +954,8 @@ EOF
 
 master]# kubectl apply -f nfs-csi-pod.yaml
 
+master]# https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/deploy/v4.4.0/rbac-csi-nfs.yaml
+
 master]# kubectl get pods
 master]# kubectl get sc
 master]# kubectl get pvc
