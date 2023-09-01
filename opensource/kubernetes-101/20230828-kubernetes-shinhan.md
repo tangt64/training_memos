@@ -934,10 +934,12 @@ spec:
       serviceAccountName: nfs-pod-provisioner-sa
       containers:
         - name: sc-nginx
-          image: nginx
+          image: quay.io/redhattraining/hello-world-nginx
           volumeMounts:
             - name: csi-nfs
               mountPath: /var/www/html/
+          ports:
+            - containerPort: 8080
       volumes:
        - name: csi-nfs
          nfs:
