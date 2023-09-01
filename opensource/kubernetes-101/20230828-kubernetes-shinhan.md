@@ -1109,6 +1109,24 @@ master]# kubectl apply -f pvc-pod.yaml
 master]# kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
 ```
 
+    replicaset
+ .-------------.
+/               \
+POD 1: Container N
+
+
+scale: 20
+
+
++---------------------+
+| POD
+| 
+| secret, configmap, pv, pvc
+| [ container ]
+| [ container ]
+|
++---------------------+
+
 
 https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
 
