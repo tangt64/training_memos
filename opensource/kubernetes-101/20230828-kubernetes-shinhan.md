@@ -1083,7 +1083,7 @@ spec:
       storage: 1Gi
 EOF
 master]# kubectp apply -f pvc.yaml
-master]# cat <<EOF> pvc-pod.yaml
+master]# cat <<EOF> manual-pvc-pod.yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -1103,6 +1103,11 @@ EOF
 master]# kubectl apply -f pvc-pod.yaml
 ```
 
+### 메트릭 서비스
+
+```bash
+master]# kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
+```
 
 
 https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
