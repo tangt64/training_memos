@@ -905,6 +905,11 @@ spec:
   storageClassName: nfs-csi
 EOF
 
+master]# kubectl apply -f storageclass-configure.yaml
+master]# kinectl apply -f storageclass-pvc.yaml
+
+master]# kubectl get sc
+master]# kubectl get pvc
 ```
 
 
