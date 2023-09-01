@@ -1069,11 +1069,43 @@ nfs:
 EOF
 master]# kubectl apply -f manual-pv.yaml
 
+master]# cat <<EOF> pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+EOF
+master]# kubectp apply -f pvc.yaml
+master]# cat <<EOF> pvc-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-pod
+spec:
+  containers:
+  - name: pvc-pod
+    image: nginx
+    volumeMounts:
+      - mountPath: "/app/data"
+        name: htdocs
+  volumes:
+  - name: htdocs
+    persistentVolumeClaim:
+      claimName: nfs-pvc
+EOF
+master]# kubectl apply -f pvc-pod.yaml
 ```
 
 
 
-
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
 
 
 CKD
