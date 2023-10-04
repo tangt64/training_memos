@@ -1,81 +1,84 @@
 # 쿠버네티스 싱글 마스터 + 2노드 클러스터 구성(kubeadm)
 
+- kubespray(ansible)
+- kind
+- minikube
+
 ## 마스터 및 노드 공통 설정
 
 ```bash
-cat <<EOF> /etc/yum.repos.d/kubernetes.repo
+master/node]# cat <<EOF> /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/
 enabled=1
 gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-exclude=kubelet kubeadm kubectl
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/repodata/repomd.xml.key
+# exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
-dnf search --disableexcludes=kubernetes kube
-dnf list --disableexcludes=kubernetes kubeadm
-dnf install --disableexcludes=kubernetes kubeadm -y
-setenforce 0
-systemctl stop firewalld
-systemctl disable firewalld
-
+master/node]# dnf search --disableexcludes=kubernetes kubectl kubeadm kubelet 
+master/node]# dnf install --disableexcludes=kubernetes kubectl kubeadm kubelet 
+master/node]# setenforce 0
+master/node]# vi /etc/selinux/config
+> permissive
 ```
 
 ```bash
-systemctl stop firewalld && systemctl disable firewalld
-swapon -s
-swapoff -a
-dnf install tc -y
-dnf install iproute-tc -y ## centos-9-stream
+master/node]# systemctl stop firewalld && systemctl disable firewalld
+master/node]# swapon -s
+master/node]# swapoff -a
+master/node]# dnf install tc -y        			 		## optional
+master/node]# dnf install iproute-tc -y 				## centos-9-stream, optional
 ```
 
-### hosts A Recode(insted bind)
+### hosts A Recode(instead bind)
 1. bind(dns) 구성(primary)
 2. /etc/hosts A(ipv4),AAAA(ipv6) recode를 구성(backup)
 
 ```bash
-cat <<EOF>> /etc/hosts
+#
+# 내부 아이피로 구성
+#
+master/node]# cat <<EOF>> /etc/hosts
 192.168.90.110 master.example.com master
-192.168.90.240 master2.example.com master2
-192.168.90.250 master3.example.com master3
+
 192.168.90.120 node1.example.com node1
 192.168.90.130 node2.example.com node2
 EOF
 ```
 ### kubelet service
+#
+# 처음에 동작 시 "activing..."라고 표시가 되는것은 지극히 정상
+# 
 
 ```bash
-systemctl status kubelet
-systemctl enable --now kubelet
-```
-
-### containerd(선택사항)
-
-```bash
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf search containerd
-dnf remove podman -y
-dnf install containerd -y   ## docker repository (subsystem for dockerd)
-containerd config default > /etc/containerd/config.toml
-systemctl enable --now containerd
+master]# systemctl status kubelet
+master]# systemctl enable --now kubelet
 ```
 
 ### crio install(o)
 
 ```bash
-dnf install wget -y
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
-dnf install cri-o -y
-systemctl enable --now crio
-wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
+master/node]# dnf install wget -y
+master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
+master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+master/node]# dnf install cri-o -y
+master/node]# systemctl enable --now crio
+master/node]# systemctl is-active crio
+
+#
+# podman 설치 한 후, crio설치 시, policy.json문제 발생
+#
+master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
+
+
 ```
 ### modules
 
 ```bash
-modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
-modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
-cat <<EOF> /etc/modules-load.d/k8s-modules.conf
+master/node]# modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
+master/node]# modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
+master/node]# cat <<EOF> /etc/modules-load.d/k8s-modules.conf
 br_netfilter
 overlay
 EOF
@@ -83,25 +86,28 @@ EOF
 
 ### kenrel parameter
 ```bash
-cat <<EOF> /etc/sysctl.d/k8s-mod.conf
-net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
-net.ipv4.ip_forward=1                   ## pod <---> svc
-net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
-EOF
+master/node]# cat <<EOF> /etc/sysctl.d/k8s-mod.conf
+> net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+> net.ipv4.ip_forward=1                   ## pod <---> svc
+> net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
+> EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
+dracut -f 								  ## ramdisk 갱신
 ```
 
-### firewalld stop and disabled
+### kubeadm init as single controller role node
+
 ```bash
-systemctl stop firewalld && systemctl disable firewalld
+master]# kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
+master]# systemctl is-active kubelet  							## active
+master]# crictl ps 
 ```
-
 ### 초기화 순서 및 방법
 
 노드에서 마스터 순서로 리셋.
 ```bash
-@node]# kubeadm reset --force
 @master]# kubeadm reset --force 
+@node]# kubeadm reset --force
 ```
 
 ### kubeadm join(single)
@@ -110,36 +116,19 @@ systemctl stop firewalld && systemctl disable firewalld
 @master]# KUBECONFIG=/etc/kubernetes/admin.conf kubeadm token create --print-join-command
 ```
 
-### kubeadm init/join(multi)
+### node join
 
 ```bash
-kubeadm init --apiserver-advertise-address=192.168.90.110 \
- --control-plane-endpoint 192.168.90.110 \
- --cri-socket=/var/run/crio/crio.sock \
- --upload-certs \
- --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 \
- --service-dns-domain=devops.project
-```
-
-#### master join
-```bash
-kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
-        --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27 \
-        --control-plane --certificate-key f45f54f44bb08318926005b5619a6af5523acb30f132da31f2172555efbfb2b8
-```
-
-#### node join
-```bash
-
-kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
+node]# kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
         --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27
+master]# kubectl get nodes    
 ```
-#### 터널링 네트워크 구성
+### 터널링 네트워크 구성
 
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
-kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
-kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
+https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+kubectl get pods -wA   						## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
 ```
 
 #### 메트릭/역할(임시)
@@ -150,7 +139,6 @@ kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
 kubectl top nodes
 kubectl get nodes
 ```
-
 - 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
 - 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
 
@@ -160,10 +148,4 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
 ```
 
-## 터널링 네트워크 구성
 
-```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
-kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/calico-quay-crd.yaml
-kubectl get pods -wA   ## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
-```
