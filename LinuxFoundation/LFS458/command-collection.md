@@ -115,7 +115,9 @@ ssh root@192.168.122.135         ## 암호는 kubernetes
 
 curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_7/devel:kubic:libcontainers:stable.repo -o /etc/yum.repos.d/libcontainers.repo
 curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.28:/1.28.1/CentOS_7/devel:kubic:libcontainers:stable:cri-o:1.28:1.28.1.repo -o /etc/yum.repos.d/crio.repo
-
+yum repolist
+yum search cri-o
+yum install cri-o -y
 ```
 # DAY 2
 # DAY 3
