@@ -117,6 +117,11 @@ ssh root@192.168.122.200                                             ## 암호�
 ## utility node(임시 마스터)
 
 ```bash
+systemctl stop firewalld
+systemctl disable firewalld
+systemctl is-active firewalld
+setenforce 0
+getenforce
 cat <<EOF>> /etc/hosts
 192.168.90.200 master.example.com master
 192.168.90.250 node2.example.com node2
