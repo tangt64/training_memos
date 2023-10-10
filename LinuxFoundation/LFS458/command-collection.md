@@ -119,6 +119,8 @@ yum repolist
 yum search cri-o
 yum install cri-o -y
 
+systemctl enable --now crio
+
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -130,6 +132,40 @@ exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl enable --now kubelet
+
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+modprobe overlay
+modprobe br_netfilter
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sysctl --system
+
+kubeadm init 
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
+kubeadm init --apiserver-advertise-address=192.168.90.200 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 
+
+kubeadm token create --print-join-commnad
+
+1. /etc/hosts(node2)
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.90.200 master.example.com master
+192.168.90.250 node2.example.com node2
+
+2. hostnamectl set-hostname node2.example.com
+
+nodeX]# kubeadm join 192.168.90.200:6443 --token etyc27.bx82vp6zyfx83wc4 --discovery-token-ca-cert-hash sha256:8eba1a36e4c528ea60b6942b6abe1a52b0cf06aa70892eb61a289e78906857da 
 ```
 # DAY 2
 # DAY 3
