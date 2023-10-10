@@ -106,6 +106,16 @@ vi playbooks/lab-provisioning.yaml
 > remote_user: tang --> root
 ./provin-k8s.sh
 
+virsh list
+> k8s_utility_node
+virsh domifaddr 40 
+virsh domifaddr k8s_utility_node
+> 192.168.122.135/24
+ssh root@192.168.122.135         ## 암호는 kubernetes
+
+curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_7/devel:kubic:libcontainers:stable.repo -o /etc/yum.repos.d/libcontainers.repo
+curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.28:/1.28.1/CentOS_7/devel:kubic:libcontainers:stable:cri-o:1.28:1.28.1.repo -o /etc/yum.repos.d/crio.repo
+
 ```
 # DAY 2
 # DAY 3
