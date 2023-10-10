@@ -112,13 +112,22 @@ virsh domifaddr 40
 virsh domifaddr k8s_utility_node
 > 192.168.122.135/24
 ssh root@192.168.122.200                                             ## 암호는 kubernetes
+```
+
+## utility node(임시 마스터)
+
+```bash
+cat <<EOF>> /etc/hosts
+192.168.90.200 master.example.com master
+192.168.90.250 node2.example.com node2
+EOF
+hostnamectl set-hostname master.example.com
 
 curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_7/devel:kubic:libcontainers:stable.repo -o /etc/yum.repos.d/libcontainers.repo
 curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.28:/1.28.1/CentOS_7/devel:kubic:libcontainers:stable:cri-o:1.28:1.28.1.repo -o /etc/yum.repos.d/crio.repo
 yum repolist
 yum search cri-o
 yum install cri-o -y
-
 systemctl enable --now crio
 
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
@@ -137,7 +146,6 @@ cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
 EOF
-
 modprobe overlay
 modprobe br_netfilter
 
@@ -146,17 +154,24 @@ net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
 EOF
-
 sysctl --system
 
-kubeadm init 
-
+kubeadm init                                                    ## 테스트 및 확인 
 export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl get pods -A
+kubeadm reset --force 
 
 kubeadm init --apiserver-advertise-address=192.168.90.200 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 
 
+## --pod-networ-cidr: POD에서 사용하는 터널링 네트워크 대역. 일반적으로 터링과 같은 대역을 사용한다. 랩에서는 eth1
+## --service-cidr: 쿠버네티스 서비스 영역(NAT)에서 사용하는 아이피 대역
+## 위의 두개 아이피는 서로 겹치면 안됨
+
 kubeadm token create --print-join-commnad
 
+# node2(임시로 utility master와 연결 시도)
+
+## 필수 준비 사항 
 1. /etc/hosts(node2)
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
@@ -164,6 +179,7 @@ kubeadm token create --print-join-commnad
 192.168.90.250 node2.example.com node2
 
 2. hostnamectl set-hostname node2.example.com
+3. 마스터와 동일하게 커널 모듈 및 파라메타 설정이 필요
 
 nodeX]# kubeadm join 192.168.90.200:6443 --token etyc27.bx82vp6zyfx83wc4 --discovery-token-ca-cert-hash sha256:8eba1a36e4c528ea60b6942b6abe1a52b0cf06aa70892eb61a289e78906857da 
 ```
