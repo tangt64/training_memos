@@ -1,183 +1,112 @@
-# 쿠버네티스 싱글 마스터 + 2노드 클러스터 구성(kubeadm)
+# DAY1
 
-- kubespray(ansible)
-- kind
-- minikube
+## 강사 정보
 
-## 마스터 및 노드 공통 설정
+- __이름:__ 최국현
+- __메일주소:__ tang/앙/linux.com
+- __점심시간:__ 
+- __쉬는시간:__ 
+
+> https://github.com/tangt64/training_memos/
+> LinuxFoundation/
+
+__메모 주소:__ [링크](https://github.com/tangt64/training_memos/blob/main/LinuxFoundation/)
+
+## Registration Link
+
+__주소:__ [등록링크](https://linux.thoughtindustries.com/redeem)
+
+__코드:__ lfs458fastlanekorea20231010
+
+## Course Survey Link 
+
+__주소__: [서베이 주소](https://www.surveymonkey.com/r/KK7Z3SR?course=LFS458_20231010_PART_VIRT_FASTLANEKOREA)
 
 
-### 레드햇 계열 배포판
+### 쿠버네티스/런타임 소개
+
+CSI: Container Storage Interface (CSI) Specification 
+> NFS(nfs 4.x(pnfs, ganesha-nfs))
+> san/nas
+> shared type FS
+
+CNI: Container Network Interface
+> vxlan, geneve, vlan...
+> flanned, calico...
+
+OCI: Open Container Initiative
+> Runtime Specification (runtime-spec), 
+> the Image Specification (image-spec, docker-image --> OCI Image) 
+>> Dockerfile --> Containerfile
+>> docker build Dockefile --> buildah bud 
+> Distribution Specification (distribution-spec). 
+>> /var/lib/containers/
+>> /run/containers/
+> The Runtime Specification outlines how to run a “filesystem bundle” 
+>> Overlay2 Filesystem
+
+CRI: Container Runtime Interface
+1. docker-shim(cri-docker, keyword: docker-cri) 
+2. CRI-O
+> Google, IBM/Redhat, SuSE
+3. containerd(CRI adapter, standard container runtime) 
+
+
+https://www.ianlewis.org/assets/images/768/runtimes.png
+
 
 ```bash
-master/node]# cat <<EOF> /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/
-enabled=1
-gpgcheck=1
-gpgkey=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/repodata/repomd.xml.key
-# exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
-EOF
-master/node]# dnf search --disableexcludes=kubernetes kubectl kubeadm kubelet 
-master/node]# dnf install --disableexcludes=kubernetes kubectl kubeadm kubelet 
-master/node]# setenforce 0
-master/node]# vi /etc/selinux/config
-> permissive
+dnf install epel-release -y
+dnf search tmux
+dnf install tmux -y
+vi ~/.tmux.conf
+> set -g mouse on
+dnf search podman                                          ## podman container engine
+dnf install podman podman-compose podman-docker -y
+systemctl enable --now podman                            ## podman.service for API
+podman pod ls
+podman container ls
+ps -ef | grep podman
+ps -ef | grep runc
+
+podman run -d --name httpd quay.io/centos7/httpd-24-centos7 
+
+cd /var/lib/containers/
+> stoage
+podman container ls
+cd overlay-containers
+ls -l 
+> [CONTAINER_ID_DIRECTORY]
+ps -ef | grep httpd
+ps -ef | grep conmon
+lsns
 ```
 
-### 데비안 계열 배포판
+CR: deployment, replicaset, pod...
+CRD: configmap, secret...
+
+### 랩 설치 준비
+
+[설치 명령어 모음](https://raw.githubusercontent.com/tangt64/training_memos/main/LinuxFoundation/LFS458/command-collection.md)
 
 ```bash
-master/node]# sudo apt-get update
-master/node]# sudo apt-get install -y apt-transport-https ca-certificates curl
-master/node]# sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-master/node]# echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-master/node]# sudo apt-get update
-master/node]# sudo apt-get install -y kubelet kubeadm kubectl
-master/node]# sudo dpkg --list | grep kube
-master/node]# sudo apt-mark hold kubelet kubeadm kubectl
-```
+setenforce 0
+hostnamectl set-hostname bare.cka.example.com
+dnf install git ansible -y
+git clone https://github.com/tangt64/duststack-k8s-auto.git
+cd duststack-k8s-auto
+ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
+vi /etc/ssh/sshd_config
+> PermitRootLogin yes
 
+systemctl reload sshd
+ssh-copy-id root@127.0.0.1
 
-```bash
-master/node]# systemctl stop firewalld && systemctl disable firewalld
-master/node]# swapon -s
-master/node]# swapoff -a
-master/node]# dnf install tc -y        			 		## optional
-master/node]# dnf install iproute-tc -y 				## centos-9-stream, optional
-```
-
-### hosts A Recode(instead bind)
-1. bind(dns) 구성(primary)
-2. /etc/hosts A(ipv4),AAAA(ipv6) recode를 구성(backup)
-
-```bash
-#
-# 내부 아이피로 구성
-#
-master/node]# cat <<EOF>> /etc/hosts
-192.168.90.110 master.example.com master
-
-192.168.90.120 node1.example.com node1
-192.168.90.130 node2.example.com node2
-EOF
-```
-### kubelet service
-#
-# 처음에 동작 시 "activing..."라고 표시가 되는것은 지극히 정상
-# 
-
-```bash
-master]# systemctl status kubelet
-master]# systemctl enable --now kubelet
-```
-
-### crio install(o) 레드햇 계열
-
-```bash
-master/node]# dnf install wget -y
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
-master/node]# dnf install cri-o -y
-master/node]# systemctl enable --now crio
-master/node]# systemctl is-active crio
-
-#
-# podman 설치 한 후, crio설치 시, policy.json문제 발생
-#
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
-
-### crio 데비안 계열
-
-```bash
-export OS=xUbuntu_22.04
-export CRIO_VERSION=1.26
-
-echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /"|sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$CRIO_VERSION/$OS/ /"|sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$CRIO_VERSION.list
-
-curl -L http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$CRIO_VERSION/$OS/Release.key | sudo apt-key add -
-curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | sudo apt-key add -
-
-sudo apt update
-sudo apt install cri-o cri-o-runc
-```
+vi playbooks/lab-provisioning.yaml
+> remote_user: tang --> root
+./provin-k8s.sh
 
 ```
-### modules
-
-```bash
-master/node]# modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
-master/node]# modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
-master/node]# cat <<EOF> /etc/modules-load.d/k8s-modules.conf
-br_netfilter
-overlay
-EOF
-```
-
-### kenrel parameter
-```bash
-master/node]# cat <<EOF> /etc/sysctl.d/k8s-mod.conf
-> net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
-> net.ipv4.ip_forward=1                   ## pod <---> svc
-> net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
-> EOF
-sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
-dracut -f 								  ## ramdisk 갱신
-```
-
-### kubeadm init as single controller role node
-
-```bash
-master]# kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
-master]# systemctl is-active kubelet  							## active
-master]# crictl ps 
-```
-### 초기화 순서 및 방법
-
-노드에서 마스터 순서로 리셋.
-```bash
-@master]# kubeadm reset --force 
-@node]# kubeadm reset --force
-```
-
-### kubeadm join(single)
-
-```bash
-@master]# KUBECONFIG=/etc/kubernetes/admin.conf kubeadm token create --print-join-command
-```
-
-### node join
-
-```bash
-node]# kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
-        --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27
-master]# kubectl get nodes    
-```
-### 터널링 네트워크 구성
-
-```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
-https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
-kubectl get pods -wA   						## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
-```
-
-#### 메트릭/역할(임시)
-```bash
-kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
-kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
-kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
-kubectl top nodes
-kubectl get nodes
-```
-- 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
-- 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
-
-#### 확인하기(마스터)
-```bash
-export KUBECONFIG=/etc/kubernetes/admin.conf 
-kubectl get nodes
-```
-
-
+# DAY 2
+# DAY 3
+# DAY 4
