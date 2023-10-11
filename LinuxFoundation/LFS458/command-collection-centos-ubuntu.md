@@ -6,7 +6,6 @@
 
 ## 마스터 및 노드 공통 설정
 
-
 ### 레드햇 계열 배포판
 
 ```bash
@@ -26,26 +25,12 @@ master/node]# vi /etc/selinux/config
 > permissive
 ```
 
-### 데비안 계열 배포판
-
-```bash
-master/node]# sudo apt-get update
-master/node]# sudo apt-get install -y apt-transport-https ca-certificates curl
-master/node]# sudo curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-master/node]# echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-master/node]# sudo apt-get update
-master/node]# sudo apt-get install -y kubelet kubeadm kubectl
-master/node]# sudo dpkg --list | grep kube
-master/node]# sudo apt-mark hold kubelet kubeadm kubectl
-```
-
-
 ```bash
 master/node]# systemctl stop firewalld && systemctl disable firewalld
 master/node]# swapon -s
 master/node]# swapoff -a
 master/node]# dnf install tc -y        			 		## optional
-master/node]# dnf install iproute-tc -y 				## centos-9-stream, optional
+master/node]# dnf install iproute-tc -y 				        ## centos-9-stream, optional
 ```
 
 ### hosts A Recode(instead bind)
@@ -57,10 +42,8 @@ master/node]# dnf install iproute-tc -y 				## centos-9-stream, optional
 # 내부 아이피로 구성
 #
 master/node]# cat <<EOF>> /etc/hosts
-192.168.90.110 master.example.com master
-
-192.168.90.120 node1.example.com node1
-192.168.90.130 node2.example.com node2
+192.168.90.100 master.example.com master
+192.168.90.110 node1.example.com node1
 EOF
 ```
 ### kubelet service
@@ -76,12 +59,12 @@ master]# systemctl enable --now kubelet
 ### crio install(o) 레드햇 계열
 
 ```bash
-master/node]# dnf install wget -y
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
-master/node]# dnf install cri-o -y
-master/node]# systemctl enable --now crio
-master/node]# systemctl is-active crio
+curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_9_Stream/devel:kubic:libcontainers:stable.repo -o /etc/yum.repos.d/libcontainers.repo
+curl https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.28:/1.28.1/CentOS_9_Stream/devel:kubic:libcontainers:stable:cri-o:1.28:1.28.1.repo -o /etc/yum.repos.d/crio.repo
+yum repolist
+yum search cri-o
+yum install cri-o -y
+systemctl enable --now crio
 
 #
 # podman 설치 한 후, crio설치 시, policy.json문제 발생
