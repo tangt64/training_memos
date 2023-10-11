@@ -69,23 +69,21 @@ systemctl enable --now crio
 #
 # podman 설치 한 후, crio설치 시, policy.json문제 발생
 #
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
-
-### crio 데비안 계열
-
-```bash
-export OS=xUbuntu_22.04
-export CRIO_VERSION=1.26
-
-echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /"|sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$CRIO_VERSION/$OS/ /"|sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$CRIO_VERSION.list
-
-curl -L http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$CRIO_VERSION/$OS/Release.key | sudo apt-key add -
-curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | sudo apt-key add -
-
-sudo apt update
-sudo apt install cri-o cri-o-runc
-```
+vi /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports":
+        {
+            "docker-daemon":
+                {
+                    "": [{"type":"insecureAcceptAnything"}]
+                }
+        }
+}
 
 ```
 ### modules
@@ -102,10 +100,10 @@ EOF
 ### kenrel parameter
 ```bash
 master/node]# cat <<EOF> /etc/sysctl.d/k8s-mod.conf
-> net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
-> net.ipv4.ip_forward=1                   ## pod <---> svc
-> net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
-> EOF
+net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
+net.ipv4.ip_forward=1                   ## pod <---> svc
+net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
+EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 dracut -f 								  ## ramdisk 갱신
 ```
@@ -141,8 +139,10 @@ master]# kubectl get nodes
 ### 터널링 네트워크 구성
 
 ```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
-https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml -o tigera-operator.yaml
+kubectl create -f tigera-operator.yaml
+curl https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml -o ~/calico-quay-crd.yaml
+kubectl apply -f ~/calico-quay-crd.yaml
 kubectl get pods -wA   						## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
 ```
 
