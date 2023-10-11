@@ -108,15 +108,28 @@ net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
 EOF
 sysctl --system
-
 sudo swapoff -a 
-
 
 sudo kubeadm init --apiserver-advertise-address=192.168.90.100 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 
 
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
 curl https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml -o calico-quay-crd.yaml 
-kubectl applyf -f calico-quay-crd.yaml 
+kubectl apply -f calico-quay-crd.yaml 
+```
 
+#### 메트릭/역할(임시)
+```bash
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
+kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
+kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
+kubectl top nodes
+kubectl get nodes
+```
+- 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
+- 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
 
+#### 확인하기(마스터)
+```bash
+export KUBECONFIG=/etc/kubernetes/admin.conf 
+kubectl get nodes
 ```
