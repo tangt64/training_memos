@@ -1,16 +1,4 @@
 ```bash
-sudo dnf install guestfs-tools
-virt-builder --list
-
-sudo virt-builder --size=20G --root-password password:cka --format qcow2 ubuntu-20.04 -o /var/lib/libvirt/images/cka-ubuntu-master.qcow2
-sudo virt-builder --size=20G --root-password password:cka --format qcow2 ubuntu-20.04 -o /var/lib/libvirt/images/cka-ubuntu-node1.qcow2
-
-sudo virt-install -n ubuntu-master-k8s -r 2048 --cpu host-passthrough --vcpus 2  --network network=default --network network=internal --graphics vnc -v --disk=path=/var/lib/libvirt/images/cka-ubuntu-master.qcow2,format=qcow2 --noautoconsole --osinfo ubuntufocal --import
-
-sudo virt-install -n ubuntu-node1-k8s -r 2048 --cpu host-passthrough --vcpus 2  --network network=default --network network=internal --graphics vnc -v --disk=path=/var/lib/libvirt/images/cka-ubuntu-node1.qcow2,format=qcow2 --noautoconsole --osinfo ubuntufocal --import
-```
-
-```bash
 sudo hostnamectl set-hostname master.example.com
 sudo hostnamectl set-hostname node1.example.com
 
@@ -54,13 +42,14 @@ sudo apt-mark hold kubelet kubeadm kubectl
 sudo echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sources.list.d/backports.list
 sudo apt update
 
-export OS=xUbuntu_20.04
-export VERSION=1.27.0
+
 
 #
 ## root 
 #
 
+export OS=xUbuntu_20.04
+export VERSION=1.27.0
 
 curl -fsSL  https://mirrorcache-jp.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.27:/1.27.0/xUbuntu_20.04/Release.key | apt-key add -
 
@@ -69,7 +58,7 @@ curl -fsSL  https://mirrorcache-jp.opensuse.org/repositories/devel:/kubic:/libco
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.27:/1.27.0/xUbuntu_20.04/ /" > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.list
 sudo apt update
-sudo apt-get install cri-o cri-o-runc -f
+sudo apt-get install cri-o cri-o-runc -y
 
 sudo systemctl enable --now crio
 sudo systemctl enable --now kubelet

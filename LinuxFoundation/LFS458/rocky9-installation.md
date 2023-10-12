@@ -1,12 +1,4 @@
-# 쿠버네티스 싱글 마스터 + 2노드 클러스터 구성(kubeadm)
-
-- kubespray(ansible)
-- kind
-- minikube
-
 ## 마스터 및 노드 공통 설정
-
-### 레드햇 계열 배포판
 
 ```bash
 master/node]# cat <<EOF> /etc/yum.repos.d/kubernetes.repo
@@ -16,10 +8,10 @@ baseurl=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/
 enabled=1
 gpgcheck=1
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/repodata/repomd.xml.key
-# exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
-master/node]# dnf search --disableexcludes=kubernetes kubectl kubeadm kubelet 
-master/node]# dnf install --disableexcludes=kubernetes kubectl kubeadm kubelet 
+master/node]# dnf search --disableexcludes=kubernetes kubectl kubeadm kubelet  
+master/node]# dnf install --disableexcludes=kubernetes kubectl kubeadm kubelet -y
 master/node]# setenforce 0
 master/node]# vi /etc/selinux/config
 > permissive
