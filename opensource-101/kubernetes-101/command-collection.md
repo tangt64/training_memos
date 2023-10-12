@@ -119,15 +119,16 @@ master]# crictl ps
 ### node join
 
 ```bash
-node]# kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
+kubeadm join 192.168.90.110:6443 --token yspx54.k2076yehis972cng \
         --discovery-token-ca-cert-hash sha256:4743574ead43b14374be00496294bcb5ee85a3967724c0c3464ca9dcb576fb27
-master]# kubectl get nodes    
+kubectl get nodes    
 ```
 ### 터널링 네트워크 구성
 
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
-https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+curl https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml -o calico-quay-crd.yaml 
+kubectl applyf -f calico-quay-crd.yaml 
 kubectl get pods -wA   						## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
 ```
 
