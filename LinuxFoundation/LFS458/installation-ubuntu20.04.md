@@ -1,3 +1,7 @@
+# 설치 명령어 정리
+
+## 호스트 공통사항
+
 ```bash
 sudo hostnamectl set-hostname master.example.com
 sudo hostnamectl set-hostname node1.example.com
@@ -24,6 +28,9 @@ lsmod | grep br_netfilter
 lsmod | grep overlay
 sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables net.ipv4.ip_forward
 
+swapon -s
+swapoff -a
+
 ```
 
 
@@ -41,13 +48,11 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 sudo echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sources.list.d/backports.list
 sudo apt update
+```
 
+## root 권한에서 실행
 
-
-#
-## root 
-#
-
+```bash
 export OS=xUbuntu_20.04
 export VERSION=1.27.0
 
@@ -83,21 +88,24 @@ EOF
 systemctl stop firewalld
 systemctl disable firewalld
 systemctl is-active firewalld
+```
 
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-overlay
-br_netfilter
-EOF
-modprobe overlay
-modprobe br_netfilter
+## 쿠버네티스 설치
 
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-net.ipv4.ip_forward                 = 1
-EOF
-sysctl --system
-sudo swapoff -a 
+```bash
+sudo kubectl completion bash > /etd/bash_completion.d/kubectl
+sudo kubeadm completion bash > /etd/bash_completion.d/kubeadm
+sudo vi ~/.bashrc
+>if ! shopt -oq posix; then
+>  if [ -f /usr/share/bash-completion/bash_completion ]; then
+>    . /usr/share/bash-completion/bash_completion
+>  elif [ -f /etc/bash_completion ]; then
+>    . /etc/bash_completion
+>  fi
+>fi
+complet -r -p
+source /etc/bash_completion
+
 
 sudo kubeadm init --apiserver-advertise-address=192.168.90.100 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 
 
@@ -106,7 +114,7 @@ curl https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-10
 kubectl apply -f calico-quay-crd.yaml 
 ```
 
-#### 메트릭/역할(임시)
+#### 메트릭/역할
 ```bash
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
 kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
@@ -114,8 +122,6 @@ kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
 kubectl top nodes
 kubectl get nodes
 ```
-- 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
-- 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
 
 #### 확인하기(마스터)
 ```bash
