@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-test-pod
+spec:
+  containers:
+    - name: configmap-test-pod
+      image: alpine
+      command: ["sleep", "3600"]
+      envFrom:
+      - configMapRef:
+          name: special-config
+  restartPolicy: Never

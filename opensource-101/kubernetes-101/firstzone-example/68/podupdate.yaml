@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: podupdate
+  name: podupdate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podupdate
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: podupdate
+    spec:
+      containers:
+      - image: nginx:stable-alpine3.17-slim
+        name: nginx
+        ports:
+        - containerPort: 80
+        resources: {}
+status: {}

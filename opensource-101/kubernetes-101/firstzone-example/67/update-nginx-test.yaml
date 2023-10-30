@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: update-nginx-test
+  name: update-nginx-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: update-nginx-test
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: update-nginx-test
+    spec:
+      containers:
+      - image: quay.io/redhattraining/hello-world-nginx:v1.0
+        name: hello-world-nginx
+        resources: {}
+status: {}

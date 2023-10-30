@@ -1,0 +1,23 @@
+## 터미널 1
+
+```bash
+kubectl create ns lab-test-scheduler
+kubectl config set-contextg --namespace=lab-test-scheduler --current
+kubectl get pods
+kubectl run pod-scheduler --image=nginx
+kubectl get pods -w
+```
+
+## 터미널 2
+
+```bash
+ssh root@node1
+systemctl start kubelet
+```
+
+## 노드 1
+
+```bash
+systemctl stop kubelet
+systemctl is-active kubelet
+```
