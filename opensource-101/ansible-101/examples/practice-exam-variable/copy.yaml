@@ -1,9 +1,0 @@
-- hosts: all
-  tasks:
-  - copy:
-      content: "Hello SKT ansible remote"
-      dest: /tmp/issue
-  - copy:
-      src: /tmp/issue
-      dest: /etc/issue
-

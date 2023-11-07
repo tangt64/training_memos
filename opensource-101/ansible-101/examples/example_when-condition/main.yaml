@@ -1,0 +1,13 @@
+- hosts: localhost
+  vars:
+    yourname: choigookhyun
+
+  vars_files:
+    - vars.yaml
+
+  tasks:
+  - copy:
+      src: httpd.conf
+      dest: /etc/httpd/conf/httpd.conf
+    when: httpd_conf_update  
+

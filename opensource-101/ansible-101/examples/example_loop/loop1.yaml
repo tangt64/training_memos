@@ -1,0 +1,11 @@
+- hosts: localhost
+  tasks:
+  - name: add user
+    user:
+      name: "{{ item }}"
+      state: present
+      groups: "wheel"
+    loop:
+      - user1
+      - user2
+  

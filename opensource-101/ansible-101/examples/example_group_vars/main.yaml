@@ -1,0 +1,8 @@
+- hosts: all
+  tasks:
+  - name: shows the group vars from the group var directory
+    debug:
+      msg: "{{ item }}"
+    loop:
+      - httpd_package
+      - ftp_package

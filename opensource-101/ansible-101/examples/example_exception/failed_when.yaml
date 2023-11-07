@@ -1,0 +1,18 @@
+- hosts: localhost
+  tasks:
+  - name: Fail the task if "FAILED" string in the output 1 
+    command: ls -al
+    register: command_result
+    failed_when: "'FAILED' in command_result.stderr"
+
+  - name: Fail the task if "FAILED" string in the output 2
+    debug:
+      msg: "Failed Failed Failed!!!"
+    failed_when: 
+      - result.rc == 0
+
+  - name: Fail the task rc and String exisit.
+    command: failed-command -h -e -l -l -o
+    register: command
+    failed_when: command.rc == 1 or "'FAILED' in command.stderr"
+    

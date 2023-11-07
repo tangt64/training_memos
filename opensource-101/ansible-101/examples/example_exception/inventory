@@ -1,0 +1,5 @@
+[server_ok]
+node1.example.com
+
+[server_error]
+node2.example.com

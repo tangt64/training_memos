@@ -1,0 +1,10 @@
+- name: this is first dict
+  hosts: localhost
+  vars:
+    dict:
+      firstname: choi
+      lastname: gookhyun
+      gender: male
+  tasks:
+  - name: shows your name
+    command: echo "{{ dict.fistname }} {{ dict.lastname }} {{ dict['gender'] }}"

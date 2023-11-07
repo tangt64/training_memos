@@ -1,0 +1,16 @@
+- hosts: localhost
+
+  tasks:
+  - name: start the block session  
+    block:
+    - yum:
+        name: httpd
+        state: present
+        register: result_package
+    rescue:
+    - yum:
+        name: httpd
+        state: absent
+    always:
+    - debug:
+        msg: "Always runs it" 

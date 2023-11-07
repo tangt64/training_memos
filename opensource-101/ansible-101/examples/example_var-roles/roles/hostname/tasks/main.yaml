@@ -1,0 +1,3 @@
+- name: show the "{{ node1 }}" from roles var directory
+  debug:
+    msg: "{{ node1 }}"

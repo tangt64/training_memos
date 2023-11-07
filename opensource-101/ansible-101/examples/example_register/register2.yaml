@@ -1,0 +1,12 @@
+- hosts: localhost
+  tasks:
+
+  - name: register a variable
+    command: /bin/false
+    register: result
+    ignore_errors: true
+
+  - name: run when the "result" var fails
+    command: /bin/somedothing
+    when: result is failed
+

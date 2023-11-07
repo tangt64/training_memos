@@ -1,0 +1,13 @@
+[test]
+node1.example.com package=httpd
+
+[db]
+10.10.5.2 package=mariadb
+
+[was]
+was1.example.com package=wildfly
+
+[set:children]
+db
+was
+

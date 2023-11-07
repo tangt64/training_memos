@@ -1,0 +1,5 @@
+- hosts: localhost 
+  tasks:
+  - command: /bin/noexist_cmd
+    ignore_errors: yes
+  - command: echo "This command will be working without problem"

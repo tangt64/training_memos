@@ -1,0 +1,9 @@
+- hosts: localhost
+  vars:
+    test1: true
+    test2: "yes"
+
+  tasks:
+  - name: Boolean false
+    shell: echo "This is true"
+    when: not test1

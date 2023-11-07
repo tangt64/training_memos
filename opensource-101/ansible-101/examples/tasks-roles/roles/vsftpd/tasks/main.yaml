@@ -1,3 +1,0 @@
-- name: this is vsftpd tasks
-  debug:
-    msg: "This is vsftpd role task message"

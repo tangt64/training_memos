@@ -1,0 +1,11 @@
+[node1]
+172.17.162.69 nodename=node1.example.com ansible_password=centos
+
+[node2]
+172.17.170.177 nodename=node2.example.com ansible_password=centos
+
+[webserver]
+192.168.90.5
+
+[database]
+192.168.90.8

@@ -1,8 +1,0 @@
-- hosts: all
-  tasks:
-  - name: register with loop
-    shell: "echo {{ item }}"
-    loop:
-      - "one"
-      - "two"
-    register: echo 

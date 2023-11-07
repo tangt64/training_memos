@@ -1,0 +1,7 @@
+- hosts: webserver
+  tasks:
+  - name: Stop to the apache service before go to the HAproxy port disabled
+    service:
+      name: httpd
+      state: stopped
+    delegate_to: groups['haproxy']['1']
