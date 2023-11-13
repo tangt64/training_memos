@@ -1,0 +1,18 @@
+[default]
+192.168.90.11 ansible_connection=local
+
+[other_user]
+192.168.90.101 ansible_user=testuser
+
+[other_port_user]
+192.168.90.22 ansible_user=testuser ansible_port=8080
+
+[access_ssh_with_passwd]
+10.10.2.4 ansible_user=deploy ansible_ssh_pass=centos ansible_port=1122
+
+;; ansible_ssh_user --> ansible_user
+;; ansible_ssh_host --> ansible_host
+;; ansible_ssh_port --> ansible_port
+;; https://docs.ansible.com/ansible/2.3/intro_inventory.html#id6
+;; Try to use the keyword with ansible_*. Not the ansible_ssh_.
+
