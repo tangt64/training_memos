@@ -1,0 +1,3 @@
+---
+- import_tasks: hostname.yaml
+- import_tasks: copy.yaml

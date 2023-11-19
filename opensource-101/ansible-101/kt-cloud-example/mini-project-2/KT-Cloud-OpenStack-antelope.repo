@@ -1,0 +1,5 @@
+[kt-osp-intenral-openstack-antelope-repos]
+name=KT-Cloud-OpenStack-Antelope
+baseurl=http://10.10.10.250/openstack-antelope/
+gpgcheck=0
+enabled=1

@@ -1,0 +1,72 @@
+---
+- name: Prepare O/S config
+  hosts: all
+
+  port: 8822
+  remote_user: ansible
+  become: true
+
+  tasks:
+  - name: Install OpenStack componets Repository {{ inventory_hostname }}
+    package:
+      name:
+        - "centos-release-openstack-{{ osp_release_name }}.noarch"
+        - "centos-release-ceph-{{ ceph_release_name }}.noarch"
+        - "centos-release-{{ gluster_release_name }}.noarch"
+        - epel-release
+      state: present
+  - name: Load up kvm.ko module
+    modprobe:
+      name: kvm
+      state: present
+      params: nested=Y
+
+- name: OpenStack controller installer
+  hosts: osp_controller
+
+  port: 8822
+  remote_user: ansible
+  become: true
+
+  tasks:
+  - name: Install control packages
+    dnf:
+      name:
+        - mariadb-server
+        - openstack-keystone
+        - openstack-cinder
+        - openstack-glance
+        - openstack-nova
+        - openstack-neutron
+      state: present
+  - name: Disabled to Firewalld
+    systemd:
+      name: firewalld
+      state: stopped
+      enabled: false
+
+- name: OpenStack compute installer
+  hosts: osp_compute
+
+  port: 8822
+  remote_user: ansible
+  become: true
+
+  tasks:
+- name: Storage for OpenStack Ceph installer
+  hosts: ceph
+
+  port: 8822
+  remote_user: ansible
+  become: true
+
+  tasks:
+- name: Storage for OpenStack GlusterFS installer
+  hosts: glusterfs
+
+  port: 8822
+  remote_user: ansible
+  become: true
+
+  tasks:
+...

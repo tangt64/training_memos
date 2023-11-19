@@ -1,0 +1,13 @@
+---
+- name: Start the httpd service
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Open all service ports on Firewalld service
+  firewalld:
+    service: http
+    state: enabled
+    permanent: true
+    zone: public

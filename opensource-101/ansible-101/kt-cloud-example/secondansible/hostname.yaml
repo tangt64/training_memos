@@ -1,0 +1,10 @@
+---
+- name: Configure to a compute node
+  hosts: all
+
+  tasks:
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: "{{ osp_nodename }}"
+        use: systemd
+...

@@ -1,0 +1,30 @@
+---
+- name: www playbook
+  hosts: www
+
+  tasks:
+  - name: show the nodename variable
+    debug:
+      msg: "{{ nodename }}"
+
+  - name: set to hostname in {{ inventory_hostname }}
+    shell: hostnamectl set-hostname {{ nodename }}
+
+  - name: install the httpd package
+    package:
+      name: httpd
+      state: present
+
+- name: db playbook
+  hosts: db
+  tasks:
+  - name: install the db package
+    package:
+      name: mariadb-server
+      state: present
+
+  - name: remove the httpd package
+    package:
+      name: httpd
+      state: absent
+...

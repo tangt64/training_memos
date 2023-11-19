@@ -1,0 +1,10 @@
+---
+- name: Install a vsftpd package
+  package:
+    name: vsftpd
+    state: present
+- name: Start the vsftpd service
+  service:
+    name: vsftpd
+    state: started
+    enabled: true
