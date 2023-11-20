@@ -163,16 +163,39 @@ man run
 
 
 ```bash
+runc: 일반적으로 많이 사용하는 컨테이너 생성(kubernetes,go)
+crun: 레드햇 제품에서 많이 사용(openshift, rancher, c)
+
+crun: 컨테이너 생성(/var/lib/containers/storages/overlay), overlay module
+      \
+       `---> lsmod | grep overlay --- /var/lib/containers/overlay(binding mount)
+        ---> mount -obind
+
+컨테이너에 연결되는 장치는 전부다 호스트 컴퓨트(worker node)를 통해서 전달 받음.
+
+[10.10.10.10:/container_disk/] ---> worker_node --->  [bind] ---> | container |
+                                     [mount]       </var/lib/containers/>
+
+infraContainer = Container
+conmon: LifeCycle Mangement(stop, start, rm, restart(stop+start))
+
+<------엔진----->    <---------- 관리/생성 -------->
+podman         ---> conmon ---> runc ---> container 
+[고수준,명령어]
+
+crio/container ---> conmon ---> runc ---> container
+[저수준,socket/api]
+
                     +-----------------+
                     |podman/kubernetes|  <--- # podman container run -d --pod pod1 --name httpd -p 58080:8080 <IMAGE>
                     +-----------------+  <--- # podman pod create pod1
-                            |
+                            |                 # podman container ls
                             |
                     .---- conmon----.
                    /                 \         [infraContainer]
 # ps -ef | conmon /                   \        +---------------+
-           .--- runc                 runc -----* POD container |  # podman pod ls 
-          /         ipc,uts,net,mnt,pid        |    [pause]    |  # ps -ef | grep catatonit
+           .--- runc # crun list     runc -----* POD container |  # podman pod ls 
+          /         ipc,uts,net,mnt,pid        |    [pause]    |  # ps -efw | grep catatonit
          /          [cgroup/namespace]         +---------------+                  pause
         /
     +--*--------+    # lsns 
@@ -181,6 +204,15 @@ man run
     | 8080/tcp  |      \         [nftables]                       /
     +-----------+       \        [linux bridge]                  /
                          `--------------------------------------'
+
+
+APP ---> USERSPACE DRIVER --- KERNEL DRIVER ---> KERNEL
+
+httpd ---> PID 1[systmed] ---> kernel(ring)
+
+httpd ---> PID 1[application] ---> runc(HV) ---> systemd ---> KERNEL
+
+
 ```
 
 # day 2
