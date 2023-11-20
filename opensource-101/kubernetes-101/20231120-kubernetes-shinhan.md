@@ -172,7 +172,7 @@ crun: 컨테이너 생성(/var/lib/containers/storages/overlay), overlay module
         ---> mount -obind
 
 컨테이너에 연결되는 장치는 전부다 호스트 컴퓨트(worker node)를 통해서 전달 받음.
-
+ 
 [10.10.10.10:/container_disk/] ---> worker_node --->  [bind] ---> | container |
                                      [mount]       </var/lib/containers/>
 
@@ -194,24 +194,27 @@ crio/container ---> conmon ---> runc ---> container
                     .---- conmon----.
                    /                 \         [infraContainer]
 # ps -ef | conmon /                   \        +---------------+
-           .--- runc # crun list     runc -----* POD container |  # podman pod ls 
+           .--- runc # crun list     runc -----*      POD      |  # podman pod ls 
           /         ipc,uts,net,mnt,pid        |    [pause]    |  # ps -efw | grep catatonit
          /          [cgroup/namespace]         +---------------+                  pause
-        /
-    +--*--------+    # lsns 
-    | container |    # systemd-cgls 
+        /                                                    \
+    +--*--------+    # lsns                                   \
+    | container |    # systemd-cgls                            v
     |  [httpd]  | --- dport 10.88.0.4:8080 --- saddr: 10.88.0.0:58080 <--- #curl localhost:58080
     | 8080/tcp  |      \         [nftables]                       /
     +-----------+       \        [linux bridge]                  /
                          `--------------------------------------'
 
+VM: 4 x 2 = 8
+CON: 4
 
 APP ---> USERSPACE DRIVER --- KERNEL DRIVER ---> KERNEL
 
 httpd ---> PID 1[systmed] ---> kernel(ring)
 
 httpd ---> PID 1[application] ---> runc(HV) ---> systemd ---> KERNEL
-
+lsns
+- mnt, ipc, net, uts
 
 ```
 
