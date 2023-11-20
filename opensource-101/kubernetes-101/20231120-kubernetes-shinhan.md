@@ -94,6 +94,10 @@ podman
                            namespace+c-group
 ```
 
+1. ifconfig, netstat, route...
+2. standard modern linux(systemd)
+3. RHEL 10(xfs, stratis-dracut, vdo)
+
 ```bash
 dnf search podman epel-release
 dnf install epel-release 
@@ -113,9 +117,20 @@ rpm -qi httpd
 find / -name httpd -type f -print 
 cd /var/lib/containers/storage/overlay
 
+## 컨테이너 네트워크
 
+iptables -L -n -t nat
+nft list table nat
 
+## 포드/컨테이터
 
+podman network create shared
+
+podman pod create --name pod1 --network shared
+podman run -d --pod pod1 --name pod1-httpd-1 --network shared quay.io/centos7/httpd-24-centos7
+podman run -d --pod pod1 --name pod1-httpd-2 --network shared quay.io/centos7/httpd-24-centos7
+
+ 
 ```
 
 ### POD? Pause?
