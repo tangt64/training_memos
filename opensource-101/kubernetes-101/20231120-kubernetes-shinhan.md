@@ -126,13 +126,16 @@ nft list table nat
 
 podman run -d --name httpd-24-centos-7 -p 58080:8080 --rm quay.io/centos7/httpd-24-centos7
 
-podman network create shared
+podman network create shared          ## flanned, calico
+podman network inspect shared
 
-podman pod create --name pod1 --network shared
-podman run -d --pod pod1 --name pod1-httpd-1 --network shared quay.io/centos7/httpd-24-centos7
-podman run -d --pod pod1 --name pod1-httpd-2 --network shared quay.io/centos7/httpd-24-centos7
+podman pod create --name pod1 --network shared --share uts,ipc,net
+podman run -d --pod pod1 --name pod1-httpd-1 --network shared quay.io/centos7/httpd-24-centos7 --port 8080
+podman run -d --pod pod1 --name pod1-httpd-2 --network shared quay.io/centos7/httpd-24-centos7 --port 8080
 
- 
+podman generate kube pod1 --service --filename pod1.yaml
+
+
 ```
 
 ### POD? Pause?
@@ -156,9 +159,29 @@ Container: systemd(x), Pause PID 1,
 
 man conmon
 man run
-
 ``` 
 
+
+```bash
+                    +-----------------+
+                    |podman/kubernetes|  <--- # podman container run -d --pod pod1 --name httpd -p 58080:8080 <IMAGE>
+                    +-----------------+  <--- # podman pod create pod1
+                            |
+                            |
+                    .---- conmon----.
+                   /                 \         [infraContainer]
+# ps -ef | conmon /                   \        +---------------+
+           .--- runc                 runc -----* POD container |  # podman pod ls 
+          /         ipc,uts,net,mnt,pid        |    [pause]    |  # ps -ef | grep catatonit
+         /          [cgroup/namespace]         +---------------+                  pause
+        /
+    +--*--------+    # lsns 
+    | container |    # systemd-cgls 
+    |  [httpd]  | --- dport 10.88.0.4:8080 --- saddr: 10.88.0.0:58080 <--- #curl localhost:58080
+    | 8080/tcp  |      \         [nftables]                       /
+    +-----------+       \        [linux bridge]                  /
+                         `--------------------------------------'
+```
 
 # day 2
 
