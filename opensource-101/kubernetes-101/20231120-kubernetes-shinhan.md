@@ -124,6 +124,8 @@ nft list table nat
 
 ## 포드/컨테이터
 
+podman run -d --name httpd-24-centos-7 -p 58080:8080 --rm quay.io/centos7/httpd-24-centos7
+
 podman network create shared
 
 podman pod create --name pod1 --network shared
