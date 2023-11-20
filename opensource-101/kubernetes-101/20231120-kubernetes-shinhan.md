@@ -215,8 +215,40 @@ httpd ---> PID 1[systmed] ---> kernel(ring)
 httpd ---> PID 1[application] ---> runc(HV) ---> systemd ---> KERNEL
 lsns
 - mnt, ipc, net, uts
-
 ```
+
+
+### 쿠버네티스 설치 준비
+
+
+eth0: 외부망(k8s image, rpm)
+eth1: 쿠버네티스 내부망(Pod vlan/vxlan)
+
+```bash
+nmcli dev eth1
+nmtui edit eth1
+nmcli con sh
+nmtui edit "Wired connection 1"
+> 아이피 주소
+> "Automatic" -> "Manual"
+> "Never use this network for default route"
+nmcli con sh
+ip a s eth0
+```
+
+
+node1
+---
+eth1: 192.168.90.110/24
+
+node2 
+---
+eth1: 192.168.90.120/24
+
+node3
+---
+eth1: 192.168.90.130/24
+
 
 # day 2
 
