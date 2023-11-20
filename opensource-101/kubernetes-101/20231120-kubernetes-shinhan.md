@@ -49,14 +49,99 @@ CentOS
 5. ABI/KABI의 호환성
 6. 더 이상 rhel하고 100%호환성을 제공하지 않음
 
+From centos to RHEL(X)
+---
 https://access.redhat.com/discussions/5779541
 
+From centos-stream to Rocky(O)
+---
 https://ciq.com/products/rocky-linux/
+
+
+1. Redhat CentOS ---> Rocky/Oracle/Alma
+2. SuSE: OpenSUSE Leaf ---> SESL
+3. ubuntu: Ubuntu Comm ---> Ubuntu ENT
 
 ## 시간
 
 - 강의 시작 및 종료 시간: 오전 09:00분 ~ 오후 05:50분
 - 점심 시간: 오전 11:30분 ~ 오후 01:00분
+
+## 표준 컨테이너
+```bash
+ .-------------- PODMAN ----------------.
+/                                        \
+RUNTIME(APP_Container(APP + Container LIB))
+------- ---------------------------------
+  CRI                     OCI
+```
+1. OCI: Open Container Image(v1: docker-image, v2: oci-image)
+2. CRI: Container Runtime Interface(containerd(CRI adapter), CRI-O)
+3. POD/CONTAINER
+
+- 고수준(runtime engine): Docker, Podman
+- 저수준: containerd(dockerd), cri-o, runc(컨테이너 생성)
+- 저수준 관리자: conmon(container monitor)
+
+```bash
+podman
+  \
+   `---> conmon
+           \
+            `---> runc
+                    \
+                     `---> Container Process(LIB + APP)
+                           namespace+c-group
+```
+
+```bash
+dnf search podman epel-release
+dnf install epel-release 
+dnf search podman
+dnf install podman podman-docker podman-compose -y
+
+podman pod ls
+podman container ls
+
+grep -Ev '^#|^$' /etc/containers/registries.conf
+> unqualified-search-registries = ["quay.io"]
+podman search httpd
+podman run -d --name httpd-24-centos-7 --rm quay.io/centos7/httpd-24-centos7
+ps -ef | grep httpd
+whereis httpd
+rpm -qi httpd
+find / -name httpd -type f -print 
+cd /var/lib/containers/storage/overlay
+
+
+
+
+```
+
+### POD? Pause?
+
+POD: 개념
+\
+ `---> Pause: Pod 구현 애플리케이션
+ `---> Infra Container(Pod Container)
+       (namespace, cgroup)
+
+systemd: PID 1
+VM: systemd, PID 1
+Container: systemd(x), Pause PID 1, 
+
+
+```bash
+ Pause --- (APPLICATION + LIB)
+        \     httpd       CentOS
+         `---> (APPLICATION + LIB)
+                  mysql       CentOS
+
+man conmon
+man run
+
+``` 
+
 
 # day 2
 
