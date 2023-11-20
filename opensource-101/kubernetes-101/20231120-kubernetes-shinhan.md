@@ -51,6 +51,7 @@ CentOS
 
 https://access.redhat.com/discussions/5779541
 
+https://ciq.com/products/rocky-linux/
 
 ## 시간
 
