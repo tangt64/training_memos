@@ -7,9 +7,15 @@ __강사 이름:__ 최국현
 __메일 주소:__ tang@linux.com
 
 ## 문서 및 자료 주소
+
 1. https://github.com/tangt64/training_memos/tree/main/opensource-101/kubernetes-101
 2. 20231120-kubernetes-shinhan.md
 3. [화이트 보드 링크](https://wbd.ms/share/v2/aHR0cHM6Ly93aGl0ZWJvYXJkLm1pY3Jvc29mdC5jb20vYXBpL3YxLjAvd2hpdGVib2FyZHMvcmVkZWVtL2ZiMjM0ZThlNmQyMTQwNmFhMWUzOTA0MGYxYTBjMTkxX0JCQTcxNzYyLTEyRTAtNDJFMS1CMzI0LTVCMTMxRjQyNEUzRF82OGJlYmVmZS0yNTI0LTQ5ZjQtYThhMy0xOTM0Yjg4MWRlYmY=)
+
+## 시간
+
+- 강의 시작 및 종료 시간: 오전 09:00분 ~ 오후 05:50분
+- 점심 시간: 오전 11:30분 ~ 오후 01:00분
 
 
 ## 선수 사항
@@ -61,11 +67,6 @@ https://ciq.com/products/rocky-linux/
 1. Redhat CentOS ---> Rocky/Oracle/Alma
 2. SuSE: OpenSUSE Leaf ---> SESL
 3. ubuntu: Ubuntu Comm ---> Ubuntu ENT
-
-## 시간
-
-- 강의 시작 및 종료 시간: 오전 09:00분 ~ 오후 05:50분
-- 점심 시간: 오전 11:30분 ~ 오후 01:00분
 
 ## 표준 컨테이너
 ```bash
@@ -315,6 +316,7 @@ dnf install tmux
 ```
 
 ## containerd
+
 ```bash
 systemctl stop crio
 dnf remove cri-o -y
@@ -330,6 +332,14 @@ systemctl enable --now containerd
 
 ```bash
 kubeadm init
+
+firewall-cmd --get-services | grep kube
+> kube-api kube-apiserver kube-control-plane kube-control-plane-secure kube-controller-manager kube-controller-manager-secure kube-nodeport-services kube-scheduler kube-scheduler-secure kube-worker kubelet kubelet-readonly kubelet-worker
+for i in kube-api kube-apiserver kube-control-plane kube-control-plane-secure kube-controller-manager kube-controller-manager-secure kube-nodeport-services kube-scheduler kube-scheduler-secure kube-worker kubelet kubelet-readonly kubelet-worker ; do firewall-cmd --add-service=$i --permanent ; done 
+firewall-cmd --reload
+systemctl stop firewalld
+systemctl disable firewalld
+
 ```
 
 # day 3
