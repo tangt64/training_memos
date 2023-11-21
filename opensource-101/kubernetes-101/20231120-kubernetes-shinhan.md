@@ -501,6 +501,16 @@ cd /run/
 reboot ---> kubeadm init
 ```
 
+```bash
+kubectl run test-httpd --image=quay.io/centos7/httpd-24-centos7
+kubectl get pods
+kubectl get svc
+kubectl expose pod test-httpd
+kubectl expose pod --port 8080 test-httpd
+kubectl expose pod --port=8080 --type=NodePort test-httpd
+kubectl expose pod --port=8080 --type=NodePort --name=np-test-httpd test-httpd
+```
+
 # day 3
 
 # day 4
