@@ -454,8 +454,17 @@ complete -rp
 
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
-kubectl get pods -A
+kubectl get pods -A               ## docker
 > Error
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+kubectl get pods -A 
+> Running
+```
+
+```bash
+## control1 
+kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
 
 ```
