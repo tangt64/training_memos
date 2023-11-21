@@ -331,8 +331,6 @@ systemctl enable --now containerd
 ## kubeadm
 
 ```bash
-kubeadm init
-
 firewall-cmd --get-services | grep kube
 > kube-api kube-apiserver kube-control-plane kube-control-plane-secure kube-controller-manager kube-controller-manager-secure kube-nodeport-services kube-scheduler kube-scheduler-secure kube-worker kubelet kubelet-readonly kubelet-worker
 for i in kube-api kube-apiserver kube-control-plane kube-control-plane-secure kube-controller-manager kube-controller-manager-secure kube-nodeport-services kube-scheduler kube-scheduler-secure kube-worker kubelet kubelet-readonly kubelet-worker ; do firewall-cmd --add-service=$i --permanent ; done 
@@ -406,7 +404,28 @@ kubectl cluster-info dump | grep -i -e cidr -e clusterIP
 
 kubectl describe nodes control1.example.com | grep -i taints
 
+kubeadm token create --print-join-command
+
 kubeadm reset
+```
+
+```bash
+/etc/hosts
+---
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.90.110  control1.example.com control1
+192.168.90.120  worker1.example.com worker1
+192.168.90.130  worker2.example.com worker2
+
+1. firewalld
+2. swap + selinux
+3. timedatectl
+  > systemctl restart chronyd
+  > chronyc sources
+  > timedatectl
+    > System clock synchronized: yes
+
 ```
 
 # day 3
