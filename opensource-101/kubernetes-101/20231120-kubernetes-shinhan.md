@@ -452,6 +452,14 @@ kubectl completion bash > /etc/bash_completion.d/kubectl
 complete -rp
 ```
 
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
+kubectl get pods -A
+> Error
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+
+```
+
 # day 3
 
 # day 4
