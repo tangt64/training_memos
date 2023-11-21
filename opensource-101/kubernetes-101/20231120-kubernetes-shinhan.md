@@ -341,6 +341,23 @@ firewall-cmd --reload
 systemctl stop firewalld
 systemctl disable firewalld
 
+swapon -s
+swapoff -a
+vi /etc/fstab
+systemctl daemon-reload
+
+cd /lib/modules/$(uname -r)/
+> /lib/modules/5.14.0-284.11.1.el9_2.x86_64/kernel/net/netfilter
+> /lib/modules/5.14.0-284.11.1.el9_2.x86_64/kernel/net/bridge
+modprobe br_netfilter
+lsmod | grep br_netfilter
+echo br_netfilter > /etc/modules-load.d/k8s_module.conf
+
+sysctl -a | grep ip_forward
+sysctl -w net.ipv4.ip_forward=1
+sysctl -a | grep ip_forward
+
+
 ```
 
 # day 3
