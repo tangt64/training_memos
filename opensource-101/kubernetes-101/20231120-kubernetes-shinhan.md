@@ -361,6 +361,8 @@ sysctl -a | grep ip_forward
 echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/k8s.conf
 systemctl daemon-reload
 
+# 아래 파일에 redhat관련 단어가 있으면 아래 같이 수정
+#
 cat /etc/containers/policy.json
 {
     "default": [
@@ -379,6 +381,7 @@ cat /etc/containers/policy.json
     }
 }
 
+kubeadm init
 ```
 
 # day 3
