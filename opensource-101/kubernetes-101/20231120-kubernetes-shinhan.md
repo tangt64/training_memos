@@ -306,6 +306,9 @@ crictl ps
 
 setenforce 0
 getenforce 
+vi /etc/selinux/config/
+> SELINUX=permissive
+
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -463,10 +466,39 @@ kubectl get pods -A
 
 ```bash
 ## control1 
+#
+# POD Network IP == eth1, internal
+#
 kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+kubectl get pods -Aw
 
+## worker1/2
+
+kubeadm join
+
+```
+
+
+## TS???
+
+```
+kubeadm reset --force
+cd /var/lib/
+(X)/crio
+(O)/containers, rm -rf
+(O)/calico,     rm -rf 
+(O)/etcd,       rm -rf
+(O)/cni         rm -rf 
+(O)/
+cd /etc/
+(O)/kubernetes, rm -rf
+cd /run/
+(O)/calico,     rm -rf
+(O)/containers, rm -rf
+
+reboot ---> kubeadm init
 ```
 
 # day 3
