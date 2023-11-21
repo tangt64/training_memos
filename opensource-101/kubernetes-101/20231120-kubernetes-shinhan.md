@@ -337,6 +337,7 @@ firewall-cmd --get-services | grep kube
 > kube-api kube-apiserver kube-control-plane kube-control-plane-secure kube-controller-manager kube-controller-manager-secure kube-nodeport-services kube-scheduler kube-scheduler-secure kube-worker kubelet kubelet-readonly kubelet-worker
 for i in kube-api kube-apiserver kube-control-plane kube-control-plane-secure kube-controller-manager kube-controller-manager-secure kube-nodeport-services kube-scheduler kube-scheduler-secure kube-worker kubelet kubelet-readonly kubelet-worker ; do firewall-cmd --add-service=$i --permanent ; done 
 firewall-cmd --reload
+
 systemctl stop firewalld
 systemctl disable firewalld
 
