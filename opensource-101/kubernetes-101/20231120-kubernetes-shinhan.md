@@ -390,10 +390,21 @@ kubeadm completion bash > /etc/bash_completion.d/kubeadm
 kubectl completion bash > /etc/bash_completion.d/kubectl
 complete -rp
 
+## API-SERVER:6443
+
 1. kubeadm init
 2. kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.10.0/24 --service-cidr=10.10.10.0/24 --service-dns-domain=shinhan.k8s
+3. kubeadm init --apiserver-advertise-address=192.168.90.110
 
+
+ss -antp | grep 6443
 export KUBECONFIG=/etc/kubernetes/admin.conf
+
+kubectl cluster-info
+kubectl cluster-info dump
+kubectl cluster-info dump | grep -i -e cidr -e clusterIP
+
+kubectl describe nodes control1.example.com | grep -i taints
 
 kubeadm reset
 ```
