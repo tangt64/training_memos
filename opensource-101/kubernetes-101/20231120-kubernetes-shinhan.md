@@ -259,6 +259,9 @@ eth1: 192.168.90.130/24
 2. cri-o(from opensuse CBS)
 >https://cri-o.io/
 
+
+## CRIO
+
 ```bash
 ## https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/
 
@@ -316,6 +319,17 @@ dnf install tmux
 systemctl stop crio
 dnf remove cri-o -y
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf repolist
+dnf search containerd
+dnf instrall containerd -y
+containerd config default > /etc/containerd/config.toml
+systemctl enable --now containerd
+```
+
+## kubeadm
+
+```bash
+kubeadm init
 ```
 
 # day 3
