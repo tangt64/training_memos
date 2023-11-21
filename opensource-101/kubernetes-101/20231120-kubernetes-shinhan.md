@@ -276,6 +276,14 @@ curl -o /etc/yum.repos.d/crio.repo https://download.opensuse.org/repositories/de
 dnf repolist
 dnf search cri-o
 dnf install -y cri-o 
+
+dnf provides crictl
+> cri-tools
+dnf install cri-tools -y
+podman ps
+crictl ps
+systemctl enable --now crio
+crictl ps
 ```
 
 # day 3
