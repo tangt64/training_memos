@@ -269,19 +269,26 @@ eth1: 192.168.90.130/24
 #
 # libcontainer 
 #
+## 사이트에서 제공하는 저장소 내려받기 방법
 export OS=CentOS_9_Stream
 echo $OS
 curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:/kubic:/libcontainers:/stable.repo
 
+## libcontainer, 표준 컨테이너 라이브러리(CRI)
+## 직접 내려받기
 curl -o /etc/yum.repos.d/libcontainer.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_9_Stream/devel:kubic:libcontainers:stable.repo
 
 #
 # LOW level CRIO RUNTIME
 #
+
+## 사이트에서 제공하는 저장소 내려받기 방법
 export OS=CentOS_8
 export VERSION=1.24.6
 curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo
 
+## 직접 내려받기(https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/)
+## CRIO런타임 내려받기
 curl -o /etc/yum.repos.d/crio.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24:/1.24.6/CentOS_8/devel:kubic:libcontainers:stable:cri-o:1.24:1.24.6.repo
 
 dnf repolist
@@ -426,6 +433,23 @@ kubeadm reset
   > timedatectl
     > System clock synchronized: yes
 
+```
+
+
+```bash
+kubeadm init  -v3
+        join  -v3
+
+* reached, retry, expire...
+* used, already == kubeadm reset --force
+```
+
+```
+kubeadm completion bash > /etc/bash_completion.d/kubeadm
+                   zsh
+                   fish
+kubectl completion bash > /etc/bash_completion.d/kubectl
+complete -rp
 ```
 
 # day 3
