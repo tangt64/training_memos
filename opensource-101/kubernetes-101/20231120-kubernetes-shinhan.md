@@ -252,6 +252,13 @@ eth1: 192.168.90.130/24
 
 # day 2
 
+레드햇 계열(커뮤니티 버전중심으로) 사용이 가능한 저수준 컨테이너 런타임은 2개
+
+1. containerd(from docker)
+>https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-rocky-linux-9
+2. cri-o(from opensuse CBS)
+>https://cri-o.io/
+
 ```bash
 ## https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/
 
@@ -302,6 +309,13 @@ dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 systemctl enable --now kubelet
 
 dnf install tmux
+```
+
+## containerd
+```bash
+systemctl stop crio
+dnf remove cri-o -y
+dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 ```
 
 # day 3
