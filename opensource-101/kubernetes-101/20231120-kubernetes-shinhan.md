@@ -385,11 +385,15 @@ hostnamectl set-hostname control1.example.com
 ip a s eth0
 echo "10.10.10.1 control1.example.com control" >> /etc/hosts
 
+
 kubeadm completion bash > /etc/bash_completion.d/kubeadm
 kubectl completion bash > /etc/bash_completion.d/kubectl
 complete -rp
 
 kubeadm init
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
 kubeadm reset
 ```
 
