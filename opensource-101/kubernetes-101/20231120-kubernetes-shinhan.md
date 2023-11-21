@@ -344,6 +344,7 @@ systemctl disable firewalld
 swapon -s
 swapoff -a
 vi /etc/fstab
+> # ~~~ swap   swap
 systemctl daemon-reload
 
 cd /lib/modules/$(uname -r)/
@@ -357,6 +358,26 @@ sysctl -a | grep ip_forward
 sysctl -w net.ipv4.ip_forward=1
 sysctl -a | grep ip_forward
 
+echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/k8s.conf
+systemctl daemon-reload
+
+cat /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports": {
+        "docker-daemon": {
+            "": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ]
+        }
+    }
+}
 
 ```
 
