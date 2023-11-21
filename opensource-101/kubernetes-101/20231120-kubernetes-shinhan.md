@@ -390,7 +390,8 @@ kubeadm completion bash > /etc/bash_completion.d/kubeadm
 kubectl completion bash > /etc/bash_completion.d/kubectl
 complete -rp
 
-kubeadm init
+1. kubeadm init
+2. kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.10.0/24 --service-cidr=10.10.10.0/24 --service-dns-domain=shinhan.k8s
 
 export KUBECONFIG=/etc/kubernetes/admin.conf
 
