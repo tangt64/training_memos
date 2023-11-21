@@ -252,6 +252,24 @@ eth1: 192.168.90.130/24
 
 # day 2
 
+```bash
+## https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/
+
+#
+# libcontainer 
+#
+export OS=CentOS_9_Stream
+echo $OS
+curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/devel:/kubic:/libcontainers:/stable.repo
+
+#
+# LOW level CRIO RUNTIME
+#
+export OS=CentOS_8
+export VERSION=1.24.6
+curl -L -o /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/$VERSION/$OS/devel:kubic:libcontainers:stable:cri-o:$VERSION.repo
+```
+
 # day 3
 
 # day 4
