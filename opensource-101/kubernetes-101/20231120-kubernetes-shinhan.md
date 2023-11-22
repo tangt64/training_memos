@@ -700,7 +700,7 @@ systemctl daemon-reload
 ## 쿠버네티스 설치
 #
 
-kubeadm init --apiserver-advertise-address=192.168.90.110
+kubeadm init --upload-certs --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.10.0/24
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
 
