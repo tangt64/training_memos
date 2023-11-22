@@ -589,9 +589,48 @@ worker node
     + CRI-O
     + containerd
     + cri-docker
-
 ```
 
+
+## VM/Container
+
+VM(baremetal: Software, Hardware)
+---
+1. 하이퍼바이저 필요
+2. 가상장치가 필요
+3. O/S설치 및 구성 필요
+4. 가상기반으로 "생성"
+5. TCP/IP 100%
+
+Container(root ful/less)
+---
+
+1. rootful(LXC)
+
+VM하고 거의 동일. 호스트 커널을 거의 그대로 사용. LXC/LXD(IBM)컨테이너. rootful 컨테이너 정보는 [rootful container](https://raesene.github.io/blog/2020/02/23/More-Podman/), [https://linuxcontainers.org/](https://linuxcontainers.org/), [lxc/podman/docker](https://www.reddit.com/r/homelab/comments/p5f07o/lxclxd_vs_docker_vs_podman/)
+
+- VM처럼 시작이 느림
+- 가상머신과 비교시 장점이 없음
+
+2. rootless
+
+VM하고 비슷한 구조를 가지고 있으나, 대다수 자원은 호스트를 통해서 공유. session과 같은 기술을 구현하기 위해서 다음과 같은 기술을 쿠버네티스에서 지원.
+
+1. [Session Affinity](https://www.ibm.com/docs/en/datapower-gateway/7.6?topic=groups-session-affinity)
+2. [Istio Sticky Session](https://istio.io/latest/docs/reference/config/networking/destination-rule/)
+
+- 부팅이 필요 없음
+- 격리 및 추적 기술 기반으로 동작
+- 대다수 기술이 커널에서 구현
+- Podman/Docker와 같은 기반으로 구현하는 경우, 90%이상 VM하고 동일하게 구현 가능
+  + AI/ML
+  + TCP/UDP왠만하면 다 호환
+- 쿠버네티스는 가상머신처럼 모든 서비스를 구현 및 실현이 어려움
+  + 확장이 가능한 구조(scale out, HPA)
+  + UDP나 혹은 세션 정보가 필요한 경우, 쿠버네티스와 적절하지 않을수 있음
+  + 수직 확장도 지원하나...(VPA)
+  + 인그레스 서비스를 통해서 외부에서 직접 POD접근 허용
+  
 # day 4
 
 # day 5
