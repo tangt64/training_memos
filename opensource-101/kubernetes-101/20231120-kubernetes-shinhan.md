@@ -695,6 +695,19 @@ echo "net.ipv4.ip_forward=0" > /etc/sysctl.d/k8s.conf
 
 systemctl daemon-reload
 
+
+#
+## 쿠버네티스 설치
+#
+
+kubeadm init --apiserver-advertise-address=192.168.90.110
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+
+kubeadm token create --print-join-command
+
+worker1# kubeadm join
+worker2# kubeadm join
 ```
 
 
