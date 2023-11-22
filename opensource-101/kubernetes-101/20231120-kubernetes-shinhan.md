@@ -687,8 +687,13 @@ swapon -s
 swapoff -a
 vi /etc/fstab
 ## 스왑파일 주석처리
-systemctl daemon-reload
 
+modprobe br_netfilter
+sysctl -w net.ipv4.ip_forward=1
+echo br_netfilter > /etc/modules-load.d/k8s.conf
+echo "net.ipv4.ip_forward=0" > /etc/sysctl.d/k8s.conf
+
+systemctl daemon-reload
 
 ```
 
