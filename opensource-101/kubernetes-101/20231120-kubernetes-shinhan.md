@@ -560,14 +560,36 @@ complete -rp
        .---> /etc/kubernetes/admin.conf
       /       > name:
      /        > key:                                                replicaController(POD)
-    /         > URL:                                                replicaset(POD)                    2. network
-   /                                proxy         containerzied     deployment        node(cpu,mem)    1. container
+    /         > URL:                                                replicaset(POD)                    1. network
+   /                                proxy         containerzied     deployment        node(cpu,mem)    2. container
 kubectl --- <YAML> ---<JSON> ---> [kubelet] ---> [API_SERVER] ---> [controller] ---> [scheduler] ---> [proxy] ---> CRI-O
   \              :6443                                             ------------                               ---> LinuxBridge/vxlan                  
    \                                                                delpoy+ReplicaSet
     \
      `---> kubectl run test-nginx --image=nginx --output=yaml --dry-run=client
                                                 -o=json       
+
+control
+---
+controller/scheduler/apiserver: API 작업 처리
+etcd: control plane(scaleable), key pair DB
+coredns: control plane(scaleable), DNS Service for Kubernetes Service
+
+control/worker
+---
+kubelet: monitoring(pod, node status, proxy)
+proxy: control, compute(daemon service, container, network)
+
+worker node
+---
+- kubelet.service(hosted)
+- proxy(container, static-pod)
+  * proxy network
+  * runtime(socket)
+    + CRI-O
+    + containerd
+    + cri-docker
+
 ```
 
 # day 4
