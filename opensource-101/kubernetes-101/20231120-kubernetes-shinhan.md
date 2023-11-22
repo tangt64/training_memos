@@ -607,7 +607,7 @@ Container(root ful/less)
 
 1. rootful(LXC)
 
-VM하고 거의 동일. 호스트 커널을 거의 그대로 사용. LXC/LXD(IBM)컨테이너. rootful 컨테이너 정보는 [rootful container](https://raesene.github.io/blog/2020/02/23/More-Podman/), [https://linuxcontainers.org/](https://linuxcontainers.org/), [lxc/podman/docker](https://www.reddit.com/r/homelab/comments/p5f07o/lxclxd_vs_docker_vs_podman/)
+VM하고 거의 동일. 호스트 커널을 거의 그대로 사용. LXC/LXD(IBM)컨테이너. rootful 컨테이너 정보는 [rootful container](https://raesene.github.io/blog/2020/02/23/More-Podman/), [https://linuxcontainers.org/](https://linuxcontainers.org/), [lxc/podman/docker](https://www.reddit.com/r/homelab/comments/p5f07o/lxclxd_vs_docker_vs_podman/), [docker/lxc](https://www.upguard.com/blog/docker-vs-lxc)
 
 - VM처럼 시작이 느림
 - 가상머신과 비교시 장점이 없음
