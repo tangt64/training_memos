@@ -751,6 +751,9 @@ MASTER: 3대 + metalLB
 3. API데이터 처리속도 향상
 4. L4/L7이 필요
 
+```bash
+kubectl create deployment np-test-httpd --image=quay.io/centos7/httpd-24-centos7 --port=8080 --replicas=5 --dry-run=client --output=yaml > np-test-httpd.yaml
+```
 # day 4
 
 # day 5
