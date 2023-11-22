@@ -672,9 +672,24 @@ curl -o /etc/yum.repos.d/libcontainer.repo https://download.opensuse.org/reposit
 
 ## crio, kubelet 서비스 시작, control1/worker1/2
 #
-dnf install cri-o kubelet kubeadm kubectl --disableexcludes=kubernetes
+dnf install cri-o kubelet kubeadm kubectl -y --disableexcludes=kubernetes
 systemctl enable --now crio
 systemctl enable --now kubelet
+
+## 방화벽 중지 
+# 
+
+systemctl stop firewalld
+systemctl disable firewalld
+setenforce 0
+sed -i 's/enforcing/permissive/' /etc/selinux/config
+swapon -s 
+swapoff -a
+vi /etc/fstab
+## 스왑파일 주석처리
+systemctl daemon-reload
+
+
 ```
 
 
