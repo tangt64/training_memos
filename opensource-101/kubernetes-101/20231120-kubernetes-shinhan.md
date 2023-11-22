@@ -650,6 +650,31 @@ cat <<EOF>> /etc/hosts      ## control1, worker1, worker2
 192.168.90.130  worker2.example.com worker2
 EOF
 
+## 쿠버네티스 저장소
+
+cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.24/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.24/rpm/repodata/repomd.xml.key
+exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+EOF
+
+## cri-o런타임 설치 control1/worker1/2
+#
+curl -o /etc/yum.repos.d/crio.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.24:/1.24.6/CentOS_8/devel:kubic:libcontainers:stable:cri-o:1.24:1.24.6.repo
+
+## libcontainer 설치 control1/worker1/2
+#
+curl -o /etc/yum.repos.d/libcontainer.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_9_Stream/devel:kubic:libcontainers:stable.repo
+
+## crio, kubelet 서비스 시작, control1/worker1/2
+#
+dnf install cri-o kubelet kubeadm kubectl --disableexcludes=kubernetes
+systemctl enable --now crio
+systemctl enable --now kubelet
 ```
 
 
