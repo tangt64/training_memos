@@ -638,10 +638,13 @@ dnf update -y
 hostnamectl set-hostname control1.example.com
                          worker1.example.com
                          worker2.example.com
-nmcli con sh
-nmcli con mod eth1 ipv4.addresses 192.168.90.110/24
-nmcli con mod eth1 ipv4.addresses 192.168.90.120/24
-nmcli con mod eth1 ipv4.addresses 192.168.90.130/24
+nmcli con show
+nmcli con mod eth1 ipv4.addresses 192.168.90.110/24 ipv4.method manual
+nmtui edit eth1
+nmcli con mod eth1 ipv4.addresses 192.168.90.120/24 ipv4.method manual
+nmtui edit eth1
+nmcli con mod eth1 ipv4.addresses 192.168.90.130/24 ipv4.method manual
+nmtui edit eth1
 nmcli con reload eth1
 
 cat <<EOF>> /etc/hosts      ## control1, worker1, worker2
@@ -700,7 +703,7 @@ systemctl daemon-reload
 ## 쿠버네티스 설치
 #
 
-kubeadm init --upload-certs --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.10.0/24
+kubeadm init --upload-certs --control-plane-endpoint=192.168.90.110 --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.10.0/24
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
 
@@ -710,6 +713,13 @@ worker1# kubeadm join
 worker2# kubeadm join
 ```
 
+
+### 멀티 마스터 3대 구성 이유
+
+1. etcd백업을 위해서
+2. corosync(종족수)기능이 활성화 되기 위해서 3대가 필요함
+3. API데이터 처리속도 향상
+4. L4/L7이 필요
 
 # day 4
 
