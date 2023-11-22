@@ -703,7 +703,25 @@ systemctl daemon-reload
 ## 쿠버네티스 설치
 #
 
-kubeadm init --upload-certs --control-plane-endpoint=192.168.90.110 --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.10.0/24
+## 연습용 추천 L/B: HAproxy/Ngninx, MetalLB
+## L/B주소가 192.168.90.250라고 하면, "--control-plane-endpoint=192.168.90.250"
+kubeadm init --upload-certs --control-plane-endpoint=192.168.90.110 --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.10.0/24 -v3
+
+## -v3...
+
+# APP --> TAP/TUN --> KERNEL_SPACE 
+# kubectl cluster-info dump | grep -e cidr -e clusterip
+# (container)POD --- {POD_NETWORK(VXLAN)}
+# ip link, bridge, brctl...
+# ip netns exec <netns-ID> ip link
+# [hosted] ---> <container> --- {podman_birdge}
+# <container> ---> [hosted] 
+
+# 1. crio containerd 찾을수 없음
+# 2. WARNING, kubelet not enabled
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
 
@@ -711,8 +729,20 @@ kubeadm token create --print-join-command
 
 worker1# kubeadm join
 worker2# kubeadm join
+
+kubeadm completion bash > /etc/bash_completion.d/kubeadm
+kubectl completion bash > /etc/bash_completion.d/kubectl
+complete -rp
+
+kubectl run test-httpd --image=quay.io/centos7/httpd-24-centos7
+
 ```
 
+https://www.stackrox.io/about/
+
+
+
+MASTER: 3대 + metalLB
 
 ### 멀티 마스터 3대 구성 이유
 
