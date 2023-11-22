@@ -447,6 +447,7 @@ kubeadm init  -v3
 * used, already == kubeadm reset --force
 ```
 
+## 자동완성(명령어, kubectl, kubeadm)
 ```
 kubeadm completion bash > /etc/bash_completion.d/kubeadm
                    zsh
@@ -455,10 +456,15 @@ kubectl completion bash > /etc/bash_completion.d/kubectl
 complete -rp
 ```
 
+
+## calico 설치(마스터 실행)
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
-kubectl get pods -A               ## docker
+kubectl get pods -A               ## docker.io blocked
 > Error
+#
+# 이미지를 quay.io에서 가져오는거 + 네트워크 대역(Pod)
+#
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
 kubectl get pods -A 
 > Running
@@ -469,6 +475,8 @@ kubectl get pods -A
 #
 # POD Network IP == eth1, internal
 #
+# kubeadm init == 컨트롤
+# 
 kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
@@ -511,7 +519,56 @@ kubectl expose pod --port=8080 --type=NodePort test-httpd
 kubectl expose pod --port=8080 --type=NodePort --name=np-test-httpd test-httpd
 ```
 
+1. 무조건 최초 한대 서버는 init로 구성
+2. 그 이후로 구성되는 컨트롤러, 워커노드는 join구성
+3. reset은 재구성이 필요한 경우 사용. 그 이외 용도는 없음
+4. Pod네트워크 혹은 클러스터 네트워크 최초 노드 생성 후, 구성
+5. 최초 서버 + 네트워크 구성이 완료가 되면, 그 이후로 노드 확장
+
 # day 3
+
+
+EKS vs OnPremise
+---
+
+1. https://www.techtarget.com/searchaws/tip/2-options-to-deploy-Kubernetes-on-AWS-EKS-vs-self-managed
+2. https://www.reddit.com/r/kubernetes/comments/y5cpxh/running_a_kubernetes_cluster_across_onpremise_and/
+3. https://www.uturndata.com/2022/10/10/migrating-to-amazon-eks-vs-vanilla-kubernetes/
+4. https://medium.com/bestcloudforme/on-premises-kubernetes-game-is-changing-with-aws-2ec76980cd6f
+
+
+## 명령어 자동완성(kubectl, kubeadm)
+```
+kubeadm completion bash > /etc/bash_completion.d/kubeadm
+                   zsh
+                   fish
+kubectl completion bash > /etc/bash_completion.d/kubectl
+complete -rp
+```
+
+
+```bash
+
+1. 코드(YAML FOR DATA)
+2. 데이터(JSON FOR API)
+3. 설정(TOML FOR CONFIG)
+
+           .---> KUBECONFIG: SHELL VAR(V)
+          /      ~/.kube/config: DIR
+      <login>
+        /
+       .---> /etc/kubernetes/admin.conf
+      /       > name:
+     /        > key:                                                replicaController(POD)
+    /         > URL:                                                replicaset(POD)                    2. network
+   /                                proxy         containerzied     deployment        node(cpu,mem)    1. container
+kubectl --- <YAML> ---<JSON> ---> [kubelet] ---> [API_SERVER] ---> [controller] ---> [scheduler] ---> [proxy] ---> CRI-O
+  \              :6443                                             ------------                               ---> LinuxBridge/vxlan                  
+   \                                                                delpoy+ReplicaSet
+    \
+     `---> kubectl run test-nginx --image=nginx --output=yaml --dry-run=client
+                                                -o=json       
+```
 
 # day 4
 
