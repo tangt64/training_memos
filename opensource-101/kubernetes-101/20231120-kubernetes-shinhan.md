@@ -630,7 +630,29 @@ VM하고 비슷한 구조를 가지고 있으나, 대다수 자원은 호스트�
   + UDP나 혹은 세션 정보가 필요한 경우, 쿠버네티스와 적절하지 않을수 있음
   + 수직 확장도 지원하나...(VPA)
   + 인그레스 서비스를 통해서 외부에서 직접 POD접근 허용
-  
+
+## 설치 정리
+
+```bash
+dnf update -y
+hostnamectl set-hostname control1.example.com
+                         worker1.example.com
+                         worker2.example.com
+nmcli con sh
+nmcli con mod eth1 ipv4.addresses 192.168.90.110/24
+nmcli con mod eth1 ipv4.addresses 192.168.90.120/24
+nmcli con mod eth1 ipv4.addresses 192.168.90.130/24
+nmcli con reload eth1
+
+cat <<EOF>> /etc/hosts      ## control1, worker1, worker2
+192.168.90.110  control1.example.com control1
+192.168.90.120  worker1.example.com worker1
+192.168.90.130  worker2.example.com worker2
+EOF
+
+```
+
+
 # day 4
 
 # day 5
