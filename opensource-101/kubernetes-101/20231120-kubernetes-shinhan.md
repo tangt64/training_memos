@@ -939,6 +939,38 @@ spec:
             - containerPort: 21         ## apply
 ```
 
+```yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: release-apache
+    name: release-apache
+  name: release-apache
+  namespace: release-apache
+spec:
+  ports:
+    - name: apache
+      nodePort: 38080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: vsftpd
+      nodePort: 38021
+      port: 21
+      protocol: TCP
+      targetPort: 21
+  selector:
+    name: release-apache
+    software: apache
+    version: v1
+  type: NodePort
+status:
+  loadBalancer: {}
+
+```
+
 ```bash
  kubectl create service nodeport release-apache --namespace=release-apache --tcp=80:80 --node-port=38080 --tcp=21:21 --node-port=38021 -o=yaml --dry-run=client > release-apache-svc.yaml
       
