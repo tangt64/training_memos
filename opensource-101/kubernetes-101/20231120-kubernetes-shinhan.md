@@ -865,4 +865,12 @@ kubectl config set-context --current --namespace=<NAMESPACE>
 kubectl config get-context
 ```
 
+```bash
+dnf install podman -y
+grep -Ev '^#|^$' /etc/containers/registries.conf
+podman search nginx
+> quay.io/centos7/nginx-116-centos7 
+> quay.io/redhattraining/hello-world-nginx
+```
+
 # day 5
