@@ -873,4 +873,10 @@ podman search nginx
 > quay.io/redhattraining/hello-world-nginx
 ```
 
+```bash
+kubectl apply                              ## 업데이트 지원, 롤링 업데이트가 필요 시
+
+kubectl create                             ## 업데이트 지원하지 않음, 단일 서비스 배포
+```
+
 # day 5
