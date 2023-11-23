@@ -777,9 +777,8 @@ EOF
     args2:
 ```
 ```bash
+@control1]# curl -o /usr/share/nano/yaml.nanorc https://raw.githubusercontent.com/serialhex/nano-highlight/master/yaml.nanorc
 @control1]# cat <<EOF> /$USER/.nanorc
-syntax "YAML" "\.ya?ml$"
-header "^(---|===)" "%YAML"
 set tabsize 2
 set tabstospaces
 EOF
