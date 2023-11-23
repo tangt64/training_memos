@@ -967,9 +967,7 @@ spec:
       protocol: TCP
       targetPort: 21
   selector:
-    name: release-apache
-    software: apache
-    version: v1
+    run: release-apache
   type: NodePort
 status:
   loadBalancer: {}
