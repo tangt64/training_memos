@@ -976,7 +976,6 @@ status:
 ```
 
 ```bash
- kubectl create service nodeport release-apache --namespace=release-apache --tcp=80:80 --node-port=38080 --tcp=21:21 --node-port=38021 -o=yaml --dry-run=client > release-apache-svc.yaml
       
                       { kubectl apply -f release-apache }
                           /
