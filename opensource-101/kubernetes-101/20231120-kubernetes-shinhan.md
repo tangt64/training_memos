@@ -794,4 +794,32 @@ EOF
     args2:
 ```
 
+## YAML작성 방법
+
+```bash
+kubectl run                     ## POD
+kubectl create namespace first-namespace -o=yaml --dry-run=client > first-namespace.yaml
+```
+
+```bash
+mkdir basic-cmd
+cd basic-cmd
+nano second-namespace.yaml
+```
+
+```yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: second-namespace
+  labels:
+    type: namespace
+...
+```
+
+```bash
+kubectl create -f second-namespace.yaml
+```
+
 # day 5
