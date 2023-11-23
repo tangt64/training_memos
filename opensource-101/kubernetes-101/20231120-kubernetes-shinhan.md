@@ -822,4 +822,21 @@ metadata:
 kubectl create -f second-namespace.yaml
 ```
 
+```yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wordpress-service
+  labels:
+    service: wordpress
+    type: namespace
+...
+```
+
+```bash
+kubectl apply -f wordpress-namespace.yaml
+kubectl get ns -l type=namespace -l service=wordpress
+```
+
 # day 5
