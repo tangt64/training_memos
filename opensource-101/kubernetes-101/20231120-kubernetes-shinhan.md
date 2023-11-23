@@ -890,7 +890,8 @@ kubectl create
 > kubectl create deployment test-deployment --image=httpd
 ```
 
-
+연습문제(네임스페이스 + 서비스 구성)
+---
 1. 프로젝트 release-apache서비스를 구성
 2. 네임스페이스 release-apache에 구성
 3. pod의 갯수는 5개로 설정
