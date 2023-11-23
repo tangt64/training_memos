@@ -761,7 +761,7 @@ kubectl create deployment np-test-httpd --image=quay.io/centos7/httpd-24-centos7
 @control1]# kubectl delete namespace(ns) <test1>
 @control1]# dnf install git -y
 @control1]# curl -sS https://webi.sh/vim-ale | sh
-@control1]# cat <<EOF> /$($USER)/.vimrc
+@control1]# cat <<EOF> /$USER/.vimrc
 au! BufNewFile,BufReadPost *.u{yaml,yml} set filetype=yaml foldmethod=indent
 set autoindent expandtab tabstop=2 shiftwidth=2
 EOF
