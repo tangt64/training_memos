@@ -929,9 +929,10 @@ spec:
   template:
     metadata:
       labels:
-        run: release-apache
+        run: release-apache       ## podman -e run=release-apache
+                                  ## annotation run=release-apache
     spec:
-      containers:
+      containers:     # veth(tap) - routing
         - name: release-apache
           image: quay.io/centos7/httpd-24-centos7
           ports:
@@ -967,7 +968,7 @@ spec:
       protocol: TCP
       targetPort: 21
   selector:
-    run: release-apache
+    run: release-apache     ##POD(x), Container(O)
   type: NodePort
 status:
   loadBalancer: {}
@@ -980,16 +981,48 @@ status:
                       { kubectl apply -f release-apache }
                           /
                          /
-                        /
-                  namespace    ---    [deployment]    ## 애플리케이션 배포 설정
+                        /             
+                  namespace    ---    [deployment]    
                (release-apache)     (release-apache)
+                                            | - template:
+                                            |     run: release-apache
                                             |
-                                            |
-                                            |        (targetport)
-                                       [replicaset] --- [pod] --- { containers }
-                                                          x 5            x 2
-                                                        8080       8080
-                                                        21         21
+                                            |                  (targetPort(8080,21))        (containerPort(8080,21))
+                                            |                      /                             /
+                                            |                     /                             /
+                                       [replicaset]  ---       { pod x 5 }        ---       { containers x 2} (1)
+                                     - selector:                   |           [loopback]       
+                                         run: release-apache       |
+                                                                   |               
+                                                                   | 
+                                                                   |
+                                                              { pod_ips } 10.88.0.X:8080
+                                                                   |               :21
+                                                                   |  
+                                                               [service]
+                                                                   | - selector:             <---> [replicaset]
+                                                                   |     run: release-apache <---> {template: run=release-apache}
+                                                                   |
+                                                              { clusterIP }
+                                                                   |
+                                                                   |
+                                                              { endpoint }
+
+
+1. 컨테이너가 사용하는 포트 선언
+  selector:
+    matchLabels:
+      run: release-apache
+    spec:
+      containers:
+          ports:
+            - containerPort: 21
+2. 서비스에서 위의 포트를 검색(etcd)
+  spec:
+  ports:
+    ~~
+  selector:
+    run: release-apache     ##POD(x), Container(O)  
 ```
 
 # day 5
