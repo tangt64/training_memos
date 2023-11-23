@@ -897,10 +897,13 @@ kubectl create
 3. pod의 갯수는 5개로 설정
 4. 네임스페이스 컨텍스트를 "release-apache"로 수정
 
+```bash
+kubectl apply -f release-apache.yaml
+```
 ```yaml
 ---
 apiVersion: v1
-kind: Namespace
+kind: Namespace #1
 metadata:
   name: release-apache
   labels:
@@ -908,7 +911,7 @@ metadata:
 
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: Deployment #2
 metadata:
   name: release-apache
   namespace: release-apache
@@ -938,7 +941,9 @@ spec:
           ports:
             - containerPort: 21         ## apply
 ```
-
+```bash
+kubectl apply -f release-apache-svc.yaml
+```
 ```yaml
 ---
 apiVersion: v1
@@ -952,12 +957,12 @@ metadata:
 spec:
   ports:
     - name: apache
-      nodePort: 38080
+      nodePort: 32080
       port: 8080
       protocol: TCP
       targetPort: 8080
     - name: vsftpd
-      nodePort: 38021
+      nodePort: 32021
       port: 21
       protocol: TCP
       targetPort: 21
