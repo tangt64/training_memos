@@ -783,5 +783,15 @@ set tabsize 2
 set tabstospaces
 EOF
 ```
+```bash
+@control1]# nano test.yaml
+```
+```yaml
+---
+- name: hello
+  module:
+    args1:
+    args2:
+```
 
 # day 5
