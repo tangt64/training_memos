@@ -902,44 +902,56 @@ kubectl create
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: release-nginx
+  name: release-apache
+  labels:
+    name: release-apache  ## kubectl apply
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-nginx
-  namespace: release-nginx
+  name: release-apache
+  namespace: release-apache
+  labels:
+    version: v1           ## kubectl apply 
+    software: apache      ## kubectl apply 
+    name: release-apache  ## kubectl apply
 spec:
   selector:
     matchLabels:
-      run: release-nginx
-  replicas: 2
+      run: release-apache
+  replicas: 5       ## apply, kubectl get deploy,rs
+                    ## kubectl get pods -n release-apache
   template:
     metadata:
       labels:
-        run: release-nginx
+        run: release-apache
     spec:
       containers:
-        - name: release-nginx
+        - name: release-apache
           image: quay.io/centos7/httpd-24-centos7
           ports:
-            - containerPort: 80
+            - containerPort: 8080       ## apply
+        - name: release-vsftp
+          image: quay.io/eformat/openshift-vsftpd
+          ports:
+            - containerPort: 21
 ```
 
 ```bash
+ kubectl create service nodeport release-apache --namespace=release-apache --tcp=80:80 --tcp=21:21 --node-port=38021 -o=yaml --dry-run=client > release-apache-svc.yaml
       
                       { kubectl apply -f release-apache }
                           /
                          /
                         /
-                  namespace    ---    [deployment]  
+                  namespace    ---    [deployment]    ## 애플리케이션 배포 설정
                (release-apache)     (release-apache)
                                             |
                                             |
                                             |
                                        [replicaset] --- [pod] --- { containers }
-
+                                                          x 5            x 1
 
 ```
 
