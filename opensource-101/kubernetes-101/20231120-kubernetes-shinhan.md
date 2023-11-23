@@ -916,6 +916,7 @@ metadata:
     version: v1           ## kubectl apply 
     software: apache      ## kubectl apply 
     name: release-apache  ## kubectl apply
+
 spec:
   selector:
     matchLabels:
@@ -935,11 +936,11 @@ spec:
         - name: release-vsftp
           image: quay.io/eformat/openshift-vsftpd
           ports:
-            - containerPort: 21
+            - containerPort: 21         ## apply
 ```
 
 ```bash
- kubectl create service nodeport release-apache --namespace=release-apache --tcp=80:80 --tcp=21:21 --node-port=38021 -o=yaml --dry-run=client > release-apache-svc.yaml
+ kubectl create service nodeport release-apache --namespace=release-apache --tcp=80:80 --node-port=38080 --tcp=21:21 --node-port=38021 -o=yaml --dry-run=client > release-apache-svc.yaml
       
                       { kubectl apply -f release-apache }
                           /
@@ -949,10 +950,11 @@ spec:
                (release-apache)     (release-apache)
                                             |
                                             |
-                                            |
+                                            |        (targetport)
                                        [replicaset] --- [pod] --- { containers }
-                                                          x 5            x 1
-
+                                                          x 5            x 2
+                                                        8080       8080
+                                                        21         21
 ```
 
 # day 5
