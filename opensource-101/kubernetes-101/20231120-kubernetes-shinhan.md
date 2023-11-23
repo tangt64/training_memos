@@ -927,5 +927,20 @@ spec:
             - containerPort: 80
 ```
 
+```bash
+      
+                      { kubectl apply -f release-apache }
+                          /
+                         /
+                        /
+                  namespace    ---    [deployment]  
+               (release-apache)     (release-apache)
+                                            |
+                                            |
+                                            |
+                                       [replicaset] --- [pod] --- { containers }
+
+
+```
 
 # day 5
