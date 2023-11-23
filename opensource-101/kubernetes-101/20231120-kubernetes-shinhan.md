@@ -831,8 +831,10 @@ metadata:
   labels:
     service: wordpress
     type: namespace
-...
+
 ```
+
+1. YAML작성 시, 빈공간이 혹은 띄어쓰기 조심
 
 ```bash
 kubectl apply -f wordpress-namespace.yaml
@@ -843,22 +845,24 @@ kubectl get ns -l type=namespace -l service=wordpress
 +-----------------------------------+
 | CLUSTER                           |
 |   +-----------------------------+ |
-|   | NAMESPACE                   | |
+|   | NAMESPACE(==project)        | |
 |   |   +-----------------------+ | |
-|   |   | POD                   | | |
+|   |   | pod/deploy/rs/ds/cm   | | |
 |   |   |   +-----------------+ | | |
-|   |   |   | CONTAINER       | | | |
+|   |   |   | CONTAINER(s)    | | | |
 |   |   |   | +------------+  | | | |
 |   |   |   | | APP        |  | | | |
-|   |   |   | |            |  | | | |
+|   |   |   | | LIB        |  | | | |
 |   |   |   | +------------+  | | | |
 |   |   |   +-----------------+ | | |
 |   |   +-----------------------+ | |
 |   +-----------------------------+ |
 +-----------------------------------+
+```
 
-
-
+```bash
+kubectl config set-context --current --namespace=<NAMESPACE>
+kubectl config get-context
 ```
 
 # day 5
