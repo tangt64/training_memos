@@ -874,9 +874,57 @@ podman search nginx
 ```
 
 ```bash
-kubectl apply                              ## 업데이트 지원, 롤링 업데이트가 필요 시
+kubectl apply                             
+1. 업데이트가 필요한 자원(어노테이션 생성)
+2. 프레임워크 디렉터리 자원(helmchart)
+3. 보통 로컬 자원에 사용
+4. pod, deploy이러한 자원 생성
+5. json, yaml파일이 필요
 
-kubectl create                             ## 업데이트 지원하지 않음, 단일 서비스 배포
+kubectl create
+1. 단일 배포(리비전 기능이 없음)
+2. 로컬 혹은 원격 자원에 사용
+3. 거의 대다수 자원을 명령어로 생성이 가능
+> kubectl run test-pods --image=httpd 
+> kubectl create namespace test-namespace
+> kubectl create deployment test-deployment --image=httpd
 ```
+
+
+1. 프로젝트 release-apache서비스를 구성
+2. 네임스페이스 release-apache에 구성
+3. pod의 갯수는 5개로 설정
+4. 네임스페이스 컨텍스트를 "release-apache"로 수정
+
+```yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: release-nginx
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-nginx
+  namespace: release-nginx
+spec:
+  selector:
+    matchLabels:
+      run: release-nginx
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: release-nginx
+    spec:
+      containers:
+        - name: release-nginx
+          image: quay.io/centos7/httpd-24-centos7
+          ports:
+            - containerPort: 80
+```
+
 
 # day 5
