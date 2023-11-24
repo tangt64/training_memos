@@ -1163,6 +1163,16 @@ nsenter --net=<NSID> --ipc=<NSID> --uts=<NSID>
 ## disk mount
 
 ```bash
+dnf install nfs-utils -y
+systemctl enable --now nfs-server.service
+mkdir -p /nfs/
+cat <<EOF> /etc/exportfs
+/nfs *(rw, no_root_squash)
+EOF
+exportfs -avrs
+> exporting *:/nfs
+showmount -e 192.168.90.110
+> /nfs *
 
     +-----------+         +-----+                               +------+
     | container |  -----  | POD | --- {mnt} --- {directory} --- | host | --- {mount} --- {block_dev}
@@ -1232,3 +1242,8 @@ https://www.manageiq.org/
 https://operatorframework.io
 
 https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+
+https://www.stackrox.io/
+
+https://www.kube-ovn.io/
+
