@@ -1163,7 +1163,10 @@ nsenter --net=<NSID> --ipc=<NSID> --uts=<NSID>
 ## disk mount
 
 ```bash
-dnf install nfs-utils -y
+
+## CSI: Container Storage Interface, 추상 드라이버
+
+masterX/workerX]# dnf install nfs-utils -y
 systemctl enable --now nfs-server.service
 mkdir -p /nfs/
 cat <<EOF> /etc/exportfs
@@ -1171,7 +1174,7 @@ cat <<EOF> /etc/exportfs
 EOF
 exportfs -avrs
 > exporting *:/nfs
-showmount -e 192.168.90.110
+showmount -e 192.168.90.110       # worker1/2에서 조회
 > /nfs *
 
     +-----------+         +-----+                               +------+
