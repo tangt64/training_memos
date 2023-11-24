@@ -1322,6 +1322,11 @@ kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/o
 kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/yaml/advanced_command/storageclass-deployment.yaml
 ```
 
+### CSI 제거
+
+```bash
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.5.0/deploy/uninstall-driver.sh | bash -s v4.5.0 --
+```
 
 ## 대시보드
 
