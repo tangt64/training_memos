@@ -1058,6 +1058,8 @@ kubectl delete pod test-centos
 > -t: pesudo-tty
 
 [R]@container]# dnf install httpd -y
+> /etc/resolve.conf
+>> nameserver 8.8.8.8
 
 ## POD실행 위치 확인
 kubectl describe pod test-centos | grep Node
@@ -1169,3 +1171,7 @@ nsenter --net=<NSID> --ipc=<NSID> --uts=<NSID>
          `----------------'
                 tmpfs
 ```
+
+podman pull kubernetesui/dashboard:v2.7.0
+podman pull kubernetesui/metrics-scraper
+
