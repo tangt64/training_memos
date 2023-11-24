@@ -1352,13 +1352,18 @@ subjects:
   namespace: kubernetes-dashboard"  | kubectl apply -f -
 
 kubectl -n kubernetes-dashboard create token admin-user
-
 ```
 
 ```bash
-
 kubectl debug -it test-centos --image=busybox --target=test-centos
+```
 
+## CSI 설치 및 구성
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/yaml/advanced_command/storageclass-serviceaccount.yaml
+kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/yaml/advanced_command/storageclass-configure.yaml
+kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/yaml/advanced_command/storageclass-deployment.yaml
 ```
 
 # 링크
