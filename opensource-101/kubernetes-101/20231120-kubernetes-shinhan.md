@@ -1109,6 +1109,11 @@ kubectl get svc
 ```
 
 
+```bash
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.4/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/calico-quay-crd.yaml
+```
+
 ## pod/service
 
 ```bash
