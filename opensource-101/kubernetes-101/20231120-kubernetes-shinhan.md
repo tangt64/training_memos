@@ -1263,7 +1263,7 @@ metadata:
   name: nfs-csi
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: master.example.com
+  server: 192.168.90.110
   path: /nfs
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
@@ -1295,15 +1295,15 @@ spec:
       serviceAccountName: nfs-pod-provisioner-sa
       containers:
         - name: sc-nginx
-          image: nginx
+          image: quay.io/redhattraining/hello-world-nginx
           volumeMounts:
             - name: csi-nfs
               mountPath: /var/www/html/
       volumes:
-       - name: csi-nfs
-         nfs:
-           server: master.example.com
-           path: /nfs
+        - name: csi-nfs
+          nfs:
+            server: 192.168.90.110
+            path: /nfs
 ```
 
 
