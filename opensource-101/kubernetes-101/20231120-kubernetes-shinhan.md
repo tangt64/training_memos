@@ -1172,6 +1172,8 @@ nsenter --net=<NSID> --ipc=<NSID> --uts=<NSID>
                 tmpfs
 ```
 
+## 대시보드
+
 ```bash
 ## control1
 podman pull kubernetesui/dashboard:v2.7.0
@@ -1211,4 +1213,22 @@ kubectl -n kubernetes-dashboard create token admin-user
 
 ```
 
+```bash
+
+kubectl debug -it test-centos --image=busybox --target=test-centos
+
 ```
+
+# 링크
+
+https://kubesphere.io/
+
+https://www.okd.io/
+
+https://www.rancher.com/
+
+https://www.manageiq.org/
+
+https://operatorframework.io
+
+https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
