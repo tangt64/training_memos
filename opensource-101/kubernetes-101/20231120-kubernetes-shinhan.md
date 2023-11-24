@@ -1086,8 +1086,10 @@ kubectl cp index.html test-centos:/var/www/html
 
 ## 포트를 노출
 @container]# mkdir /var/log/httpd
-@container]# httpd -DFOREGROUND
+@container]# httpd -DFOREGROUND &
 @container]# ps -ef
+@container]# dnf provides ps
+@container]# dnf install procps-ng -y
 ```
 
 
