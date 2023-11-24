@@ -1047,18 +1047,47 @@ kubectl run test-centos --image=quay.io/centos/centos:stream9
 kubectl describe pod test-centos
 > Back-off "restarting failed container"
 kubectl delete pod test-centos
+
+## POD실행(centos-os-template)
+# BIN+LIB, CentOS형식으로 구성
 kubectl run test-centos --image=quay.io/centos/centos:stream9 sleep 10000
 
+## Pod안으로 접근(POD ---> container)
 kubectl exec -it test-centos -- /bin/bash
 > -i: interactive
 > -t: pesudo-tty
+
 @container]# dnf install httpd -y
+
+## POD실행 위치 확인
 kubectl describe pod test-centos | grep Node
+
+## httpd바이너리 설치가 실제로 되었는지?
+# overlay + tmpfs기반으로 레이어 디렉터리 디스크 형식
 @workerX]# find / -name httpd -type f -print
+
+## PID 1 = pause증명
+## systemd로 동작하면, systemctl이 사용이 가능
+## CMD, ENTRYPOINT
+## dumbinit를 사용하면, systemctl명령어 사용 가능
 @container]# systemctl start httpd                # pid 1 = pause
 @container]# httpd -DFOREGROUND
-echo "centos httpd index"
+
+## 웹 서버에서 사용할 간단한 텍스트 파일
+echo "centos httpd index" > index.html
+
+## 컨테이너 내부에 복사(kubectl ---> kubelet ---> kubelet)
 kubectl cp index.html test-centos:/var/www/html
+
+## 컴퓨트 노드에서 복사가 잘 되었는지 확인
+@workerX]# find / -name index.html -type f -print
+> ~~~~/merged/index.html
+@workerX]# cat ~~~~/merged/index.html
+
+## 포트를 노출
+@container]# mkdir /var/log/httpd
+@container]# httpd -DFOREGROUND
+@container]# ps -ef
 ```
 
 
