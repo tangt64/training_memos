@@ -1090,6 +1090,12 @@ kubectl cp index.html test-centos:/var/www/html
 @container]# ps -ef
 @container]# dnf provides ps
 @container]# dnf install procps-ng -y
+@container]# ps -ef | grep httpd 
+
+kubectl get pod
+kubectl get service 
+> X
+kubectl expose pod centos-httpd --port=80
 ```
 
 
