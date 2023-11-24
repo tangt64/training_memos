@@ -975,12 +975,20 @@ status:
 
 ```
 
+DOM0: 인-메모리 형식으로 정보 제공
+STATIC-MEMORY: STACK, 실행 시, 메모리에 모든 내용을 불러온 후 동작
+
 ```bash
-      
+
+
+
+
+  
                       { kubectl apply -f release-apache }
                           /
                          /
-                        /             
+                        /        
+                       / == [product_service]     
                   namespace    ---    [deployment]    
                (release-apache)     (release-apache)
                                             | - template:
@@ -1025,3 +1033,87 @@ status:
 ```
 
 # day 5
+
+## 표준도구
+
+```bash
+podman search centos          ## /etc/containers/registries.conf
+> quay.io/centos/centos
+dnf install skopeo -y         ## 이미지 검색 및 복사
+skopeo list-tags docker://quay.io/centos/centos
+                 -------
+                 docker, oci
+kubectl run test-centos --image=quay.io/centos/centos:stream9
+kubectl describe pod test-centos
+> Back-off "restarting failed container"
+kubectl delete pod test-centos
+kubectl run test-centos --image=quay.io/centos/centos:stream9 sleep 10000
+
+kubectl exec -it test-centos -- /bin/bash
+> -i: interactive
+> -t: pesudo-tty
+@container]# dnf install httpd -y
+kubectl describe pod test-centos | grep Node
+@workerX]# find / -name httpd -type f -print
+@container]# systemctl start httpd                # pid 1 = pause
+@container]# httpd -DFOREGROUND
+echo "centos httpd index"
+kubectl cp index.html test-centos:/var/www/html
+```
+
+
+## pod/service
+
+```bash
+
+nsenter --net=<NSID> --ipc=<NSID> --uts=<NSID>
+
+
+                              .---> # crictl inspectp <ID>
+                             /      # ip netns | grep <ID>
+                            /       # ip netns exec <ID> ss -antp
+                           /
+ +-----------+    +-----------+      
+ | container |    | container |       # crictl ps 
+ +-----------+    +-----------+       # crictl inspect
+        \               /             
+         \             /
+          \           /
+           \ { loopback_device }
+            \       /
+             \     /
+              \   /                        # nsenter --net=/var/run/netns/49e796f0-0e42-48d0-8b2f-977e74e8a510
+               \ /
+                v 
+             +-----+                                           +-----+
+             | POD | .-------- { Service End Point } --------. | SVC |
+             +-----+ \                                       / +-----+
+                |     `---- (SEP) ---- (SVC) ---- (EXT) ----'
+                |      
+                |     { prerouting }           { postrouting }
+             { nfs }             
+                |          # nat(nft list table nat)
+                |
+                |
+
+                     @worker# crictl inspectp
+                     @worker# iptables-save | grep SEP
+
+                     @worker# crictl inspectp <ID>
+                     @worker# ip netns | grep <ID>
+                     @worker# ip netns exec <ID> ss -antp
+                     
+```
+
+
+## disk mount
+
+```bash
+
+    +-----------+         +-----+                               +------+
+    | container |  -----  | POD | --- {mnt} --- {directory} --- | host | --- {mount} --- {block_dev}
+    +-----------+         +-----+                               +------+
+        \                  /
+         `----------------'
+                tmpfs
+```
