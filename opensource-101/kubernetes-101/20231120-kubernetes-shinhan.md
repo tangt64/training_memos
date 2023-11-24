@@ -1316,6 +1316,7 @@ kubectl get deploy,pod
 ## CSI 설치 및 구성
 
 ```bash
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.5.0/deploy/install-driver.sh | bash -s v4.5.0 --
 kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/yaml/advanced_command/storageclass-serviceaccount.yaml
 kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/yaml/advanced_command/storageclass-configure.yaml
 kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/yaml/advanced_command/storageclass-deployment.yaml
