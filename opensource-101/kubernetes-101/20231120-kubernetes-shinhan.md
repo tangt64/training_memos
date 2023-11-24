@@ -1273,6 +1273,10 @@ mountOptions:
 ```
 
 ```bash
+kubectl get sc
+```
+
+```bash
 kubectl apply -f storageclass-deployment.yaml
 ```
 ```yaml
@@ -1305,7 +1309,9 @@ spec:
             server: 192.168.90.110
             path: /nfs
 ```
-
+```bash
+kubectl get deploy,pod
+```
 
 
 ## 대시보드
