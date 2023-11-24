@@ -1050,14 +1050,14 @@ kubectl delete pod test-centos
 
 ## POD실행(centos-os-template)
 # BIN+LIB, CentOS형식으로 구성
-kubectl run test-centos --image=quay.io/centos/centos:stream9 sleep 10000
+[R]kubectl run test-centos --image=quay.io/centos/centos:stream9 sleep 10000
 
 ## Pod안으로 접근(POD ---> container)
-kubectl exec -it test-centos -- /bin/bash
+[R]kubectl exec -it test-centos -- /bin/bash
 > -i: interactive
 > -t: pesudo-tty
 
-@container]# dnf install httpd -y
+[R]@container]# dnf install httpd -y
 
 ## POD실행 위치 확인
 kubectl describe pod test-centos | grep Node
@@ -1074,10 +1074,10 @@ kubectl describe pod test-centos | grep Node
 @container]# httpd -DFOREGROUND
 
 ## 웹 서버에서 사용할 간단한 텍스트 파일
-echo "centos httpd index" > index.html
+[R]echo "centos httpd index" > index.html
 
 ## 컨테이너 내부에 복사(kubectl ---> kubelet ---> kubelet)
-kubectl cp index.html test-centos:/var/www/html
+[R]kubectl cp index.html test-centos:/var/www/html
 
 ## 컴퓨트 노드에서 복사가 잘 되었는지 확인
 @workerX]# find / -name index.html -type f -print
@@ -1085,17 +1085,27 @@ kubectl cp index.html test-centos:/var/www/html
 @workerX]# cat ~~~~/merged/index.html
 
 ## 포트를 노출
-@container]# mkdir /var/log/httpd
-@container]# httpd -DFOREGROUND &
-@container]# ps -ef
-@container]# dnf provides ps
-@container]# dnf install procps-ng -y
-@container]# ps -ef | grep httpd 
+[R]@container]# mkdir /var/log/httpd
+[R]@container]# httpd -DFOREGROUND &
+[R]@container]# ps -ef
+[R]@container]# dnf provides ps
+[R]@container]# dnf install procps-ng -y
+[R]@container]# ps -ef | grep httpd 
 
-kubectl get pod
-kubectl get service 
+[R]kubectl describe pod test-centos | grep IP       ## POD아이피 확인
+> 192.168.102.142
+                                                    ## 기본적으로 netfilter테이블 공유
+[R]curl 192.168.102.142                             ## POD네트워크 Host하고 공유가 됨
+
+[R]kubectl get pod
+[R]kubectl get service 
 > X
-kubectl expose pod centos-httpd --port=80
+kubectl expose pod test-centos --port=80
+kubectl get svc
+[R]kubectl expose pod test-centos --name=np-test-centos --type=NodePort --port=80 --target-port=80
+[R]kubectl get svc
+> curl localhost:<NODEPORT>
+> 메세지 출력
 ```
 
 
