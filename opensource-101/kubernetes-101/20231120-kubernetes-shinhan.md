@@ -1383,6 +1383,35 @@ spec:
 EOF
 ```
 
+```yaml
+cat <<EOF> pvc-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-pod
+spec:
+  containers:
+  - name: pvc-pod
+    image: quay.io/redhattraining/hello-world-nginx
+
+    volumeMounts:
+      - mountPath: "/app/data"
+        name: htdocs
+  volumes:
+  - name: htdocs
+    persistentVolumeClaim:
+      claimName: nfs-pvc
+EOF
+```
+
+## 메트릭
+
+```bash
+kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/files/metrics.yaml
+
+```
+
 
 ## 대시보드
 
