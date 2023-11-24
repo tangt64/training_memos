@@ -1366,6 +1366,23 @@ spec:
 EOF
 ```
 
+```yaml
+cat <<EOF> manual-pvc.yaml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+EOF
+```
+
 
 ## 대시보드
 
