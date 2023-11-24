@@ -1183,9 +1183,25 @@ showmount -e 192.168.90.110       # worker1/2에서 조회
         \                  /
          `----------------'
                 tmpfs
+
+ - /run/kubelet/libpod/
+ - /var/lib/kubelet/pods/
+
+  # 확장을 고려한 서비스
+    ----+                          +--------------+
+    POD |    --- CSI DRIVER  ---   | StorageClass | ---  {host_device} 
+    ----+          {nfs}           |     (sc)     |
+                {glusterfs}        +--------------+
+                  {cephfs}           - 이름정보(csn
+
+  # 계획된 서비스
+   -----+
+    POD |    | PersistentVolumeClaim |                       | PersistentVolume | --- {host_device}
+   -----+             (PVC)                                          (PV)
+                                                             1:1 ReadWriteOnce        {nfs}
+                                                             N:1 ReadWriteMany        {nfs4.1, ceph}
+                                                             N:1 ReadOnly             {ext4+nfs}             
 ```
-
-
 ```bash
 kubectl apply -f csi-nfs.yaml
 ```
@@ -1327,6 +1343,29 @@ kubectl apply -f https://raw.githubusercontent.com/tangt64/training_memos/main/o
 ```bash
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.5.0/deploy/uninstall-driver.sh | bash -s v4.5.0 --
 ```
+
+### PV/PVC
+
+```yaml
+cat <<EOF> manual-pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+  labels:
+    type: nfs
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: control1.example.com
+    path: "/nfs/manual-pv"
+EOF
+```
+
 
 ## 대시보드
 
