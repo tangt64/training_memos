@@ -1172,6 +1172,15 @@ nsenter --net=<NSID> --ipc=<NSID> --uts=<NSID>
                 tmpfs
 ```
 
+```bash
+## control1
 podman pull kubernetesui/dashboard:v2.7.0
 podman pull kubernetesui/metrics-scraper
 
+kubectl proxy --address=172.28.136.147      ## eth0번 아이피 주소
+
+# https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+# 172.28.136.147:8001
+
+```
