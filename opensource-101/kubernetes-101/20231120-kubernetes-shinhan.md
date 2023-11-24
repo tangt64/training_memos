@@ -1477,3 +1477,6 @@ https://www.stackrox.io/
 
 https://www.kube-ovn.io/
 
+https://media.defense.gov/2022/Aug/29/2003066362/-1/-1/0/CTR_KUBERNETES_HARDENING_GUIDANCE_1.2_20220829.PDF
+
+https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-190.pdf
