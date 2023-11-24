@@ -1185,6 +1185,10 @@ showmount -e 192.168.90.110       # worker1/2에서 조회
                 tmpfs
 ```
 
+
+```bash
+kubectl apply -f csi-nfs.yaml
+```
 ```yaml
 kind: ServiceAccount
 apiVersion: v1
@@ -1248,6 +1252,60 @@ roleRef:
   name: nfs-pod-provisioner-otherRoles
   apiGroup: rbac.authorization.k8s.io
 ```
+
+```bash
+kubectl apply -f storageclass-configure.yaml
+```
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-csi
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: master.example.com
+  path: /nfs
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=4.1
+```
+
+```bash
+kubectl apply -f storageclass-deployment.yaml
+```
+```yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nfs-csi-pod
+spec:
+  selector:
+    matchLabels:
+      app: nfs-csi-pod
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-csi-pod
+    spec:
+      serviceAccountName: nfs-pod-provisioner-sa
+      containers:
+        - name: sc-nginx
+          image: nginx
+          volumeMounts:
+            - name: csi-nfs
+              mountPath: /var/www/html/
+      volumes:
+       - name: csi-nfs
+         nfs:
+           server: master.example.com
+           path: /nfs
+```
+
 
 
 ## 대시보드
