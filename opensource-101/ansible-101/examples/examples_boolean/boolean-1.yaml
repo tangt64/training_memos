@@ -4,6 +4,10 @@
     test2: "yes"
 
   tasks:
+
+  - name: type debug
+    debug: "{{ test2 }} | type_debug"
+
   - name: Boolean true
     shell: echo "This is true"
     when: test1 or test2 | bool
