@@ -1,0 +1,12 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: task-helloworld
+spec:
+  steps:
+    - name: helloworld
+      image: quay.io/centos/centos:stream9
+      script: |
+        #!/usr/bin/env bash
+        echo "hello world"

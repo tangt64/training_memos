@@ -1,0 +1,17 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: task-svn
+spec:
+  params:
+    - name: svnname
+      default: git
+      type: string
+  steps:
+    - name: install-svn
+      image: quay.io/centos/centos:stream9
+      script: |
+        #!/usr/bin/env bash
+        echo "install $(params.svnname) package"
+        dnf install $(params.svnname) -y
