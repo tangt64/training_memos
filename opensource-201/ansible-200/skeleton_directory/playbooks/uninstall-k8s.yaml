@@ -1,4 +1,0 @@
-- name:
-  hosts: master:worker
-  roles:
-    - { role: k8s-uninstall }

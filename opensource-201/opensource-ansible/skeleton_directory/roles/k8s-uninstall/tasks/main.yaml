@@ -1,0 +1,32 @@
+- name: reset kubernetes by kubeadm
+  command: kubeadm reset --force 
+
+- name: stop kubelet/crio.service
+  service:
+    name: "{{ item }}"
+    state: stopped
+  loop:
+    - kubelet
+    - crio
+
+- name: delete to other {{ item }}
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/kubernetes
+    - /root/.kube
+    - /var/lib/kubelet
+    - /var/lib/containers
+    - /var/lib/etcd
+    - /run/runc
+    - /run/containers/storage
+    # - /etc/sysconfig/kubelet 
+
+- name: crio reset
+  command: "{{ item }}"
+  loop:
+    - crictl stop $(crictl ps -q)
+    - crictl rm $(crictl ps -qa)
+    - crictl rmi $(crictl images -q)
+

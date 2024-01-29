@@ -1,0 +1,21 @@
+- name: copy crio the repository files to /etc/yum.repos.d/
+  block:
+    - copy:
+        src: "{{ item }}"
+        dest: "/etc/yum.repos.d/{{ item }}.repo"
+      loop:
+        - rhel8-crio-stable-repository
+        - rhel8-crio-libcontainer-stable-repository
+      when: ( ansible_distribution == "CentOS" and ansible_distribution_major_version == "8" or ansible_distribution_major_version == "9" )
+  rescue:
+  - copy:
+      src: "{{ item }}"
+      dest: "/etc/yum.repos.d/{{ item }}.repo"
+    loop:
+      - rhel7-crio-stable-repository
+      - rhel7-crio-libcontainer-stable-repository
+
+- name: install the crio runtime package
+  package:
+    name: cri-o
+    state: latest

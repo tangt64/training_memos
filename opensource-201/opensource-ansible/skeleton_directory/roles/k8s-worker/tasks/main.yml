@@ -1,0 +1,3 @@
+---
+# tasks file for worker
+- import_tasks: k8s-worker-join.yaml

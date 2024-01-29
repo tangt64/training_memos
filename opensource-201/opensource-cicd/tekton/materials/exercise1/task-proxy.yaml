@@ -1,0 +1,17 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: task-proxy
+spec:
+  params:
+    - name: proxyname
+      type: string
+      default: squid
+  steps:
+    - name: install-proxy
+      image: quay.io/centos/centos:stream9
+      script: |
+        #!/usr/bin/env bash
+        echo "install $(params.proxyname) package"
+        dnf install $(params.proxyname) -y

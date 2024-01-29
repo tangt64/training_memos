@@ -1,7 +1,0 @@
-- name: set to a hostname
-  hostname:
-    name: "{{ nodename }}"
-- name: set to a /etc/hosts file
-  template:
-    src: hosts.j2
-    dest: /etc/hosts

@@ -1,0 +1,7 @@
+- name: config to the kubernetes network interface card
+  nmcli:
+    type: ethernet
+    conn_name: "{{ k8s_nic }}"   ## nmcli con show 
+    ip4: "{{ k8s_ip4_address }}"
+    gw4: "{{ k8s_gw4_address }}" 
+    state: present
