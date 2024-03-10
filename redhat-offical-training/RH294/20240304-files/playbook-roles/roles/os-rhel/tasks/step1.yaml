@@ -1,0 +1,12 @@
+- name: show role name {{ ansible_role_name }} on {{ inventory_hostname }}
+  debug:
+    msg: "{{ ansible_role_name }}"
+
+- name: show rhel_var name {{ ansible_role_name }} on {{ inventory_hostname }}
+  debug:
+    msg: "{{ rhel_var }}"
+
+- name: call handler
+  command: /usr/bin/true
+  notify: hd_os-rhel_msg
+

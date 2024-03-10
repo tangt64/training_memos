@@ -1,0 +1,67 @@
+---
+- name: facts testing
+  hosts: n9k1
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - nxos_get_facts: 
+        host:{{ inventory_hostname }}
+
+    - nxos_get_facts: 
+        host: {{ inventory_hostname }} 
+        detail: true
+
+    - nxos_get_ipv4_interface: 
+        interface: Ethernet1/1 
+        host: {{ inventory_hostname }}
+
+    - nxos_ipv4_interface: 
+        interface: Ethernet1/1 
+        ip_addr: 10.1.100.2 
+        mask: 24 
+        host: {{ inventory_hostname }} 
+        state: absent
+
+    - nxos_ipv4_interface: 
+        interface: vlan10
+        ip_addr: 10.1.100.3
+        mask: 22
+        host: {{ inventory_hostname }}
+
+    - nxos_ipv4_interface:
+        interface: vlan10 
+        host: {{ inventory_hostname }} 
+        state: absent
+
+   - nxos_vlan: 
+       vlan_id: 50 
+       host: {{ inventory_hostname }} 
+       admin_state: down 
+       name: WEB
+
+  - nxos_vlan: 
+      vlan_id: 50 
+      host: {{ inventory_hostname }} 
+      state: absent
+
+    - nxos_vlan: 
+        vlan_id: "2-10,20,50,55-60" 
+        host: {{ inventory_hostname }} 
+        state: present
+   
+    - nxos_vlan: 
+        vlan_id: {{ item.vlan_id }}
+        name: {{ item.name }} 
+        host: {{ inventory_hostname }} 
+        state: present
+      loop:
+        - vlan_id: 10
+          name: web
+        - vlan_id: 20
+          name: app
+        - { vlan_id: 30, name: db }
+        - vlan_id: 40
+          name: misc
+        - vlan_id: 99
+          name: native_vlan
