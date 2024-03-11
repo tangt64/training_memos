@@ -1,0 +1,11 @@
+- name: this is first playbook
+  hosts: localhost
+  vars:
+    region:
+      - northeast
+      - southeast
+      - midwest    
+  tasks:
+  - name: echo the the first element value
+    debug:
+      msg: "{{ region[0] }}"

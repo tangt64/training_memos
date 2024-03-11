@@ -1,0 +1,7 @@
+- hosts: localhost
+  tasks:
+  - shell: /bin/noexistcmd
+    register: result
+    until: result.stdout.find("I am okay") != -1
+    retries: 2
+    delay: 5

@@ -1,0 +1,4 @@
+software:
+ - mariadb
+ - mariadb-server
+ - postgresql

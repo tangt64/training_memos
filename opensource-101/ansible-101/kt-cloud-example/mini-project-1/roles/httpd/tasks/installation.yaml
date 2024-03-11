@@ -1,5 +1,0 @@
----
-- name: Install a httpd package
-  package:
-    name: httpd
-    state: present

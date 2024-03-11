@@ -1,0 +1,34 @@
+- hosts: web
+
+  become: true
+  become_user: admin
+
+  tasks:
+  - name: starts ping to {{ inventory_hostname }}
+    ping:
+
+  - name: set hostname to {{ inventory_hostname }}
+    hostname:
+      name: etevers20.example.com
+
+- hosts: www
+  tasks:
+  - name: starts ping to www group
+    ping:
+
+  - name: install a httpd package
+    package:     # yum, dnf, zypper, apt
+      naae: httpd
+      state: present
+
+  - name: start to the httpd.service
+    service:     # systemd, init-script(service)
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: open service to the firewalld
+    firewalld:
+      service: http
+      state: enabled
+      permanent: yes

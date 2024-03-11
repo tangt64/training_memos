@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  become: false
+  gather_facts: false
+
+  vars:
+    installedVersion: "4.7.0-00"
+    softwareVersion: "6.6.0-0"
+
+  tasks:
+  - name: show me your the version!!
+    debug:
+      msg: "OLD :p"
+    when: installedVersion is version(softwareVersion, '<=')

@@ -1,0 +1,15 @@
+- name: this is the first playbook
+  hosts: all
+  become: true
+
+  tasks:
+
+  - name: the first module
+    module1:
+      args1: value1
+      args2: value2
+
+  - name: the second module
+    module2:
+      args1: value1
+      args2: value2

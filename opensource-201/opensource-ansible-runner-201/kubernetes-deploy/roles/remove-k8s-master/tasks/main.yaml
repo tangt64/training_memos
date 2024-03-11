@@ -1,0 +1,2 @@
+- name: remove kubernetes master node
+  command: kubeadm reset --force

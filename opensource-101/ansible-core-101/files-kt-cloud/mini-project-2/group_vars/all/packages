@@ -1,0 +1,3 @@
+osp_release_name: antelope
+ceph_release_name: reef
+gluster_release_name: gluster11

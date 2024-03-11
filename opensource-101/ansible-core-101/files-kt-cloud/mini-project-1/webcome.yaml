@@ -1,0 +1,58 @@
+---
+- hosts: all
+
+  tasks: ## == roles
+    - name: Install a httpd package
+      package:
+        name: httpd
+        state: present
+    - name: Install a vsftpd package
+      package:
+        name: vsftpd
+        state: present
+    - name: Install squid package
+      package:
+        name: squid
+        state: present
+    - name: Install mariadb-server package
+      package:
+        name: mariadb-server
+        state: present
+
+    - name: Start the httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+    - name: Start the vsftpd service
+      service:
+        name: vsftpd
+        state: started
+        enabled: true
+    - name: Start the squid service
+      service:
+        name: squid
+        state: started
+        enabled: true
+    - name: Start the mariadb-server service
+      service:
+        name: mariadb
+        state: started
+        enabled: true
+
+    - name: Open all service ports on Firewalld service
+      firewalld:
+        service: "{{ item }}"
+        state: enabled
+        permanent: true
+        zone: public
+      loop:
+        - http
+        - https
+        - ftp
+        - squid
+        - mysql
+
+    - name: Set hostname on this server
+      hostname:
+        name: webcome.example.com

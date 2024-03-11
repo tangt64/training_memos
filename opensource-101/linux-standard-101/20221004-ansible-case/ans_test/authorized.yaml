@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+  - name: send a ssh public key to each hosts from inventory
+    authorized_key:
+      user: "{{ ansible_user }}"
+      key: "{{ lookup('file', '/root/' + '.ssh/id_rsa.pub') }}"

@@ -1,0 +1,27 @@
+- hosts: localhost
+  tasks:
+  - name: register with loop
+    shell: "echo {{ item }}"
+    loop:
+      - "one"
+      - "two"
+    register: echo
+
+  - name: dumped the echo register
+    debug:
+      msg: "{{ echo }}"
+
+  - name: Fail if return code is not 0
+    fail:
+      msg: "The command ({{ item.cmd }}) is not return 0"
+    when: item.rc != 0
+    loop: "{{ echo.results }}"
+
+  - name: In loop and looping the result
+    file: 
+      path: "/tmp/{{ item }}"
+      state: touch
+    loop:
+      - one
+      - two
+    register: echo

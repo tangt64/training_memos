@@ -1,0 +1,4 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.90.37 control.example.com
+192.168.90.19 manage.example.com

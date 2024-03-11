@@ -1,8 +1,0 @@
-[lb]
-192.160.90.100 osp_nodename=lb.example.com
-
-[www]
-172.23.164.189 osp_nodename=control1.example.com
-
-[db]
-172.23.161.99 nodename=mariadb1-srv

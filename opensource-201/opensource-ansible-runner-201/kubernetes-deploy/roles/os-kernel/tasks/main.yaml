@@ -1,0 +1,15 @@
+- name: copy a kernel module loadup config file
+  copy:
+    src: files/k8s-modules.conf
+    dest: /etc/modules-load.d/k8s-modules.conf
+
+- name: copy a kernel parameter config file for iptables(nftables)
+  copy:
+    src: files/99-k8s.conf
+    dest: /etc/sysctl.d/99-k8s.conf
+
+- name: apply the kernel parameter on {{ inventory_hostname }}
+  command: sysctl -p --system
+
+- name: off to the swap parition or file
+  command: swapoff -a

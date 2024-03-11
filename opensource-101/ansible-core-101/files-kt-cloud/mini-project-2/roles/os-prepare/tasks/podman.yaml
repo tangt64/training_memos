@@ -1,0 +1,5 @@
+---
+- name: Install Podman package
+  package:
+    name: podman
+    state: present

@@ -1,0 +1,8 @@
+---
+- hosts: all
+
+  tasks:
+  - authorized_key:
+      user: root
+      #key: "{{ lookup('file', '/home/' + lookup('env', 'USER') + '/.ssh/id_rsa.pub') }}"
+      key: "{{ lookup('file', '/root/' + '/.ssh/id_rsa.pub') }}"

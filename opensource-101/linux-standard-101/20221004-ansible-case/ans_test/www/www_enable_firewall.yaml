@@ -1,0 +1,11 @@
+  - name: enable http, https services
+    firewalld:
+      service: "{{ item }}"
+      state: enabled
+      permanent: yes
+      zone: public
+    loop:
+      - http
+      - https
+    become: true
+  

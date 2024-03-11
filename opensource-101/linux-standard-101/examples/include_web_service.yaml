@@ -1,0 +1,10 @@
+- hosts: all
+  tasks:
+  - name: hostname
+    include_tasks: hostname.yaml
+  - name: package
+    include_tasks: package.yaml
+  - name: html
+    include_tasks: html.yaml
+  - name: service
+    include_tasks: service.yaml

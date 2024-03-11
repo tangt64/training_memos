@@ -1,0 +1,3 @@
+---
+# tasks file for os-selinux
+- import_tasks: se-selinux.yaml

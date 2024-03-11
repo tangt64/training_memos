@@ -1,0 +1,2 @@
+[node1]
+192.168.90.13 nodename=node1.example.com ansible_connection=local

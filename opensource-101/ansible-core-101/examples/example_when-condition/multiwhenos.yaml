@@ -1,0 +1,15 @@
+- hosts: localhost
+  tasks:
+  - debug:
+      msg: "Shutdown OS"
+    when:
+      - ansible_facts['distribution'] == "CentOS"
+      - ansible_distribution_version == "8"
+      - ansible_distribution_release == "Stream"
+
+  - debug: 
+      msg: "No Shutdown OS"
+    when:
+      - ansible_facts['distribution'] != "CentOS"
+      - ansible_distribution_version != "8"
+      - ansible_distribution_release != "Stream"

@@ -1,0 +1,11 @@
+- hosts: localhost
+  tasks:
+
+  - name: list content of directory
+    command: ls /tmp
+    register: contents
+
+  - name: check contents for emptiness
+    debug:
+      msg: "Directory is empty"
+    when: contents.stdout == ""

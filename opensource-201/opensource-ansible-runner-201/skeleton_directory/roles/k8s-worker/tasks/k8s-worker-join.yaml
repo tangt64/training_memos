@@ -1,0 +1,16 @@
+- name: get token from master
+  command: kubeadm token create --print-join-command
+  delegate_to: "{{ groups['master'] | first }}"
+  register: k8s_node_token
+
+- name: enabled to kubelet and crio.service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - crio
+    - kubelet
+
+- name: join into master {{ inventory_hostname }}
+  command: "{{ k8s_node_token }}"

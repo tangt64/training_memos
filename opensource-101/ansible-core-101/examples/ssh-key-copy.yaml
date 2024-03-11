@@ -1,0 +1,11 @@
+---
+- hosts: all
+  gather_facts: false
+  vars:
+    ansible_ssh_user: root
+    ansible_ssh_pass: centos
+
+  tasks:
+  - authorized_key:
+      user: "{{ ansible_user }}"
+      key: "{{ lookup('file', '/home/' + lookup('env', 'USER') + '/.ssh/id_rsa.pub') }}"

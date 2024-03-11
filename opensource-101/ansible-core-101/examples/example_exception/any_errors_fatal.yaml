@@ -1,0 +1,12 @@
+- hosts: localhost
+  any_errors_fatal: true
+  roles:
+    - myrole
+
+- hosts: localhost, localhost2
+  tasks:
+    - block:
+        - include_tasks: mytasks.yaml
+        - debug:
+            msg: "It's error"
+      any_errors_fatal: true

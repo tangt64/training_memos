@@ -1,0 +1,6 @@
+- hosts: all
+  tasks :
+  - name: make a text file for httpd service
+    copy:
+      content: "Hello World My Ansible Service"
+      dest: /var/www/html/index.html

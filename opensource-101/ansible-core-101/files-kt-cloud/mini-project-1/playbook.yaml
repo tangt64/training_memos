@@ -1,0 +1,26 @@
+---
+- hosts: all
+
+  remote_user: ansible
+  become: true
+  port: 8822
+
+  pre_tasks:
+    - name: Remove the httpd package
+      package:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - httpd
+        - vsftpd
+
+  # tasks:
+  roles:
+    - { role: httpd }
+    - { role: vsftpd }
+
+  post_tasks:
+    - name: Delete the DNF/YUM package cache data
+      shell: dnf clean all
+    - name: Status the httpd service
+      shell: systemctl is-active httpd

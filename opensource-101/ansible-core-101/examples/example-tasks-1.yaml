@@ -1,0 +1,23 @@
+- hosts: all
+  remote_user: root
+  become: true
+  
+  pre_tasks:
+    - name: updates all of packages
+      yum:
+        name: "*"
+        state: latest
+  tasks:
+    - name: install a vsftpd package
+      yum:
+        name: vsftpd
+        state: latest
+  post_tasks:
+    - name: start and enable the vsftpd service
+      service:
+         name: vsftpd
+         state: started
+         enabled: yes  
+
+# 인벤토리 생성
+# control.example.com, manage.example.com에 적용.

@@ -1,0 +1,5 @@
+[node1]
+control.example.com nodename=node1.example.com
+
+[node2]
+manage.example.com nodename=node2.example.com

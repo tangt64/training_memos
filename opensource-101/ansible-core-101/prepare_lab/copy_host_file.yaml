@@ -1,0 +1,14 @@
+- hosts: all
+  become: true
+  remote_user: guest
+  become_method: sudo
+
+  tasks:
+  - name: copy the hosts.txt to each host
+    copy:
+      src: hosts.txt
+      dest: /etc/hosts
+
+  - name: set hostname to each host
+    hostname:
+      name: "{{ nodename }}"

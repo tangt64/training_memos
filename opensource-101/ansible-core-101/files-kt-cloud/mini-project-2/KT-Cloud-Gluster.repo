@@ -1,0 +1,5 @@
+[kt-osp-intenral-gluster11-repos]
+name=KT-Cloud-Gluster 11
+baseurl=http://10.10.10.250/gluster-11/
+gpgcheck=0
+enabled=1

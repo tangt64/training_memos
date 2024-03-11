@@ -1,8 +1,0 @@
-  - name: install to a database
-    yum:
-      name:
-        - mariadb
-        - mariadb-server
-        - mariadb-common
-      state: present
-    become: true

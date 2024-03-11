@@ -1,8 +1,0 @@
----
-- name: Load up kvm.ko module
-  modprobe:
-    name: kvm
-    state: present
-    params: nested=Y
-- include_tasks: podman.yaml
-- include_tasks: copy.yaml

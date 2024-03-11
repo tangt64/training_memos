@@ -1,7 +1,0 @@
----
-- name: Open all service ports on Firewalld service
-  firewalld:
-    service: ftp
-    state: enabled
-    permanent: true
-    zone: public

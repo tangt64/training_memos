@@ -1,0 +1,11 @@
+[osp_controller]
+172.23.161.99       nodename=control1.example.com
+
+[osp_compute]
+172.23.166.239      nodename=compute1.example.com
+
+[glusterfs]
+10.10.10.1          nodename=gluster1.str.example.com ansible_host=172.23.161.99
+
+[ceph]
+10.10.20.1          nodename=ceph1.str.example.com ansible_host=172.23.166.239

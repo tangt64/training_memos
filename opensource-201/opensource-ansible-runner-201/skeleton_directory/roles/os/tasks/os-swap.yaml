@@ -1,0 +1,15 @@
+- name: turn off runtime swap
+  shell: swapoff -a
+  tags: swapoff
+
+- name:
+  lineinfile:
+    path: /etc/fstab
+    state: present
+    regexp: ' swap '
+    line: '## REMOVED ##'
+  tags: swapoff
+
+
+
+

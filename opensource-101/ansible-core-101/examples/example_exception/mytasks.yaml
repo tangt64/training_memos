@@ -1,0 +1,2 @@
+- fail:
+    msg: "This is error and failure marked"   

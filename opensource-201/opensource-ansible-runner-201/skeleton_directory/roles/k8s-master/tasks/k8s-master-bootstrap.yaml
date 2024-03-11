@@ -1,0 +1,21 @@
+- name: start to crio.service
+  service:
+    name: crio
+    state: started
+    enabled: yes
+
+- name: run kubeadm bootstrapping
+  command: 'kubeadm init --ignore-preflight-errors="{{ k8s_exception_flight }}" --apiserver-advertise-address="{{ k8s_advertise_address }}"'
+
+- name: create a .kube/ directory in the root home directory
+  file:
+    path: /root/.kube
+    mode: 0700 
+    state: directory
+
+- name: copy the admin.conf to /root/.kube/config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    remote_src: yes
+

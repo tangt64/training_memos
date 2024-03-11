@@ -1,2 +1,0 @@
-k8s_selinux_policy: targeted
-k8s_selinux_state: permissive

@@ -1,0 +1,7 @@
+---
+- name: Ping to all hosts
+  hosts: all
+
+  tasks:
+    - name: Piiinnng :) {{ inventory_hostname }}
+      ping:

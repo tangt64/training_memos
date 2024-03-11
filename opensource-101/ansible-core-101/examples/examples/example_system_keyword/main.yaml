@@ -1,0 +1,11 @@
+- hosts: node1.example.com
+
+- hosts: node1.example.com, node2.example.com
+
+- hosts: !node3.example.com, all
+
+- hosts: *.example.com
+
+
+- hosts: all
+  remote_user: root  

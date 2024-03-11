@@ -1,0 +1,5 @@
+- hosts: localhost
+  tasks:
+  - command: /bin/true
+    ignore_unreachable: yes
+  - command: echo "This command will be working without problem"
