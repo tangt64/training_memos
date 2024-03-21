@@ -1,19 +1,12 @@
 #!/bin/bash
 
-printf "please input username: "
-read uname
-printf "please input user password: "
-read upasswd
+uname=$1
+upasswd=$2
 
-# uname=test1
-# upasswd=default
+echo -e "\e[31mcreate a user with password...\e[0m"
+adduser $uname -p $(mkpasswd -m sha-512 password -s $upasswd) 2> /dev/null
+logger -i -p local3.info "USER CREATE"
 
-echo "create a user..."
-adduser $uname
-
-echo "set the user password..."
-echo $upasswd | passwd --stdin $uname
-
-echo "verify the user from /etc/passwd..."
-grep ^$uname /etc/passwd || exit
-grep ^$uname /etc/shadow
+echo -e "\e[31mverify the user from /etc/passwd...\e[0m"
+getent passwd $uname
+logger -i -p local3.info "USER VERIFIED"
