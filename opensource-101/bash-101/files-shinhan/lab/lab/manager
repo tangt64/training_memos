@@ -3,7 +3,6 @@
 source include/user.sh
 source include/firewalld.sh
 source include/passwd.sh
-source include/systemd.sh
 
 case $1 in
   set)           ## password
@@ -16,14 +15,7 @@ case $1 in
   start)         ## systemd
     case $2 in
       service)
-        StartService $3 
-      ;;
-    esac
-  ;;
-  stop)         ## systemd
-    case $2 in
-      service)
-        StopService $3 
+        SetService $3 
       ;;
     esac
   ;;
