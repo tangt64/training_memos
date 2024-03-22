@@ -5,6 +5,7 @@ source include/firewalld.sh
 source include/passwd.sh
 source include/systemd.sh
 source include/log.sh
+source include/container.sh
 
 case $1 in
   set)           ## password
@@ -26,6 +27,9 @@ case $1 in
       service)
         StopService $3 
       ;;
+      container) ## create container service. wildfly middle ware.
+    	  StopContainer $3 $4      ## container name
+    ;;
     esac
   ;;
   add)           ## firewalld
@@ -56,6 +60,9 @@ case $1 in
     ;;
       log)       ## create log from journald	
     	  CreateLog $3      ## email address 
+    ;;
+      container) ## create container service. wildfly middle ware.
+    	  CreateContainer $3 $4      ## container image, container name
     ;;
     esac
   ;;
