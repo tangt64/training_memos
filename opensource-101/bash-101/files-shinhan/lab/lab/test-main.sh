@@ -4,6 +4,7 @@ source include/user.sh
 source include/firewalld.sh
 source include/passwd.sh
 source include/systemd.sh
+source include/log.sh
 
 case $1 in
   set)           ## password
@@ -52,6 +53,9 @@ case $1 in
     case $2 in
       user)	
     	  CreateUser $3 $4
+    ;;
+      log)       ## create log from journald	
+    	  CreateLog $3      ## email address 
     ;;
     esac
   ;;
