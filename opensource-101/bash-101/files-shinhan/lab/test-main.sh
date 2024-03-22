@@ -18,6 +18,13 @@ case $1 in
       ;;
     esac
   ;;
+  remove)          ## firewalld
+    case $2 in
+      service)
+         RemoveFirewall $3
+      ;;
+    esac
+  ;;
   create)
     case $2 in
       user)	
