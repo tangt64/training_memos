@@ -8,7 +8,7 @@ write-host "Build to virtual machines for Ansible LAB"
 New-Item -ItemType Directory c:\VMs
 New-Item -ItemType Directory c:\VMData
 
-curl https://mirror.navercorp.com/rocky/9.3/isos/x86_64/Rocky-9.3-x86_64-minimal.iso -O c:$VM_Data\Rocky-9.3-x86_64-minimal.iso
+curl https://mirror.navercorp.com/rocky/9.3/isos/x86_64/Rocky-9.3-x86_64-dvd.iso -O c:$VM_Data\Rocky-9.3-x86_64-dvd.iso
 
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All
 New-VMSwitch -name InternalSwitch -SwitchType Internal
