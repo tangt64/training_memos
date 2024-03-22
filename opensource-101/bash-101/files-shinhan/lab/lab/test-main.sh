@@ -2,8 +2,23 @@
 #source include/login.sh
 source include/user.sh
 source include/firewalld.sh
+source include/passwd.sh
 
 case $1 in
+  set)           ## password
+    case $2 in
+      password)
+         SetUserPasswd $3 $4
+      ;;
+    esac
+  ;;
+  start)         ## systemd
+    case $2 in
+      service)
+        SetService $3 
+      ;;
+    esac
+  ;;
   add)           ## firewalld
     case $2 in
       service)
@@ -18,26 +33,25 @@ case $1 in
       ;;
     esac
   ;;
-  remove)          ## firewalld
+  remove)        ## firewalld
     case $2 in
       service)
          RemoveFirewall $3
-      ;;
+    ;;
     esac
   ;;
-  create)
+  create)        ## adduser
     case $2 in
       user)	
     	  CreateUser $3 $4
-      ;;
+    ;;
     esac
   ;;
-  delete)
+  delete)        ## userdel
     case $2 in
       user)
-        echo "this is delete"
-	DeleteUser $3
-    ;;
+       	DeleteUser $3
+     ;;
    esac
   ;;    
 esac
