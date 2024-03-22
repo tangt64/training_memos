@@ -12,9 +12,7 @@ function ListFirewall(){
   local firewalld_srv_name=$1			## firewalld
   echo -e "\e[34mverify to $firewalld_srv_name protocol on Firewalld...\e[0m"
 
-  firewall-cmd --list-services | grep $firewalld_srv_name 2> /dev/null
-
-  if [[ $(firewall-cmd --list-services | grep $firewalld_srv_name) =~ http ]] ; then
+  if [[ $(firewall-cmd --list-services) =~ $firewalld_srv_name ]] ; then
     echo "it's good"
   else
     echo "it's not good"
