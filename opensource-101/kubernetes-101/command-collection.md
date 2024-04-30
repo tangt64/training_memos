@@ -60,8 +60,8 @@ master]# systemctl enable --now kubelet
 
 ```bash
 master/node]# dnf install wget -y
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
+master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
 master/node]# dnf install cri-o -y
 master/node]# systemctl enable --now crio
 master/node]# systemctl is-active crio
