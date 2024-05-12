@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: task-cleanup
+spec:
+  steps:
+  - name: clean
+    image: quay.io/centos/centos:stream9
+    command:
+      - /bin/bash
+    args: ['-c', 'echo Cleaning up!']

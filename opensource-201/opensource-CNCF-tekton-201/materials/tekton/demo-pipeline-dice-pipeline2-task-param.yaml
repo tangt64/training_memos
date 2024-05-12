@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: demo-pipeline-dice-pipeline2-task-param
+spec:
+  params:
+    - name: sideNum
+      description: number of sides to the dice
+      default: 6
+      type: string
+  steps:
+    - name: welcome-message-param
+      image: quay.io/centos/centos:stream9
+      command:
+        - /bin/bash
+        - -c
+        - echo "Rolling $(params.sideNum) dice"
+    - name: dice-random-param
+      image: quay.io/centos/centos:stream9
+      script: |
+        dnf install php-cli -y
+        php -r 'echo rand(1,$(params.sideNum));'

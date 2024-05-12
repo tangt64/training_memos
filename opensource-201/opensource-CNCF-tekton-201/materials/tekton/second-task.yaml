@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: second-task
+spec:
+  steps:
+  - name: second-task
+    image: quay.io/centos/centos:stream9
+    command:
+    - /bin/bash
+    args: ['-c', 'echo hello world for second task']

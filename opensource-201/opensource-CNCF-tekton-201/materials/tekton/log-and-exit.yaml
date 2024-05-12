@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: log-and-exit
+spec:
+  params:
+    - name: text
+      type: string
+    - name: exitcode
+      type: string
+  steps:
+    - name: log
+      image: quay.io/centos/centos:stream9
+      command:
+        - /bin/bash
+      args: ["-c", "echo $(params.text)"]

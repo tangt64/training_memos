@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tekton-demo-configmap
+spec:
+  volumes:
+    - name: users
+      configmap:
+        name: user-list
+  steps:
+    - name: username-list
+      image: quay.io/centos/centos
+      volumeMounts:
+        - name: users
+          mountPath: /var/username-list
+      script: |
+        echo "$(cat /var/username-list/user1) is normal user"
+        echo "$(cat /var/username-list/user2) is root user"
+        echo "$(cat /var/username-list/user3) is admin user"

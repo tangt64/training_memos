@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: exit-debug-task
+spec:
+  params:
+    - name: text
+      type: string
+    - name: exitcode
+      type: string
+  steps:
+    - name: log
+      image: quay.io/centos/centos
+      command:
+        - /bin/bash
+      args: ["-c", " echo $(params.text)"]
+    - name: exit
+      image: quay.io/centos/centos
+      command:
+        - /bin/bash
+      args: ["-c", "echo 'Exiting with code $(params.exitcode)' && exit $(params.exitcode)"]
