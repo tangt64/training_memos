@@ -1,0 +1,90 @@
+- name: delete all instances
+  amazon.aws.ec2_instance:
+    state: absent
+    filters:
+      instance-state-name: running
+
+- name: restart to an instance with the specfiy instance id
+  amazon.aws.ec2_instance:
+    state: restarted
+    instance_ids:
+      - i-12345678
+
+- name: list instances form EC2 from the AZ
+  amazon.aws.ec2_instance_info:
+    filters:
+      availability-zone: ap-northeast-2
+
+- name: create a bastion server
+  amazon.aws.ec2_instance:
+    name: "public-compute-instance"
+    key_name: "aws-lab-offical"
+    vpc_subnet_id: subnet-03105dcd084f493eb
+    instance_type: t2.nano
+    security_group: aws-lab-sg-public
+    network:
+      assign_public_ip: true
+    image_id: ami-0676d41f079015f32
+    tags:
+      Environment: lab      
+
+- name: create a bastion server
+  amazon.aws.ec2_instance:
+    name: "public-compute-instance"
+    key_name: "aws-lab-offical"
+    vpc_subnet_id: subnet-03105dcd084f493eb
+    instance_type: t2.nano
+    security_group: aws-lab-sg-public
+    network:
+      assign_public_ip: true
+    image_id: ami-0676d41f079015f32
+    tags:
+      Environment: lab     
+    volumes:
+      - device_name: /dev/sda1
+        ebs:
+          volume_size: 16
+          delete_on_termination: true 
+
+- name: start an instance and Add EBS
+  amazon.aws.ec2_instance:
+    name: "public-compute-instance"
+    key_name: "aws-lab-offical"
+    vpc_subnet_id: subnet-03105dcd084f493eb
+    instance_type: t2.nano
+    security_group: aws-lab-sg-public
+    volumes:
+      - device_name: /dev/sda1
+        ebs:
+          volume_size: 16
+          delete_on_termination: true      
+
+- name: start an instance and Add EBS volume from a snapshot
+  amazon.aws.ec2_instance:
+    name: "public-compute-instance"
+    key_name: "aws-lab-offical"
+    vpc_subnet_id: subnet-03105dcd084f493eb
+    name: "public-withebs-instance"
+    instance_type: t2.nano
+    image_id: subnet-03105dcd084f493eb
+    vpc_subnet_id: subnet-03105dcd084f493eb
+    volumes:
+      - device_name: /dev/sda2
+        ebs:
+          snapshot_id: snap-<ID>
+
+- name: create a private zone with multiple associated VPCs
+  amazon.aws.route53_zone:
+    zone: 5th.example.com
+    vpcs:
+      - id: vpc-<ID>
+        region: ap-northeast-2
+    comment: ansible test domain
+
+
+- name: EBS simple attachment action
+  amazon.aws.ec2_vol:
+    instance: <ID>
+    volume_size: 5
+    device_name: <EBS_VOLUME_NAME>
+    region: ap-northeast-2
