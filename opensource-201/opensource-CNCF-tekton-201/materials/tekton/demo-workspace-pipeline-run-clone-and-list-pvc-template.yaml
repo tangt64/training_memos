@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-and-list-pr-
+spec:
+  pipelineSpec:
+    workspaces:
+      - name: gitcode
+    tasks:
+      - name: clone
+        taskRef:
+          name: demo-workspace-clone-github-pipeline
+        workspaces:
+          - name: source
+            workspace: gitcode
+      - name: list
+        taskRef:
+          name: demo-workspace-list-github-pipeline
+        workspaces:
+          - name: source
+            workspace: gitcode
+        runAfter:
+          - clone
+  workspaces:
+  - name: gitcode
+    volumeClaimTemplate:
+      spec:
+        accessModes: 
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: demo-expression-task-time-show-timedate
+spec:
+  params:
+    - name: locale
+      type: string
+      default: "America/New_York"
+  steps:
+    - name: show-timedate
+      image: quay.io/centos/centos:stream9
+      script: |
+        export TZ=$(params.locale)
+        DATE=$(date +%d/%m/%Y\ %T)
+        echo [$DATE] - $(params.locale)
+

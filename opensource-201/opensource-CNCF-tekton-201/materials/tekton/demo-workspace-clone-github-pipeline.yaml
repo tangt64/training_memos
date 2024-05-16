@@ -1,0 +1,58 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: demo-workspace-clone-github-pipeline
+spec:
+  params:
+    - name: repo
+      type: string
+      description: Git Repository clone from github
+      default: https://github.com/tangt64/duststack-osp-auto
+  workspaces:
+    - name: source
+  steps:
+    - name: clone
+      image: quay.io/centos/centos:stream9
+      workingDir: $(workspaces.source.path)
+      script: |
+        dnf install git -y
+        git clone -v $(params.repo) $(workspaces.source.path)
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: demo-workspace-list-github-pipeline
+spec:
+  workspaces:
+    - name: source
+  steps:
+    - name: list
+      image: quay.io/centos/centos:stream9
+      workingDir: $(workspaces.source.path)
+      script: |
+        dnf install tree -y
+        tree -L 2 /workspace
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: demo-workspace-clone-list-github-pipeline
+spec:
+  workspaces:
+    - name: gitcode
+  tasks:
+    - name: clone
+      taskRef:
+        name: demo-workspace-clone-github-pipeline
+      workspaces:
+        - name: source
+          workspace: gitcode
+    - name: list
+      taskRef:
+        name: demo-workspace-list-github-pipeline
+      workspaces:
+        - name: source
+          workspace: gitcode
+      runAfter:
+        - clone
+

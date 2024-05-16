@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: demo-expression-pipeline-time-show-timedate
+spec:
+  params:
+    - name: timezone
+      description: set to TZ
+      type: string
+  tasks:
+    - name: timezone
+      params:
+        - name: timezone
+          value: Asia/Seoul
+      taskRef:
+        name: demo-expression-task-time-show-timedate
+      when: 
+        - input: $(params.timezone)
+          operator: in
+          values: ["Asia/Seoul"]
+
