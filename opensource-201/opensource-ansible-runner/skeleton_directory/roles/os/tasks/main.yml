@@ -1,0 +1,10 @@
+---
+# tasks file for os
+
+- import_tasks: os-system.yaml
+# - import_tasks: crio-prepare.yaml
+- import_tasks: k8s-prepare.yaml
+- import_tasks: os-yum-config.yaml
+- import_tasks: os-hostname.yaml
+- import_tasks: os-swap.yaml
+

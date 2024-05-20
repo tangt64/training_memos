@@ -1,0 +1,4 @@
+- name: install the tc package {{ inventory_hostname }}
+  package:
+    name: iproute-tc
+    state: "{{ pversion }}"

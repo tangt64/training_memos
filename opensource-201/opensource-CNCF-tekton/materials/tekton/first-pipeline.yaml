@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: first-pipeline
+spec:
+  tasks:
+    - name: first
+      taskRef:
+        name: first-task

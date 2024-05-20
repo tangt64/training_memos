@@ -1,0 +1,25 @@
+---
+# tasks file for calico
+- block:
+    - name: copy calico YAML
+      copy:
+        src: tigera-operator.yaml
+        dest: /tmp/tigera-operator.yaml
+
+    - name: apply calico YAML
+      command: kubectl create -f /tmp/tigera-operator.yaml
+
+    - name: wait a 1 miniute
+      pause:
+        minutes: 1
+
+    - name: check to calico POD status
+      command: kubectl get pods -n calico
+      register: is_running_calico
+
+    - debug:
+        msg: "{{ is_running_calico.stdout }}"
+
+  rescue:
+    - name: rollback to the calico operator
+      command: kubectl delete -f /tmp/tigera-operator.yaml

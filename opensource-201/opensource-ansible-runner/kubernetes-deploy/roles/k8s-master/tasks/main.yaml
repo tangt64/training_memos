@@ -1,0 +1,13 @@
+- name: init to kubernet
+  command: kubeadm init
+
+- name: create the .kube directory on user
+  file:
+    path: /root/.kube/
+    state: directory
+
+- name: copy the kubernetes config and certification onto user
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    remote_src: yes

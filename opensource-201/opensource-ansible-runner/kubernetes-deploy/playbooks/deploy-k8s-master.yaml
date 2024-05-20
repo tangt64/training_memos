@@ -1,0 +1,9 @@
+- hosts: master
+  roles:
+    - { role: k8s-master, tags: master  }
+    - { role: k8s-net-calico, tags: network }
+
+- hosts: worker
+  roles:
+    - { role: k8s-node, tags: node }
+

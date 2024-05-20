@@ -1,0 +1,19 @@
+- name: delete kubernetes/containerd repositroy files for YUM(dnf-3)
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - kubernetes.repo
+    - containerd.repo
+
+- name: copy a kubernete/containerd repository files for YUM(dnf-3)
+  copy:
+    src: files/{{ item }}
+    dest: /etc/yum.repos.d/{{ item }}
+  loop:
+    - kubernetes.repo
+    - containerd.repo
+
+- name: clean up to YUM cachedata
+  command: yum clean all
+  when: disabled_cleanup_cache|bool

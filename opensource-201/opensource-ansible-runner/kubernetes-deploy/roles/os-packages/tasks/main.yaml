@@ -1,0 +1,18 @@
+- name: install the firewalld package as {{ firewall_type }}
+  package:
+    name: "{{ firewall_type }}"
+    state: "{{ pkg_state }}"
+  #when: disabled_firewalld == "enabled"
+  when: disabled_firewalld|bool
+
+- name: install runtime package on {{ inventory_hostname }} as {{ runtime_type }}
+  package:
+    name: "{{ runtime_type }}"
+    state: "{{ pkg_state }}"
+
+- name: install kubernetes packages on {{ inventory_hostname }}
+  yum:
+    name: "{{ item }}"
+    state: "{{ pkg_state }}"
+    disable_excludes: all
+  loop: "{{ pkg_k8s }}"
