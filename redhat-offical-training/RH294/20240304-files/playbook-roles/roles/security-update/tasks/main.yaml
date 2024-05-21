@@ -1,3 +1,0 @@
-- name: show role name {{ ansible_role_name }} on {{ inventory_hostname }}
-  debug:
-    msg: "{{ ansible_role_name }}"
