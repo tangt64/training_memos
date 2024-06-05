@@ -46,10 +46,6 @@ master/node]# cat <<EOF>> /etc/hosts
 192.168.90.130 node2.example.com node2
 EOF
 ```
-### kubelet service
-#
-# 처음에 동작 시 "activing..."라고 표시가 되는것은 지극히 정상
-# 
 
 ```bash
 master]# systemctl status kubelet
@@ -59,9 +55,21 @@ master]# systemctl enable --now kubelet
 ### crio install(o)
 
 ```bash
-master/node]# dnf install wget -y
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/files/libcontainers.repo -O /etc/yum.repos.d/libcontainers.repo
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/files/stable_crio.repo -O /etc/yum.repos.d/stable_crio.repo
+master/node]# cat <<EOF | tee /etc/yum.repos.d/cri-o.repo
+[cri-o]
+name=CRI-O
+baseurl=https://pkgs.k8s.io/addons:/cri-o:/prerelease:/main/rpm/
+enabled=1
+gpgcheck=1
+gpgkey=https://pkgs.k8s.io/addons:/cri-o:/prerelease:/main/rpm/repodata/repomd.xml.key
+EOF
+master/node]# dnf install -y \
+    conntrack \
+    container-selinux \
+    ebtables \
+    ethtool \
+    iptables \
+    socat
 master/node]# dnf install cri-o -y
 master/node]# systemctl enable --now crio
 master/node]# systemctl is-active crio
