@@ -16,6 +16,7 @@ gpgcheck=1
 gpgkey=https://pkgs.k8s.io/core:/stable:/v1.26/rpm/repodata/repomd.xml.key
 # exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
+
 master/node]# dnf search --disableexcludes=kubernetes kubectl kubeadm kubelet 
 master/node]# dnf install --disableexcludes=kubernetes kubectl kubeadm kubelet 
 master/node]# setenforce 0
@@ -78,8 +79,6 @@ master/node]# systemctl is-active crio
 # podman 설치 한 후, crio설치 시, policy.json문제 발생
 #
 master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
-
-
 ```
 ### modules
 
@@ -87,8 +86,8 @@ master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main
 master/node]# modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
 master/node]# modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
 master/node]# cat <<EOF> /etc/modules-load.d/k8s-modules.conf
-br_netfilter
-overlay
+> br_netfilter
+> overlay
 EOF
 ```
 
@@ -106,7 +105,7 @@ dracut -f 								  ## ramdisk 갱신
 ### kubeadm init as single controller role node
 
 ```bash
-master]# kubeadm init --apiserver-advertise-address=192.168.90.110 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
+master]# kubeadm init --apiserver-advertise-address=192.168.10.10 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
 master]# systemctl is-active kubelet  							## active
 master]# crictl ps 
 ```
