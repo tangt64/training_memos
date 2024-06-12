@@ -466,7 +466,7 @@ tar xf tkn_0.32.0_Linux_x86_64.tar.gz  -C ~/bin/
 kubectl apply -f https://api.hub.tekton.dev/v1/resource/tekton/task/buildah/0.7/raw
 kubectl apply -f https://api.hub.tekton.dev/v1/resource/tekton/task/kubernetes-actions/0.2/raw
 
-tak task list
+tkn task list
 ```
 
 ```yaml
