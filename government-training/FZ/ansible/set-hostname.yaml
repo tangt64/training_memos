@@ -1,0 +1,10 @@
+- hosts: testbad
+
+  tasks:
+  - name: set hostname for IBK internal node
+    ansible.builtin.hostname:
+      name: "{{ inventory_hostname }}"
+
+  - name: show hostname for each node
+    debug:
+      msg: "{{ ansible_fqdn }}"
