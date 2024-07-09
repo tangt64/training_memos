@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: demo-task-param-array
+spec:
+  params:
+    - name: users
+      type: array
+  steps:
+    - name: user-list
+      image: quay.io/centos/centos:stream9
+      args:
+        - $(params.users[*])
+      command:
+        - /bin/bash
+        - -c
+        - for ((i=1;i<=$#;i++)); do echo "$#" "$i" "${!i}"; done

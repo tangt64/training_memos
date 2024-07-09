@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: welcome-message
+spec:
+  steps:
+  - name: welcome-message
+    image: quay.io/centos/centos
+    command:
+      - /bin/bash
+    args: ['-c', 'echo "Welcome Gambling world!"']

@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tekton-result
+spec:
+  results: 
+    - name: welcome
+      description: welcome message
+  steps:
+    - name: write
+      image: quay.io/centos/centos
+      command:
+        - /bin/bash
+      args:
+        - "-c"
+        - echo "Welcome to Tekton world" > $(results.welcome.path)
+    - name: read
+      image: quay.io/centos/centos
+      command:
+        - /bin/bash
+      args:
+        - "-c"
+        - cat $(results.welcome.path)

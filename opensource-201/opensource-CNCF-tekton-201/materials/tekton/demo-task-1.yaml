@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata: 
+  name: demo-task-1
+spec:
+  steps:
+    - image: quay.io/centos/centos
+      command: 
+        - /bin/bash
+        - -c
+        - echo "Hello World"

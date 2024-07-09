@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: demo-tr-clone-github
+spec:
+  workspaces:
+    - name: source
+      emptyDir: {}
+  taskRef:
+    name: demo-workspace-clone-github
+
