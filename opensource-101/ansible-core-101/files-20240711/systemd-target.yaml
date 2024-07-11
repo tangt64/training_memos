@@ -1,0 +1,15 @@
+---
+- hosts: all
+
+  tasks:
+    - name: change target via file(link)
+      file:
+        src: /usr/lib/systemd/system/graphical.target
+        dest: /etc/systemd/system/default.target
+
+    - shell: ls -l /etc/systemd/system/default.target
+
+    - name: change target via systemctl(shell)
+      shell: systemctl set-default multi-user.target
+
+    - shell: ls -l /etc/systemd/system/default.target

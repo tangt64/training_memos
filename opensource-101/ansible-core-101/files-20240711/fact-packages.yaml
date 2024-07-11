@@ -1,0 +1,11 @@
+---
+- hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: gather package
+      package_facts:
+
+    - name:
+      debug:
+        var: ansible_facts

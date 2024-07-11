@@ -1,0 +1,6 @@
+---
+- name: enable to httpd.service
+  service:
+    name: httpd
+    state: started
+    enabled: true

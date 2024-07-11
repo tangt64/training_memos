@@ -1,0 +1,21 @@
+---
+- hosts: all
+
+  vars_files:
+    - user_list.yaml
+    - secret.yaml
+
+  tasks:
+    - name: delete users
+      user:
+        name: "{{ item.username }}"
+        state: absent
+        remove: true
+      loop: "{{ users }}"
+
+    - name: create users
+      user:
+        name: "{{ item.username }}"
+        uid: "{{ item.uid }}"
+        password: "{{ user_password | password_hash('sha512','salt') }}"   ## remoteuser -> sha512
+      loop: "{{ users }}"

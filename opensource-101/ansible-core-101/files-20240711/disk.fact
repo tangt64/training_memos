@@ -1,0 +1,5 @@
+[dbdisk]
+echo "database disk usage"
+echo "-----"
+SIZE=$(du -hs /var/lib/mysql | awk '{ print $1 }')
+echo "Mariadb_DISK_SIZE: ${SIZE}"

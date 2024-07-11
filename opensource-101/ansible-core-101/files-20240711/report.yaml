@@ -1,0 +1,42 @@
+---
+- hosts: all
+  tasks:
+    - name: copy the report.txt file to all nodes
+      copy:
+        src: report.txt
+        dest: /root/report.txt
+
+    - name: report hostname in report.txt
+      lineinfile:
+        path: /root/report.txt
+        regex: "^HOST"
+        line: "HOST={{ inventory_hostname }}"
+        state: present
+
+    - name: report memory size in report.txt
+      lineinfile:
+        path: /root/report.txt
+        regex: "^MEMORY"
+        line: "MEMORY={{ ansible_memtotal_mb }}"
+        state: present
+
+    - name: report BIOS VERSION in report.txt
+      lineinfile:
+        path: /root/report.txt
+        regex: "^BIOS"
+        line: "BIOS={{ ansible_bios_version }}"
+        state: present
+
+    - name: report SDA DISK SIZE in report.txt
+      lineinfile:
+        path: /root/report.txt
+        regex: "^SDA_DISK_SIZE"
+        line: "SDA_DISK_SIZE={{ ansible_devices.sda.size }}"
+        state: present
+
+    - name: report SDB DISK SIZE in report.txt
+      lineinfile:
+        path: /root/report.txt
+        regex: "^SDB_DISK_SIZE"
+        line: "SDB_DISK_SIZE={% if ansible_devices.sdb.size is defined %}{{ ansible_devices.sdb.size }}{% else %}NONE{% endif %}"
+        state: present

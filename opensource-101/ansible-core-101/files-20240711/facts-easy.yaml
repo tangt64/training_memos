@@ -1,0 +1,37 @@
+---
+- hosts: webserver  
+  tasks:
+    - name: make a fact directory
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+        recurse: true
+
+    - name: make a application fact file {{ inventory_hostname }}
+      copy:
+        src: facts/www-application.fact
+        dest: /etc/ansible/facts.d/application.fact
+
+- hosts: database  
+  tasks:
+    - name: make a fact directory
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+        recurse: true    
+    - name: make a application fact file {{ inventory_hostname }}
+      copy:
+        src: facts/db-application.fact
+        dest: /etc/ansible/facts.d/application.fact
+
+- hosts: middleware  
+  tasks:
+    - name: make a fact directory
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+        recurse: true    
+    - name: make a application fact file {{ inventory_hostname }}
+      copy:
+        src: facts/middle-application.fact
+        dest: /etc/ansible/facts.d/application.fact

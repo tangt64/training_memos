@@ -1,0 +1,29 @@
+---
+- hosts: node1.example.com
+  tasks:
+    - name: install the httpd package
+      package:
+        name: httpd
+        state: present
+
+    - name: make a template
+      template:
+        src: welcome.html.j2
+        dest: /var/www/html/index.html
+
+    - name: enable to httpd.service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: set to firewalld for open http service
+      firewalld:
+        service: "{{ item }}"
+        permanent: true
+        immediate: true
+        zone: public
+        state: enabled
+      loop:
+        - http
+        - https

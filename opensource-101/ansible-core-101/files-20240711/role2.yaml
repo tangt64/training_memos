@@ -1,0 +1,12 @@
+---
+- hosts: node1.example.com
+
+  roles:   # tasks:
+    - httpd
+    - firewalld
+    - service
+
+- hosts: node2.example.com
+
+  roles:   # tasks:
+    - database

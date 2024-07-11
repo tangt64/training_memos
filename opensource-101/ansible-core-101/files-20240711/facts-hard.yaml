@@ -1,0 +1,25 @@
+---
+- hosts: all
+  tasks:
+    - name: make a fact directory
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+        recurse: true
+    - name: make a application fact file {{ inventory_hostname }}
+      copy:
+        content: "[application]\nname=webserver\n"
+        dest: /etc/ansible/facts.d/application.fact
+      when: "inventory_hostname in groups['webserver']"
+
+    - name: make a application fact file {{ inventory_hostname }}
+      copy:
+        content: "[application]\nname=database\n"
+        dest: /etc/ansible/facts.d/application.fact
+      when: "inventory_hostname in groups['database']"
+
+    - name: make a application fact file {{ inventory_hostname }}
+      copy:
+        content: "[application]\nname=middleware\n"
+        dest: /etc/ansible/facts.d/application.fact
+      when: "inventory_hostname in groups['middleware']"

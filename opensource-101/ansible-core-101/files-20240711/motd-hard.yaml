@@ -1,0 +1,18 @@
+---
+- hosts: all
+  tasks:
+    - name: motd message
+      copy:
+        content: "Hello World to www"
+        dest: /etc/motd
+      when: "inventory_hostname in groups['webserver']"
+    - name: motd message
+      copy:
+        content: "Hello World to database"
+        dest: /etc/motd
+      when: "inventory_hostname in groups['database']"
+    - name: motd message
+      copy:
+        content: "Hello World to middleware"
+        dest: /etc/motd
+      when: "inventory_hostname in groups['middleware']"

@@ -1,0 +1,21 @@
+---
+- hosts: node1.example.com
+  tasks:
+    - name: motd message
+      copy:
+        content: "Hello World to www"
+        dest: /etc/motd
+
+- hosts: node2.example.com
+  tasks:
+    - name: motd message
+      copy:
+        content: "Hello World to database"
+        dest: /etc/motd
+
+- hosts: node3.example.com
+  tasks:
+    - name: motd message
+      copy:
+        content: "Hello World to middleware"
+        dest: /etc/motd
