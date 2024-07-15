@@ -98,6 +98,11 @@
         dev: /dev/testvg/testlv
         fstype: xfs
 
+    - name: create a temp directory 
+      file:
+        state: directory
+        path: /mnt/testlv
+
     - name: mount and make a sample data
       mount:
         path: /mnt/testlv
@@ -134,7 +139,7 @@
             path: /etc/httpd/conf/httpd.conf
             search_string: 'Listen: 80'
             line: 'DocumentRoot: 18888'
-            
+
     - name: make a disabled and no-strated the httpd.service
       service:
         name: httpd
