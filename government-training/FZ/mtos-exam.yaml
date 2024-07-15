@@ -1,6 +1,9 @@
 - name: exam for middle test for MTOS
   hosts: localhost
 
+  vars:
+    password: lookup('community.general.random_string', length=12)
+
   tasks:
     - name: enable to EPEL repository
       package:
@@ -18,7 +21,7 @@
     - name: root and exam password changed and disabled
       user:
         name: "{{ item }}"
-        password: "{{ random_password | lookup('community.general.random_string', length=12) }}"
+        password: "{{ password }}"
       loop:
         - root
         - exam
@@ -27,59 +30,68 @@
       shell: nmcli dev | awk '{ print $1 }' | grep eth
       register: count_dev
 
-    - fail:
-        msg: The VM has under 3 NIC device card.
-      when: register_stdout < 3
-
     - name: setup up bad block device as loopback device
       shell: |
-        dd if=/dev/urandom of=/tmp/file bs=500M count=4 status=progress &&
-        sha256sum /tmp/file &&
-        loopdev=$(losetup -f --show /tmp/file) &&
-        echo $loopdev &&
+        dd if=/dev/urandom of=/tmp/file bs=500M count=4 status=progress
+        sha256sum /tmp/file
+        loopdev=$(losetup -f --show /tmp/file)
+        echo $loopdev
         dmsetup create file1 << EOF
         0  2048 linear $loopdev 0
         2048  4096 error
         6144  26624 linear $loopdev 6144
-        EOF &&
+        EOF
         dmsetup create file2 << EOF
         0  30720 linear $loopdev 0
         30720  2048 error
-        EOF &&
-        dd if=/dev/mapper/file1 of=/dev/null count=2048 &&
-        dd if=/dev/mapper/file1 of=/dev/null count=2049 &&
-        dd if=/dev/mapper/file2 of=/dev/null count=30720 &&
-        dd if=/dev/mapper/file2 of=/dev/null count=30721 &&
-        ddrescue -B -v -n /dev/mapper/file1 /tmp/file1 /tmp/log &&
-        ddrescue -B -v -c 16 -r 2 /dev/mapper/file2 /tmp/file1 /tmp/log &&
+        EOF
+        dd if=/dev/mapper/file1 of=/dev/null count=2048
+        dd if=/dev/mapper/file1 of=/dev/null count=2049
+        dd if=/dev/mapper/file2 of=/dev/null count=30720
+        dd if=/dev/mapper/file2 of=/dev/null count=30721
+        ddrescue -B -v -n /dev/mapper/file1 /tmp/file1 /tmp/log
+        ddrescue -B -v -c 16 -r 2 /dev/mapper/file2 /tmp/file1 /tmp/log
         ddrescue -B -v -c 16 -r 2 /dev/mapper/file1 /tmp/file1 /tmp/log
+      run_once: true
 
-    - name: create a partition on /dev/sdb
-      parted: 
+    - name: get partition info
+      community.general.parted:
+        device: /dev/sda
+        unit: s
+      register: sdb_info
+
+    - name: Create 3 equal partition
+      parted:
         device: /dev/sdb
-        number: "{{ item.number }}"
+        number: "{{ (item | int | abs) + 1 }}"
+        label: gpt
+        flags: [ lvm ]
+        name: "disk{{ (item | int | abs) + 1 }}"
+        part_start: "{{ (item | int | abs) * 30 }}%"
+        part_end: "{{ (item | int | abs) * 30 + 30 }}%"
+        unit: "%"
         state: present
-        part_end: "{{ item.size }}"
-        flags: [ lvm2 ]
-      loop:
-        - { number: 1, size: 1G }
-        - { number: 2, size: 1G }
-        - { number: 3, size: 1G }
+      with_sequence: start=0 count=3
 
     - name: set to LVM2 partition
-      filesytstem:
+      filesystem:
         fstype: lvm
+        dev: "{{ item }}"
+      loop:
+        - /dev/sdb1
+        - /dev/sdb2
+        - /dev/sdb3
 
     - name: create VG resource in LVM2
       lvg:
         vg: testvg
-        pvs: /dev/sdb1, /dev/sdb2, /dev/sdb3
+        pvs: /dev/sdb1,/dev/sdb2,/dev/sdb3
 
     - name: create LV resource in LVM2
       lvol:
         vg: testvg
         lv: testlv
-        size: 100%Free
+        size: 100%PVS
 
     - name: build filesystem as xfs
       filesystem:
@@ -94,12 +106,15 @@
         state: present
 
     - name: dump LVM2 VG metadata
-      shell: dd if=/dev/sdc of=/root/lvm_backup_pv.pv bs=1024 count=1
+      shell: dd if=/dev/sdb of=/root/lvm_backup_pv.pv bs=1024 count=1
 
     - name: dump xfs metadata
-      shell: xfs_metadump /dev/sdb /root/sdb_block_meta.backup
+      shell: xfs_metadump /dev/testvg/testlv /root/testlv_xfs.backup
 
     - name: make a damaged to the metadata area
+      shell: xfs_db -x -c blockget -c "blocktrash -s 1000 -n 300" /dev/testvg/testlv
+      ignore_errors: true
+      no_log: true
 
     - name: make a dummy data on /dev/testvg/testlv
       shell: dd if=/dev/random of=/mnt/testlv/dummy.data bs=500M count=4
@@ -109,9 +124,15 @@
         - name: htdocs root
           lineinfile:
             path: /etc/httpd/conf/httpd.conf
-            regexp: ^DocumentRoot
-            line: DocumentRoot: /htdocs
+            regexp: '^DocumentRoot'
+            line: 'DocumentRoot: /htdocs'
         - name: httpd port
+          lineinfile:
             path: /etc/httpd/conf/httpd.conf
-            search_straing: 'Listen: 80'
+            search_string: 'Listen: 80'
             line: 'DocumentRoot: 18888'
+    - name: make a disabled and no-strated the httpd.service
+      service:
+        name: httpd
+        state: stopped
+        enabled: false
