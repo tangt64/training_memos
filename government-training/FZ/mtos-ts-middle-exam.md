@@ -1,13 +1,39 @@
 # 중간 평가 문제
 
 ```bash
+dnf install hyperv-* -y && reboot
 dnf install epel-release 
 dnf install ansible -y
 
+## 스냇샵 생성
+
+curl -o /root/exam.yaml https://raw.githubusercontent.com/tangt64/training_memos/main/government-training/FZ/mtos-exam.yaml
 ansible-playbook exam.yaml
-> /dev/sdb, 10G
+
+## 동작조건
+> /dev/sdb, 최소 10G
 > NIC 3개
-> OOM, CORE, C언어 소스를 다운로드 받아서 실행.
+> OOM, CORE, C언어 소스를 다운로드 받아서 컴파일 후 실행
+
+dnf install gcc -y
+
+gcc -o /ust/local/bin/coredump core.c 
+> 아래 소스코드 블록 참조
+gcc -o /usr/local/bin/oom oom.c
+> https://raw.githubusercontent.com/tangt64/codelab/main/C/oom/oom.c
+```
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+{
+  printf("\n");
+  printf("Process is aborting\n");
+  abort();
+  printf("Control not reaching here\n");
+  return 0;
+}
 
 ```
 
