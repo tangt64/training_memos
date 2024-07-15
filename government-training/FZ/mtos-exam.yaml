@@ -145,3 +145,6 @@
         name: httpd
         state: stopped
         enabled: false
+
+    - name: reboot to the exam VM
+      reboot:
