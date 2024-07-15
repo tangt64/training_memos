@@ -111,13 +111,16 @@
     - name: dump xfs metadata
       shell: xfs_metadump /dev/testvg/testlv /root/testlv_xfs.backup
 
+    - name: make a dummy data on /dev/testvg/testlv
+      shell: dd if=/dev/random of=/mnt/testlv/dummy.data bs=500M count=4
+
+    - name: make a damaged to LVM2 PV meta
+      shell: dd if=/dev/zero of=/dev/sdc bs=1024 count=1
+
     - name: make a damaged to the metadata area
       shell: xfs_db -x -c blockget -c "blocktrash -s 1000 -n 300" /dev/testvg/testlv
       ignore_errors: true
-      no_log: true
-
-    - name: make a dummy data on /dev/testvg/testlv
-      shell: dd if=/dev/random of=/mnt/testlv/dummy.data bs=500M count=4
+      no_log: true      
 
     - name: make httpd.service going to be wrong XD
       block:
@@ -131,6 +134,7 @@
             path: /etc/httpd/conf/httpd.conf
             search_string: 'Listen: 80'
             line: 'DocumentRoot: 18888'
+            
     - name: make a disabled and no-strated the httpd.service
       service:
         name: httpd
