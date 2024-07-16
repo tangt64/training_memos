@@ -94,7 +94,7 @@
         state: present
 
     - name: dump LVM2 VG metadata
-      shell: dd if=/dev/sdc of=/root/lvm_backup_pv.pv bs=1024 count=1
+      shell: dd if=/dev/sdb of=/root/lvm_backup_pv.pv bs=1024 count=1
 
     - name: dump xfs metadata
       shell: xfs_metadump /dev/sdb /root/sdb_block_meta.backup
