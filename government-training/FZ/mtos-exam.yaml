@@ -3,6 +3,7 @@
 
   vars:
     password: lookup('community.general.random_string', length=12)
+    recovery_livecd: false
 
   tasks:
     - name: enable to EPEL repository
@@ -65,7 +66,7 @@
         device: /dev/sdb
         number: "{{ (item | int | abs) + 1 }}"
         label: gpt
-        flags: [ lvm ]
+        flags: ['lvm']
         name: "disk{{ (item | int | abs) + 1 }}"
         part_start: "{{ (item | int | abs) * 30 }}%"
         part_end: "{{ (item | int | abs) * 30 + 30 }}%"
@@ -98,10 +99,21 @@
         dev: /dev/testvg/testlv
         fstype: xfs
 
-    - name: create a temp directory 
+    - name: create a temp directory
       file:
         state: directory
         path: /mnt/testlv
+
+    - name: break and broken to bootloader
+      block:
+        - name: put the wrong information in /etc/fstab
+          lineinfile:
+            dest: /etc/fstab
+            regexp: '/dev/mapper/rl-swap'
+            line: '#/dev/mapper/rl-swap'
+        - name: remove mbr recode block
+          shell: dd if=/dev/zero of=/dev/sda bs=1024 count=1
+          when: recovery_livecd
 
     - name: mount and make a sample data
       mount:
@@ -109,6 +121,16 @@
         src: /dev/testvg/testlv
         fstype: xfs
         state: present
+
+    - name: copy the hacking file
+      block:
+        - name: copy the hack.sh file
+          copy:
+            src: hack.sh
+            dest: /usr/local/bin/hack.sh
+        - name: makes prevent deleting
+          shell: |
+            chattr -i /usr/local/bin/hack.sh
 
     - name: dump LVM2 VG metadata
       shell: dd if=/dev/sdb of=/root/lvm_backup_pv.pv bs=1024 count=1
@@ -125,12 +147,7 @@
     - name: make a damaged to the metadata area
       shell: xfs_db -x -c blockget -c "blocktrash -s 1000 -n 300" /dev/testvg/testlv
       ignore_errors: true
-      no_log: true      
-
-    - name: configure wrong device name in /etc/fstab
-      lineinfile:
-        path: /etc/fstab
-        
+      no_log: true
 
     - name: make httpd.service going to be wrong XD
       block:
@@ -150,6 +167,3 @@
         name: httpd
         state: stopped
         enabled: false
-
-    - name: reboot to the exam VM
-      reboot:
