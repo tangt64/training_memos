@@ -162,8 +162,11 @@
             search_string: 'Listen: 80'
             line: 'DocumentRoot: 18888'
 
-    - name: configure zram and swap for multiples paging.
-      
+    - name: configure zram and swap for multiples paging
+
+    - name: configure bad user enviornment in exam node
+
+    
     - name: make a disabled and no-strated the httpd.service
       service:
         name: httpd
