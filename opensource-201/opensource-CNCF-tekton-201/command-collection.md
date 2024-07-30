@@ -1,8 +1,4 @@
-# 쿠버네티스 싱글 마스터 + 1노드 클러스터 구성
-
-- kubespray(ansible)
-- kind
-- minikube
+# 쿠버네티스 싱글 마스터 + 싱글 노드 클러스터 구성
 
 ## 마스터 및 노드 공통 설정
 
@@ -75,10 +71,6 @@ master/node]# dnf install cri-o -y
 master/node]# systemctl enable --now crio
 master/node]# systemctl is-active crio
 
-#
-# podman 설치 한 후, crio설치 시, policy.json문제 발생
-#
-master/node]# wget https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/policy.json -O /etc/containers/policy.json
 ```
 ### modules
 
@@ -139,7 +131,7 @@ kubectl applyf -f calico-quay-crd.yaml
 kubectl get pods -wA   						## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
 ```
 
-#### 메트릭/역할(임시)
+#### 메트릭/역할
 ```bash
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
 kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
@@ -150,7 +142,7 @@ kubectl get nodes
 - 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
 - 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
 
-#### 확인하기(마스터)
+#### 확인하기
 ```bash
 export KUBECONFIG=/etc/kubernetes/admin.conf 
 kubectl get nodes
