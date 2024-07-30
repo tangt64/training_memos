@@ -37,10 +37,8 @@ master/node]# dnf install iproute-tc -y 				## centos-9-stream, optional
 # 내부 아이피로 구성
 #
 master/node]# cat <<EOF>> /etc/hosts
-192.168.90.110 master.example.com master
-
-192.168.90.120 node1.example.com node1
-192.168.90.130 node2.example.com node2
+192.168.10.10 master.example.com master
+192.168.10.20 node1.example.com node1
 EOF
 ```
 
