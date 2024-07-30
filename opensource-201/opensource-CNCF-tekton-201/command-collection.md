@@ -127,7 +127,7 @@ kubectl get nodes
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/files/calico-quay-crd.yaml
-kubectl get pods -wA   						## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
+kubectl get pods -A
 ```
 
 #### 확인하기
