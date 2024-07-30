@@ -175,3 +175,14 @@ git-clone            These Tasks are Git...   5 seconds ago
 kubernetes-actions   This task is the ge...   6 seconds ago
 maven                This Task can be us...   4 seconds ago
 ```
+
+## 명령어 자동완성
+
+```bash
+dnf install bash-completion -y
+
+kubectl completion bash > /etc/profile.d/kubectl.sh
+tkn completion  bash > /etc/profile.d/tkn.sh
+
+source /etc/profile
+```
