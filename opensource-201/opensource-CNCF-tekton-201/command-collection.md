@@ -127,25 +127,29 @@ kubectl get nodes
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.5/manifests/tigera-operator.yaml
 kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource-101/kubernetes-101/files/calico-quay-crd.yaml
-kubectl applyf -f calico-quay-crd.yaml 
 kubectl get pods -wA   						## -w: wait, 갱신되면 화면에 출력, -A: 모든 네임스페이스 Pod출력
 ```
-
-#### 메트릭/역할
-```bash
-kubectl create -f https://raw.githubusercontent.com/tangt64/training_memos/main/opensource/kubernetes-101/files/metrics.yaml
-kubectl label node node1.example.com node-role.kubernetes.io/worker=worker
-kubectl label node node2.example.com node-role.kubernetes.io/worker=worker
-kubectl top nodes
-kubectl get nodes
-```
-- 노드 1번에 쿠버네티스/CRIO/모듈/커널 파라메타/방화벽/kubelet 등 서비스 설정
-- 마스터에서 token create로 조인 명령어 생성 후, 노드1에서 실행
 
 #### 확인하기
 ```bash
 export KUBECONFIG=/etc/kubernetes/admin.conf 
 kubectl get nodes
+```
+
+```text
+calico-system     calico-kube-controllers-6ddc79c6c6-7vwwp     1/1     Running   0          2m56s
+calico-system     calico-node-6j96z                            1/1     Running   0          2m56s
+calico-system     calico-node-cz8tn                            1/1     Running   0          2m56s
+calico-system     calico-typha-fdd6d7c45-qhdhv                 1/1     Running   0          2m56s
+kube-system       coredns-787d4945fb-cz88n                     1/1     Running   0          107m
+kube-system       coredns-787d4945fb-ntcj5                     1/1     Running   0          107m
+kube-system       etcd-master.example.com                      1/1     Running   0          107m
+kube-system       kube-apiserver-master.example.com            1/1     Running   0          107m
+kube-system       kube-controller-manager-master.example.com   1/1     Running   0          107m
+kube-system       kube-proxy-6vdbv                             1/1     Running   0          107m
+kube-system       kube-proxy-pvhns                             1/1     Running   0          107m
+kube-system       kube-scheduler-master.example.com            1/1     Running   0          107m
+tigera-operator   tigera-operator-7795f5d79b-g6kl6             1/1     Running   0          3m33s
 ```
 
 ## 테크톤 설치
@@ -161,6 +165,14 @@ tkn hub install task buildah
 tkn hub install task kubernetes-actions
 tkn hub install task git-clone
 tkn hub install task maven
-tkn hub install
+
 tkn task list
+```
+
+```text
+NAME                 DESCRIPTION              AGE
+buildah              Buildah task builds...   7 seconds ago
+git-clone            These Tasks are Git...   5 seconds ago
+kubernetes-actions   This task is the ge...   6 seconds ago
+maven                This Task can be us...   4 seconds ago
 ```
