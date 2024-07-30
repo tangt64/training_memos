@@ -78,18 +78,17 @@ master/node]# systemctl is-active crio
 master/node]# modprobe br_netfilter    ## bridge for iptables or nftables, L2/L3
 master/node]# modprobe overlay         ## cotainer image for UFS(overlay2), Disk(UFS)
 master/node]# cat <<EOF> /etc/modules-load.d/k8s-modules.conf
-> br_netfilter
-> overlay
+br_netfilter
+overlay
 EOF
 ```
 
 ### kenrel parameter
 ```bash
 master/node]# cat <<EOF> /etc/sysctl.d/k8s-mod.conf
-> net.bridge.bridge-nf-call-iptables=1    ## container ---> link ---> tap ---> bridge
-> net.ipv4.ip_forward=1                   ## pod <---> svc
-> net.bridge.bridge-nf-call-ip6tables=1   ## ipv6
-> EOF
+net.bridge.bridge-nf-call-iptables=1
+net.bridge.bridge-nf-call-ip6tables=1   
+EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 dracut -f 								  ## ramdisk 갱신
 ```
