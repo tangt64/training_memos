@@ -86,6 +86,7 @@ EOF
 master/node]# cat <<EOF> /etc/sysctl.d/k8s-mod.conf
 net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1   
+net.ipv4.ip_forward=1
 EOF
 sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
 dracut -f 								  ## ramdisk 갱신
@@ -94,7 +95,9 @@ dracut -f 								  ## ramdisk 갱신
 ### kubeadm init as single controller role node
 
 ```bash
-master]# kubeadm init --apiserver-advertise-address=192.168.10.10 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16
+master]# hostnamectl set-hostname master.example.com
+node]# hostnamectl set-hostname node1.example.com
+master]# kubeadm init --apiserver-advertise-address=192.168.10.10 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 --ignore-preflight-errors=Mem
 master]# systemctl is-active kubelet  							## active
 master]# crictl ps 
 ```
