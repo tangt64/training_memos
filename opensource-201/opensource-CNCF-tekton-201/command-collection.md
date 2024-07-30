@@ -24,6 +24,9 @@ master/node]# vi /etc/selinux/config
 master/node]# systemctl stop firewalld && systemctl disable firewalld
 master/node]# swapon -s
 master/node]# swapoff -a
+master/node]# vi /etc/fstab
+> #/dev/mapper/rl-swap     none                    swap    defaults        0 0
+master/node]# systemctl daemon-reload
 master/node]# dnf install tc -y        			 		## optional
 master/node]# dnf install iproute-tc -y 				## centos-9-stream, optional
 ```
@@ -185,4 +188,32 @@ kubectl completion bash > /etc/profile.d/kubectl.sh
 tkn completion  bash > /etc/profile.d/tkn.sh
 
 source /etc/profile
+```
+
+
+```bash
+
+kubectl get nodes
+```
+
+## 강제 종료
+
+```bash
+$VmGUID = (Get-VM 'cicd-master').id
+$VMWMProc = (Get-WMIObject Win32_Process | ? {$_.Name -match 'VMWP' -and $_.CommandLine -match $VmGUID})
+Stop-Process ($VMWMProc.ProcessId) –Force
+```
+
+
+## 에디터 환경
+
+
+```bash
+dnf install epel-release -y
+dnf search vim yaml
+dnf install neovim-ale yamllint -y
+
+nvim test.yaml
+alias vi="nvim"
+
 ```
