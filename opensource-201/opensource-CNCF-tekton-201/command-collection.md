@@ -88,8 +88,8 @@ net.bridge.bridge-nf-call-iptables=1
 net.bridge.bridge-nf-call-ip6tables=1   
 net.ipv4.ip_forward=1
 EOF
-sysctl --system                           ## 재부팅 없이 커널 파라메타 수정하기
-dracut -f 								  ## ramdisk 갱신
+sysctl --system
+dracut -f
 ```
 
 ### kubeadm init as single controller role node
@@ -98,7 +98,7 @@ dracut -f 								  ## ramdisk 갱신
 master]# hostnamectl set-hostname master.example.com
 node]# hostnamectl set-hostname node1.example.com
 master]# kubeadm init --apiserver-advertise-address=192.168.10.10 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.90.0.0/16 --ignore-preflight-errors=Mem
-master]# systemctl is-active kubelet  							## active
+master]# systemctl is-active kubelet
 master]# crictl ps 
 ```
 ### 초기화 순서 및 방법
@@ -148,4 +148,19 @@ export KUBECONFIG=/etc/kubernetes/admin.conf
 kubectl get nodes
 ```
 
+## 테크톤 설치
 
+```bash
+kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.53.7/release.yaml
+kubectl get pods -n tekton-pipelines
+dnf install wget -y
+wget https://github.com/tektoncd/cli/releases/download/v0.32.0/tkn_0.32.0_Linux_x86_64.tar.gz
+mkdir ~/bin/
+tar xf tkn_0.32.0_Linux_x86_64.tar.gz -C ~/bin/
+tkn hub install task buildah
+tkn hub install task kubernetes-actions
+tkn hub install task git-clone
+tkn hub install task maven
+tkn hub install
+tkn task list
+```
