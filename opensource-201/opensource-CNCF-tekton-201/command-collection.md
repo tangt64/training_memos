@@ -222,10 +222,8 @@ alias vi="nvim"
 ## NFS 및 스토리지 클래스
 
 ```bash
-## node1/2번에 다음과 같은 패키지 설치
+## master/compute번에 다음과 같은 패키지 설치
 dnf install nfs-utils -y
-
-## 아래 명령어 dev_workstation에서 실행.
 
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.8.0/deploy/install-driver.sh | bash -s v4.8.0 --
 kubectl -n kube-system get pod -o wide -l app=csi-nfs-controller
