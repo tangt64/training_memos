@@ -214,6 +214,50 @@ dnf search vim yaml
 dnf install neovim-ale yamllint -y
 
 nvim test.yaml
+
 alias vi="nvim"
 
+```
+
+## NFS 및 스토리지 클래스
+
+```bash
+## node1/2번에 다음과 같은 패키지 설치
+dnf install nfs-utils -y
+
+## 아래 명령어 dev_workstation에서 실행.
+
+curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.8.0/deploy/install-driver.sh | bash -s v4.8.0 --
+kubectl -n kube-system get pod -o wide -l app=csi-nfs-controller
+kubectl -n kube-system get pod -o wide -l app=csi-nfs-node
+
+dnf install nfs-utils -y
+mkdir -p /opt/nfs
+cat <<EOF> /etc/exports.d/nfs.exports
+/opt/nfs *(rw,sync,no_root_squash)
+EOF
+exportfs -avrs
+systemctl enable --now nfs-server.service
+showmount -e 192.168.10.10
+
+cat <<EOF> storageclass-configure.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+
+metadata:
+  name: nfs-csi
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: dns1.example.com
+  share: /opt/nfs
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=4.1
+EOF
+
+kubectl apply -f storageclass-configure.yaml
 ```
