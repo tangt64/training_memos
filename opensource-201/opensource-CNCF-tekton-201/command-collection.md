@@ -223,13 +223,12 @@ alias vi="nvim"
 
 ```bash
 ## master/compute번에 다음과 같은 패키지 설치
-dnf install nfs-utils -y
+ssh root@node1.example.com "dnf install nfs-utils -y"
 
 curl -skSL https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/v4.8.0/deploy/install-driver.sh | bash -s v4.8.0 --
 kubectl -n kube-system get pod -o wide -l app=csi-nfs-controller
 kubectl -n kube-system get pod -o wide -l app=csi-nfs-node
 
-dnf install nfs-utils -y
 mkdir -p /opt/nfs
 cat <<EOF> /etc/exports.d/nfs.exports
 /opt/nfs *(rw,sync,no_root_squash)
@@ -258,4 +257,6 @@ mountOptions:
 EOF
 
 kubectl apply -f storageclass-configure.yaml
+kubectl get sc
+kubectl get pv,pvc -A
 ```
