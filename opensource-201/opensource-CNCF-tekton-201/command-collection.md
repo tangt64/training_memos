@@ -295,3 +295,9 @@ spec:
     requests:
       storage: 2Gi
 ```
+
+```bash
+kubectl delete -f storageclass-configure.yaml
+kubectl delete -f pvc-blog.yaml
+kubectl get pv,pvc,sc
+```
