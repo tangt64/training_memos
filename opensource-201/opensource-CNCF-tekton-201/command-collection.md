@@ -270,4 +270,7 @@ dnf search gogs
 podman run -d --name gogs -p80:3000  quay.io/gogs/gogs
 podman container ls
 > gogs
+dnf install python3-pip -y
+pip install github-clone
+ghclone https://github.com/tangt64/codelab/tree/main/java/blog
 ```
