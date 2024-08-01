@@ -247,7 +247,7 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: nfs.csi.k8s.io
 parameters:
-  server: dns1.example.com
+  server: master.example.com
   share: /opt/nfs
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
