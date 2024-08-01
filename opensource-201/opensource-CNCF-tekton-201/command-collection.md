@@ -260,3 +260,14 @@ kubectl apply -f storageclass-configure.yaml
 kubectl get sc
 kubectl get pv,pvc -A
 ```
+
+## gogs
+
+```bash
+dnf install podman -y
+dnf search gogs
+> quay.io/gogs/gogs
+podman run -d --name gogs -p80:3000  quay.io/gogs/gogs
+podman container ls
+> gogs
+```
