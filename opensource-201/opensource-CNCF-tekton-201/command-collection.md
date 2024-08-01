@@ -273,4 +273,11 @@ podman container ls
 dnf install python3-pip -y
 pip install github-clone
 ghclone https://github.com/tangt64/codelab/tree/main/java/blog
+
+dnf install git -y
+git init
+git add .
+git commit -m "test" .
+git remote add origin http://172.23.136.11/gogs/blog.git
+git push -u origin master
 ```
