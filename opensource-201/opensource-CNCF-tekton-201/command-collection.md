@@ -281,3 +281,17 @@ git commit -m "test" .
 git remote add origin http://172.23.136.11/gogs/blog.git
 git push -u origin master
 ```
+
+```yaml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blog
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+```
