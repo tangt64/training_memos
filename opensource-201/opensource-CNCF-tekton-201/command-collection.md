@@ -300,4 +300,16 @@ spec:
 kubectl delete -f storageclass-configure.yaml
 kubectl delete -f pvc-blog.yaml
 kubectl get pv,pvc,sc
+
+vi storageclass-configure.yaml
+> dns1.example.com -> master.example.com
+
+kubectl apply -f storageclass-configure.yaml
+kubectl apply -f pvc-blog.yaml
+tkn task start test-git-clone --showlog
+Please give specifications for the workspace: source
+? Name for the workspace : source
+? Value of the Sub Path :
+? Type of the Workspace : pvc
+? Value of Claim Name : blog
 ```
