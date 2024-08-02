@@ -318,3 +318,36 @@ Please give specifications for the workspace: source
 ? Type of the Workspace : pvc
 ? Value of Claim Name : blog
 ```
+
+## PODMAN/KUBECTL
+
+
+```bash
+
+
+tkn hub install task kubernetes-actions
+tkn task list
+kubectl create configmap kubeconfig --from-file="/etc/kubernetes/admin.conf"
+kubectl get cm
+vi release-blog-v1.yaml
+```
+
+```yaml
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: kubectl-run
+spec:
+  taskRef:
+    name: kubernetes-actions
+  workspaces:
+    - name: kubeconfig-dir
+      configMap:
+        name: kubeconfig    
+  params:
+    - name: script
+      value: |
+        kubectl apply -f http://172.25.218.199/gogs/private-git/raw/master/blog-v1.yaml
+        ----------
+        kubectl get deployment
+```
