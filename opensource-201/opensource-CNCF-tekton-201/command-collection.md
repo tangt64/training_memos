@@ -261,13 +261,15 @@ kubectl get sc
 kubectl get pv,pvc -A
 ```
 
-## gogs
+## gogs/registry
 
 ```bash
 dnf install podman -y
 dnf search gogs
 > quay.io/gogs/gogs
-podman run -d --name gogs -p80:3000  quay.io/gogs/gogs
+podman run -d --name gogs -p80:3000 quay.io/gogs/gogs
+podman run -d --name registry -p5000:5000 docker.io/library/registry
+curl 172.25.218.199:5000/v2/_catalog 
 podman container ls
 > gogs
 dnf install python3-pip -y
@@ -279,8 +281,11 @@ git init
 git add .
 git commit -m "test" .
 git remote add origin http://172.23.136.11/gogs/blog.git
+# git remote remove origin 
 git push -u origin master
 ```
+
+## NFS/PVC
 
 ```yaml
 ---
