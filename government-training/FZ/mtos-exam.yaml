@@ -161,8 +161,7 @@
             path: /etc/httpd/conf/httpd.conf
             search_string: 'Listen: 80'
             line: 'DocumentRoot: 18888'
-          
-      
+                
     - name: configure bad user enviornment in exam node
       adduser:
         name: baduser
