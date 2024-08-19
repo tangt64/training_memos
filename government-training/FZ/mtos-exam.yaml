@@ -163,9 +163,11 @@
             line: 'DocumentRoot: 18888'
 
     - name: configure zram and swap for multiples paging
-
+      
     - name: configure bad user enviornment in exam node
-
+      adduser:
+        name: baduser
+        comment: "need to banned"
     
     - name: make a disabled and no-strated the httpd.service
       service:
