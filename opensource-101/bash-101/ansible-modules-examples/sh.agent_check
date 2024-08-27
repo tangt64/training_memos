@@ -1,26 +1,25 @@
 #!/bin/bash
 
-function network
-{
-if [ $type == "network" ] && [ $name == "cisco" ]; then
-  result_cisco=$(ps -ef | grep cisco | awk '{ print $NF }' | uniq | wc -l)
-  if [ result_cisco -gt 1 ]; then
-    contents=$(printf "$result_cisco" | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
-    output=$(printf "$result_cisco" 2>&1 | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+function network(){
+if [[ $type == "network" ]] && [[ $name == "cisco" ]]; then
+  result_cisco=$(pgrep cisco | awk '{ print $NF }' | uniq | wc -l)
+  if [[ $result_cisco -gt 1 ]]; then
+    contents=$(echo "$result_cisco" | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+    output=$(echo "$result_cisco" 2>&1 | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
     changed="false"
     msg="the cisco agent is alive"
+  else
+    msg="the cisco agent is dead"
+    output=$(echo "$result_cisco" 2>&1 | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
+    # error="Hello"
+    echo "{ \"failed\": true, \"msg\": \"$msg\", \"output\": \"$output\" }"
+    exit 1
   fi
-else
-  msg="the cisco agent is dead"
-  output=$(printf "$result_cisco" 2>&1 | python2 -c 'import json,sys; print json.dumps(sys.stdin.read())')
-  error="Hello"
-  echo "{ \"failed\": true, \"msg\": \"$msg\", \"output\": \"$output\" }"
-  exit 1
-
 fi
+
 }
 
-source $1 $2
+source "$1" "$2"
 
 if [ -z "$type" ]; then
     printf '{"failed": true, "msg": "missing required arguments: name"}'
@@ -30,6 +29,7 @@ fi
 changed="false"
 msg=""
 contents=""
+
 
 case $type in
     network)
@@ -45,5 +45,4 @@ case $type in
 esac
 
 printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
-
 exit 0
