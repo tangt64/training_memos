@@ -17,14 +17,11 @@ if [[ $type == "network" ]] && [[ $name == "cisco" ]]; then
   fi
 fi
 
-}
-
-source "$1" "$2"
-
 if [ -z "$type" ]; then
     printf '{"failed": true, "msg": "missing required arguments: name"}'
     exit 1
 fi
+
 
 changed="false"
 msg=""
@@ -46,3 +43,5 @@ esac
 
 printf '{"changed": %s, "msg": "%s", "contents": %s}' "$changed" "$msg" "$contents"
 exit 0
+
+}
