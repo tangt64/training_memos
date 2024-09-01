@@ -1,7 +1,0 @@
-- hosts: all
-  tasks:
-  - hostname:
-      name: "{{ nodename }}"
-  - template:
-      src: hosts.j2
-      dest: /etc/hosts

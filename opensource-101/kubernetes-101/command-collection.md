@@ -1,8 +1,4 @@
-# 쿠버네티스 싱글 마스터 + 2노드 클러스터 구성(kubeadm)
-
-- kubespray(ansible)
-- kind
-- minikube
+# 쿠버네티스 싱글 컨트롤러 + 1노드 클러스터 구성(kubeadm)
 
 ## 마스터 및 노드 공통 설정
 
