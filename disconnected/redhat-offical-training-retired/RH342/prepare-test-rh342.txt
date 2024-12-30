@@ -1,0 +1,140 @@
+예상범위
+
+컨테이너
+- 외부에서 컨테이너에 접근이 안되는 경우
+  + podman inspect로 컨테이너 정보 확인
+  + "-p"에서 매칭이 되어 있는 컨테이너 포트 확인
+  + 올바르지 않는 경우 중지 후 다시 컨테이너 생성(rm으로 제거 후 재 생성)
+  + 컨테이너 실행은 일반 사용자 서비스로 실행하는 방법
+
+누수
+- valgrind
+  + valgrind --tool=memcheck <COMMAND>
+  	* lost memory size
+
+응용프로그램
+- 특정 프로그램의 라이브러리 링크 상태 확인
+  + ldd <BINARY>
+    * NOT FOUND가 있으면, 해당 바이너리는 실행이 안됨
+  + 링크가 빠져 있으면(NOT FOUND)수정이 필요함
+
+인증
+- sssd
+  + IPA 설정 문제시 어떤 부분에서 변경해야될지
+  + sssd.conf설정
+  + IPA는 ldap, kerberos 명령어 사용 필요
+- 사용자 생성
+  + 만약 사용자가 생성이 되지 않으면 이유를 찾고 수정
+  + 문제는 항상 로그 메세지를 유심히
+
+분석
+- sosreport
+  + 특정 플러그인 제외하여 실행
+  + 파일에서 내용 확인하기
+- tlog
+  + /etc/sssd/conf.d/tlog.conf
+  + cockpit에서 설정하여도 됨
+  
+  +
+기본구성
+- ansible
+  + 플레이북으로 기본적인 요구사항 구성
+  + 인벤토리 및 설정 필요
+  + 앤서블 실행하는 방법
+  + ansible.cfg
+  + 자주 사용하는 옵션, inventory=, log_path= 이 두 가지를 많이 사용한다
+
+감시 및 모니터링
+- auditctl
+  + auditctl -w <file> -p <perm> -k <keyword or message>
+  + /etc/audit.d/rules.d/*.rules
+  + 파일 변경 사항 모니터링
+- selinux
+  + semanage
+  + set/getsebool
+  + restorecon 
+- systemtap(pcp,userspace)
+  + .stp파일 컴파일 및 서버에 올리는 방법
+  + 일반 사용자가 실행하기 위해서는 systemtap 그룹에 가입이 되어야 한다
+
+문제 확인
+- yum 특정 패키지 설치
+- rht-service와 httpd를 같이 동작하도록 의존성 설정
+- systemd 서비스 문제(systemctl)
+  + .service 그리고 drop-in
+  + /etc/systemd/system/httpd.service.d/dep.conf
+    *after=rht-service
+  + /etc/systemd/system/rht.service.d/dep.conf
+    *before=httpd
+    * [Unit]
+    * after=, before=로 시작 순서 정해주면 됨
+
+- kernel module load/parameter
+  + /etc/modpro.d/st.conf    # 네이밍은 마음대로
+  	* options st buffer=10k
+    * modprobe st            # 리부팅 이후에는 자동으로 올라오지 않음
+  + /etc/modules-load.d/st.conf
+    * st
+  + dmidecode                # 하드웨어 정보 확인
+  	* dmidcode --from-dump <FILE> -t memory
+
+
+- rpm
+  + versionlock, deps손상
+  + rpm 상태 및 의존성
+    * versionlock(update x)
+    * yum search versionlock 
+    * yum versionlock 
+
+  + 문제가 있는 패키지 업데이트
+    * 업데이트가 올바르게 되지 않는 경우 올바르게 되도록 해야됨
+
+- grub에서 커널 파라메타 문제
+  + grubby --set-default 
+  + "/boot/loader/entries/"목록 확인
+  + "/boot/grub2/grubenv" 
+  + 부팅 문제 부분은 꼭 화면 콘솔 확인
+
+- iscsi
+  + yum search iscsi(initiator, libscsi-utils)
+  + iscsiadm db(discoverydb)
+  	* /var/lib/iscsi(cached)
+  	* rm -rf /var/lib/iscsi/nodes, send_targets
+  + vi /etc/iscsi/iscsid.conf 
+    * none -> CHAP
+    * username, password -> 사용자/비밀번호 있으면 설정
+  	* node.session.(login, type, username, password)
+  + systemctl restart iscsid   # CHAP reload
+  + iscsiadm <discovery, login>
+  + man iscsiadm     # 맨 끝에 사용명령어 나와 있음
+
+
+네트워크 설정
+- ipv6
+  + nmtui(**)
+  + nmcli
+  + 구성이 ipv4로 되어 있는 경우, ipv6가 기본 라우팅으로 잡히면 안됨
+- firewall-cmd 
+- nc 혹은 tcpdump
+  + 특정 포트에서 오는 문자열 확인
+  + ncat 
+
+
+디스크
+- lvm
+  + /etc/lvm/archive/testvg_??????
+    * vgs      ## lvm 정보가 틀리기 때문에 메타 정보가 검색이 안됨
+               ## hexedit 통해서 영역정보 확인 가능 
+    * 리사이즈 실폐 명령어!!
+  + vgcfgrestore -l testvg
+  + vgcfgrestore -f <ARCHIVE> testvg
+- luks복구
+  + luks암호 복구
+  + header recovery
+
+웹 서버
+- 파일 접근
+  + 웹 서버로 특정 파일에 접근이 안되는 경우
+    * semanage
+    * setsebool, getsebool
+    * fcontext label이 변경이 되면 꼭 restorecon으로 변경

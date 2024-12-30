@@ -1,0 +1,15 @@
+- hosts: all
+
+  become: false
+  remote_user: student
+
+  tasks:
+    - name: make a fail
+      shell: $(/usr/bin/false)
+      register: result_false
+      ignore_errors: true
+
+    - name: fail this play
+      fail:
+        msg: "Error! Error!"
+      when: result_false.rc == 1

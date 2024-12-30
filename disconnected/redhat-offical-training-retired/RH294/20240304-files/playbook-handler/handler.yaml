@@ -1,0 +1,26 @@
+- hosts: all
+
+  become: false
+  remote_user: student
+  force_handlers: true
+
+  tasks:                ## main tasks
+    - name: install vsftpd package
+      package:
+        name: vsftpd
+        state: present
+      become: true
+
+    - name: install httpd package
+      package:
+        name: httpd
+        state: present
+      notify: hd_httpd_start
+      become: true
+
+  handlers:             ## sub tasks
+    - name: hd_httpd_start
+      systemd:
+        name: httpd
+        state: restarted
+      become: true

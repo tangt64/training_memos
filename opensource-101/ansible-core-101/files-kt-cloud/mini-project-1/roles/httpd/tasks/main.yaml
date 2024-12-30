@@ -1,3 +1,0 @@
----
-- include_tasks: installation.yaml
-- include_tasks: service.yaml

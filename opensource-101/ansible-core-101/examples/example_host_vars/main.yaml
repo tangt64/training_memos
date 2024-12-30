@@ -1,6 +1,0 @@
-- hosts: all
-
-  tasks:
-  - name: show the host vars from the host_vars
-    debug:
-      msg: "{{ echoecho }}"

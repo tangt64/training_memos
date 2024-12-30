@@ -1,6 +1,0 @@
----
-- name: install database
-  package:
-    name: mariadb-server
-    state: present
-  notify: start mariadb-server

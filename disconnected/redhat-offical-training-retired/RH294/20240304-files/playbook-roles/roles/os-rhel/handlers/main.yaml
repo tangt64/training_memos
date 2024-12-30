@@ -1,0 +1,3 @@
+- name: hd_os-rhel_msg
+  debug:
+    msg: "this is handler from os-rhel roles"

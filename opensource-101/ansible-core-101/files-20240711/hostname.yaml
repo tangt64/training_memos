@@ -1,6 +1,0 @@
----
-- hosts: all
-  tasks:
-    - name: set hostname for each node
-      hostname:
-        name: "{{ inventory_hostname }}"

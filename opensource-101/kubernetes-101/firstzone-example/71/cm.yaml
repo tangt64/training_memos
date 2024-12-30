@@ -1,8 +1,0 @@
-apiVersion: v1
-data:
-  nick: tang
-kind: ConfigMap
-metadata:
-  creationTimestamp: null
-  name: username
-  namespace: lab-test-configsecret

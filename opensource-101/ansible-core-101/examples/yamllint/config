@@ -1,7 +1,0 @@
-# mkdir ~/.config/yamllint/
-# vi ~/.config/yamllint/config
-
-extends: relaxed
-
-rules:
-  line-length: disable

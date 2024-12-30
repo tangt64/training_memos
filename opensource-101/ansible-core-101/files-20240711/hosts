@@ -1,8 +1,0 @@
-[webserver]
-node1.example.com
-
-[database]
-node2.example.com
-
-[middleware]
-node3.example.com
