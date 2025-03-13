@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: demo-pipeline-dice-pipeline2
+spec:
+  tasks:
+  - name: first
+    taskRef:
+      name: hello
+  - name: roll
+    taskRef:
+      name: demo-pipeline-dice-pipeline2-task-param

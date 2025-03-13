@@ -1,0 +1,10 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: demo-pipeline1-task
+spec:
+  steps:
+    - image: quay.io/centos/centos:stream9
+      command:
+        - /bin/bash
+      args: ['-c', 'echo I am the demo pipeline task']

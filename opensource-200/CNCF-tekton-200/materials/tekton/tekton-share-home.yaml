@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: tekton-share-home
+spec:
+  steps:
+  - name: write
+    image: quay.io/centos/centos:stream9
+    script: |
+      echo "location is $(pwd)"
+      echo ~
+      echo ~tekton
+      touch /tekton/home/tkn-message.txt
+  - name: read
+    image: quay.io/centos/centos:stream9
+    script: |
+      echo "Listing /tekton/home"
+      ls -lR /tekton/home
+  - name: tree
+    image: quay.io/centos/centos:stream9
+    script: |
+      dnf install tree -y
+      tree -L 2 /tekton/
+      tree -L2 /workspace/

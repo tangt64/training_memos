@@ -1,0 +1,33 @@
+- hosts: all
+
+  become: false
+  remote_user: student
+
+  pre_tasks:
+    - name: this is pre_task
+      debug:
+        msg: 'pre task'
+    - include_role:
+        name: rhel-httpd
+      vars:
+        rhel_var: "this is include_role rhel-httpd"
+      when: ansible_distribution == 'RedHat'
+
+  roles:
+    - { role: rhel-httpd, rhel_var: "this is rhel-httpd",  when: ansible_distribution == 'RedHat' }
+    - { role: os-rhel, rhel_var: "this is os-rhel", when: ansible_distribution == 'RedHat' }
+    - { role: os-debian, rhel_var: "this is os-debian", when: ansible_distribution == 'Debian' }
+    
+    - { role: os-rhel , rhel_var: test }
+    - role: os-rhel
+      vars:
+        rhel_var: test
+    - os-debian
+    - security-update
+    - linux-system-rhel
+
+  
+  post_tasks:
+    - name: this is post_task
+      debug:
+        msg: "post task"

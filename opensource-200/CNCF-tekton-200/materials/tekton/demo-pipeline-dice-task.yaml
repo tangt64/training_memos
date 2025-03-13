@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: demo-pipeline-dice-task
+spec:
+  steps:
+  - name: welcome-message
+    image: quay.io/centos/centos:stream9
+    command:
+    - /bin/bash
+    args: ['-c', 'echo Rolling dice']
+  - name: dice-random
+    image: quay.io/centos/centos:stream9
+    script: |
+      dnf install php-cli -y
+      php -r "echo rand(1,6);"

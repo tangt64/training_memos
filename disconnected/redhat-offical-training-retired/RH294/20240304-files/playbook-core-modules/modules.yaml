@@ -1,0 +1,26 @@
+- hosts: all
+
+  become: false
+  remote_user: student
+
+  tasks:
+    - file:
+        path: /tmp/student
+        state: directory
+        owner: student
+        group: student
+        mode: u=rwx,g=rx,o=
+    - archive:
+    - command: tar 
+      run_once: true
+    - copy:
+        src: "{{ item }}"
+          - file1
+          - file2
+          - file3
+        dest: /tmp/groups.backup
+        follow: no
+      loop:
+        - file1
+        - file2
+        - file3

@@ -1,0 +1,8 @@
+aws_access_key: <specify AWS Access Key>
+aws_secret_key: <specify AWS Secret Key>
+#key_name: <specify private key name alias>
+#aws_region: <specify aws region>
+#vpc_id: <specify vpc id>
+#cidr_ip: <specify cidr_ip>
+#ami_id: ami-6d1c2007
+#instance_type: <specify intance_type>

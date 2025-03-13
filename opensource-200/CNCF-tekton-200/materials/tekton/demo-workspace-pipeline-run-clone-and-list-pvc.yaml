@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-and-list-pr-
+spec:
+  pipelineRef:
+    name: demo-workspace-clone-list-github-pipeline
+  workspaces:
+    - name: gitcode
+      persistentVolumeClaim:
+        claimName: tekton-pvc
