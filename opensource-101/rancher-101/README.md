@@ -1,5 +1,12 @@
 # 변경 내용
 
+## 20250714
+
+1. offline 설치 내용 강화
+2. rancher dashboard 내용 강화
+3. harvester 내용 추가
+4. rancher CLI
+
 ## 20250511
 
 1. rancher-demo 업데이트
