@@ -67,41 +67,37 @@ vgcreate cinder-volume /dev/vdb
 ```yaml
 cat > /root/globals.yaml <<'EOF'
 
-# 배포 기본
 kolla_base_distro: "rocky"
-# 사용 버전은 환경에 맞게(예: 2025.1, 2024.2, master 등)
 openstack_release: "2025.1"
 
-# AIO 권장
-kolla_internal_vip_address: "192.168.10.50"    # 같은 L2 내 미사용 IP
-network_interface: "eth0"                      # 관리/내부 트래픽 NIC (유일한 물리 NIC)
+# 단일 NIC
+network_interface: "eth0"
 api_interface: "{{ network_interface }}"
 storage_interface: "{{ network_interface }}"
 cluster_interface: "{{ network_interface }}"
 
-# Neutron (외부 네트워크)
-neutron_plugin_agent: "openvswitch"            # 또는 "ovn"; 단, AIO는 ovs가 간편
-neutron_external_interface: "veth-ex"          # 우리가 만든 가짜 NIC (절대 IP 주지 말 것)
-neutron_bridge_name: "br-ex"                   # 기본값 그대로 사용해도 됨
+# VIP 미사용(단일 IP 모드)
+enable_haproxy: "no"
+kolla_internal_vip_address: "192.168.10.10"   # ← 여기를 호스트 ens3 IP로
+
+# Neutron (외부망은 veth-ex로)
+neutron_plugin_agent: "openvswitch"
+neutron_external_interface: "veth-ex"
+neutron_bridge_name: "br-ex"
 
 # Cinder (AIO 체험용)
 enable_cinder: "yes"
 enable_cinder_backend_lvm: "yes"
-cinder_volume_group: "cinder-volumes"        # 아래 4)에서 VG 생성
+cinder_volume_group: "cinder-volumes"
 
 # Nova
 nova_compute_virt_type: "kvm"
 
-# 로그/모니터링(선택)
+# 모니터링 비활성
+enable_haproxy: "no"
 enable_central_logging: "no"
 enable_prometheus: "no"
 enable_grafana: "no"
-
-# HAProxy는 AIO면 굳이 없어도 OK (원하면 yes로)
-enable_haproxy: "no"
-
-# 기본 서비스(필요 시 조정)
-enable_openstack_core: "yes"     # keystone, glance, nova, neutron, placement, horizon 등
 EOF
 ```
 
