@@ -71,7 +71,7 @@ kolla_base_distro: "rocky"
 openstack_release: "2025.1"
 
 # 단일 NIC
-network_interface: "eth0"
+network_interface: "ens3"
 api_interface: "{{ network_interface }}"
 storage_interface: "{{ network_interface }}"
 cluster_interface: "{{ network_interface }}"
