@@ -61,7 +61,7 @@ lsblk
 umount /mnt
 dnf install lvm2 -y
 pvcreate /dev/vdb
-vgcreate cinder-volume /dev/vdb
+vgcreate cinder-volumes /dev/vdb
 ```
 
 ```yaml
@@ -94,7 +94,6 @@ cinder_volume_group: "cinder-volumes"
 nova_compute_virt_type: "kvm"
 
 # 모니터링 비활성
-enable_haproxy: "no"
 enable_central_logging: "no"
 enable_prometheus: "no"
 enable_grafana: "no"
