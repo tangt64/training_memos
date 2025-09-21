@@ -134,4 +134,5 @@ kolla-ansible -i /etc/kolla/inventory/all-in-one deploy
 # 7) Post-deploy (admin-openrc 등)
 kolla-ansible -i /etc/kolla/inventory/all-in-one post-deploy
 
+pip install python-openstackclient
 ```
