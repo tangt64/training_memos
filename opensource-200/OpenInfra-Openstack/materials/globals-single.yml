@@ -1,0 +1,30 @@
+kolla_base_distro: "rocky"
+openstack_release: "2025.1"
+
+# 단일 NIC
+network_interface: "eth0"
+api_interface: "{{ network_interface }}"
+storage_interface: "{{ network_interface }}"
+cluster_interface: "{{ network_interface }}"
+
+# VIP 미사용(단일 IP 모드)
+enable_haproxy: "no"
+kolla_internal_vip_address: "10.0.2.80"   # ← 여기를 호스트 eth0 IP로
+
+# Neutron (외부망은 veth-ex로)
+neutron_plugin_agent: "openvswitch"
+neutron_external_interface: "veth-ex"
+neutron_bridge_name: "br-ex"
+
+# Cinder (AIO 체험용)
+enable_cinder: "yes"
+enable_cinder_backend_lvm: "yes"
+cinder_volume_group: "cinder-volumes"
+
+# Nova
+nova_compute_virt_type: "kvm"
+
+# 모니터링 비활성
+enable_central_logging: "no"
+enable_prometheus: "no"
+enable_grafana: "no"
