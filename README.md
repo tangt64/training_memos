@@ -12,7 +12,7 @@
 
 ## 브랜치 정보
 
-모든 정보는 2026 브랜치에 저장이 됩니다.
+**2024/2025년도**는 더 이상 업데이트가 안됩니다. 새로운 교안은 2026년도 브랜치에 저장이 됩니다.
 
 ## 문의
 
@@ -23,3 +23,5 @@
 This project is licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
 
 © 2025 최국현 (Gook Hyun Choi)
+
+
